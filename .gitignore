@@ -13,3 +13,7 @@ node_modules
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+# local tooling / artifacts (not part of the theme release)
+.codegraph/
+*.bak-*

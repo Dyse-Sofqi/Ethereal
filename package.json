@@ -1,7 +1,10 @@
 {
-    "name": "sample-obsidian-theme",
+    "name": "silence",
     "version": "1.0.0",
 	"scripts": {
-		"version": "node version-bump.mjs && git add manifest.json versions.json"
-	}
+		"version": "node version-bump.mjs && git add manifest.json versions.json",
+		"gen:settings": "node scripts/gen-settings.mjs",
+		"validate:settings": "node scripts/validate-settings.mjs theme.css"
+	},
+	"private": true
 }
