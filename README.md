@@ -2,6 +2,10 @@
 
 A minimal, zero-override theme for [Obsidian](https://obsidian.md/) (formerly *Silence*). Ethereal does **not** restyle anything itself — it only re-exposes Obsidian's official CSS variables (extracted from the official 1.13.7 `app.css`, 874 variables) through the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin, so every look stays 100% native and fully within your control.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Dyse-Sofqi/Ethereal/master/screenshot.png" alt="Ethereal theme screenshot" width="512">
+</p>
+
 ## Features
 
 - **Zero overrides**: the theme body contains no native-rule changes; only variable defaults are exposed and locked where needed.
