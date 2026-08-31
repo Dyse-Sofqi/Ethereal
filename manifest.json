@@ -1,7 +1,8 @@
 {
 	"name": "Ethereal",
-	"version": "1.3.0",
+	"version": "1.3.1",
 	"minAppVersion": "1.0.0",
 	"author": "Sofqi",
-	"authorUrl": "https://github.com/Dyse-Sofqi"
+	"authorUrl": "https://github.com/Dyse-Sofqi",
+	"screenshot": "screenshot.png"
 }
