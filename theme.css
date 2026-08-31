@@ -1,24 +1,18 @@
 /*
- * Silence — Obsidian 官方 CSS 变量面板
+ * Ethereal 官方变量
  * 说明：本主题完全基于 Obsidian 原生主题（零覆盖），仅通过 Style Settings 暴露
  * Obsidian 官方 CSS 变量（基于 Obsidian 1.13.7 app.css 提取，共 874 个变量）。
  * 使用方式：
  *  1. 安装并启用 Style Settings 插件（社区插件）
- *  2. 在 外观 → 主题 中选择 Silence 后，打开 设置 → 外观 → 样式设置
+ *  2. 在 外观 → 主题 中选择 Ethereal 后，打开 设置 → 外观 → 样式设置
  *  3. 分组默认折叠，按需展开；每项默认值 = 官方默认值，修改即覆盖，重置按钮可恢复
  * 注意：所有设置项 id 与官方 CSS 变量同名（不含 -- 前缀），
  *       变量被修改后会注入 body.css-settings-manager，优先级高于官方默认。
  */
 /* @settings
-name: Silence — 官方变量面板
-id: silence-official-vars
+name: Ethereal 官方变量
+id: ethereal-official-vars
 settings:
-    -
-        id: silence-info
-        title: 使用说明
-        type: info-text
-        description: "本面板暴露 Obsidian 官方 CSS 变量（基于 1.13.7 提取，共 874 项），主题本体零覆盖、完全依赖原生。修改即覆盖，恢复默认请点击行右侧重置按钮。颜色类变量多为「明/暗双模式」类型，明暗可分别设置（强调色 HSL 亦分亮/暗两组）；其余为文本框，默认值=官方默认。"
-
     -
         id: hd-colors
         title: '颜色 Colors'

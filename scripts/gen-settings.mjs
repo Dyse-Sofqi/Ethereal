@@ -1,4 +1,4 @@
-// Generate Silence theme.css @settings block from Obsidian 1.13.7 app.css
+// Generate Ethereal theme.css @settings block from Obsidian 1.13.7 app.css
 // Runs: node gen-settings.mjs <appcss path> <output css path>
 import fs from "node:fs";
 import { zhName } from "./zh-translations.mjs";
@@ -215,12 +215,12 @@ for (const it of items) (catGroups[it.c.group] ||= []).push(it);
 // ---------- emit ----------
 const out = [];
 out.push(`/*
- * Silence — Obsidian 官方 CSS 变量面板
+ * Ethereal — Obsidian 官方 CSS 变量面板
  * 说明：本主题完全基于 Obsidian 原生主题（零覆盖），仅通过 Style Settings 暴露
  * Obsidian 官方 CSS 变量（基于 Obsidian 1.13.7 app.css 提取，共 ${vars.length} 个变量）。
  * 使用方式：
  *  1. 安装并启用 Style Settings 插件（社区插件）
- *  2. 在 外观 → 主题 中选择 Silence 后，打开 设置 → 外观 → 样式设置
+ *  2. 在 外观 → 主题 中选择 Ethereal 后，打开 设置 → 外观 → 样式设置
  *  3. 分组默认折叠，按需展开；每项默认值 = 官方默认值，修改即覆盖，重置按钮可恢复
  * 注意：所有设置项 id 与官方 CSS 变量同名（不含 -- 前缀），
  *       变量被修改后会注入 body.css-settings-manager，优先级高于官方默认。
@@ -237,19 +237,19 @@ const CAT_TITLE = {
 };
 
 out.push(`/* @settings
-name: Silence — 官方变量面板
-id: silence-official-vars
+name: Ethereal — 官方变量面板
+id: ethereal-official-vars
 settings:
     -
-        id: silence-info
+        id: ethereal-info
         title: 使用说明
         type: info-text
         description: "本面板暴露 Obsidian 官方 CSS 变量（基于 1.13.7 提取，共 ${vars.length} 项），主题本体零覆盖、完全依赖原生。修改即覆盖，恢复默认请点击行右侧重置按钮。颜色类变量多为「明/暗双模式」类型，明暗可分别设置（强调色 HSL 亦分亮/暗两组）；其余为文本框，默认值=官方默认。"
     -
-        id: silence-presets-info
+        id: ethereal-presets-info
         title: 💾 方案管理（选择 / 保存 / 导入导出）
         type: info-text
-        description: "想要把整套自定义值保存为方案、随时切换、导出分享？请安装配套插件「Silence 方案管理」（silence-presets）：启用后本面板顶部会直接出现方案栏（选择→应用、保存当前、恢复官方默认），完整管理在 设置 → Silence 方案管理 标签页（含逐方案导出/删除与 JSON 导入）。方案＝本面板全部变量的快照，明/暗双模式一并保存。"
+        description: "想要把整套自定义值保存为方案、随时切换、导出分享？请安装配套插件「Ethereal 方案管理」（silence-presets）：启用后本面板顶部会直接出现方案栏（选择→应用、保存当前、恢复官方默认），完整管理在 设置 → Silence 方案管理 标签页（含逐方案导出/删除与 JSON 导入）。方案＝本面板全部变量的快照，明/暗双模式一并保存。"
 `);
 
 const emitted = new Set();
