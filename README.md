@@ -1,9 +1,9 @@
-# Silence
+# Ethereal
 
-A minimal, zero-override theme for [Obsidian](https://obsidian.md/). Silence does **not** restyle anything itself — it only re-exposes Obsidian's official CSS variables (extracted from the official 1.13.7 `app.css`, 874 variables) through the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin, so every look stays 100% native and fully within your control.
+A minimal, zero-override theme for [Obsidian](https://obsidian.md/) (formerly *Silence*). Ethereal does **not** restyle anything itself — it only re-exposes Obsidian's official CSS variables (extracted from the official 1.13.7 `app.css`, 874 variables) through the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin, so every look stays 100% native and fully within your control.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Dyse-Sofqi/Silence/master/screenshot.png" alt="Silence theme screenshot" width="512">
+  <img src="https://raw.githubusercontent.com/Dyse-Sofqi/Ethereal/master/screenshot.png" alt="Ethereal theme screenshot" width="512">
 </p>
 
 ## Features
@@ -16,8 +16,8 @@ A minimal, zero-override theme for [Obsidian](https://obsidian.md/). Silence doe
 ## Installation
 
 1. Install the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) community plugin (recommended; the theme works without it, but exposes no customization panel).
-2. In Obsidian: **Settings → Appearance → Themes → Manage → Browse**, search for **Silence**, and install.
-   - Manual installation: download the latest release from GitHub (contains `manifest.json` + `theme.css`) and place both inside your vault's `.obsidian/themes/Silence/` folder.
+2. In Obsidian: **Settings → Appearance → Themes → Manage → Browse**, search for **Ethereal**, and install.
+   - Manual installation: download the latest release from GitHub (contains `manifest.json` + `theme.css`) and place both inside your vault's `.obsidian/themes/Ethereal/` folder.
 
 ## Compatibility
 
