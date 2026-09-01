@@ -17,3 +17,6 @@ node_modules
 # local tooling / artifacts (not part of the theme release)
 .codegraph/
 *.bak-*
+
+# stray artifact dir written by local tooling (Windows cache files, not user data)
+%SystemDrive%/
