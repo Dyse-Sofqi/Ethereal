@@ -1,6 +1,6 @@
 # Ethereal
 
-A minimal, zero-override theme for [Obsidian](https://obsidian.md/) (formerly *Silence*). Ethereal does **not** restyle anything itself — it only re-exposes Obsidian's official CSS variables (extracted from the official 1.13.7 `app.css`, 874 variables) through the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin, so every look stays 100% native and fully within your control.
+A minimal, zero-override theme for [Obsidian](https://obsidian.md/) (formerly *Silence*). Ethereal's base layer does **not** restyle anything itself — it only re-exposes Obsidian's official CSS variables (extracted from the official 1.13.7 `app.css`, 874 variables) through the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin, so every look stays 100% native and fully within your control. CSS snippets merged into the theme (List, Custom) are self-contained extension layers on top of it.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Dyse-Sofqi/Ethereal/master/screenshot.png" alt="Ethereal theme screenshot" width="512">
@@ -8,9 +8,10 @@ A minimal, zero-override theme for [Obsidian](https://obsidian.md/) (formerly *S
 
 ## Features
 
-- **Zero overrides**: the theme body contains no native-rule changes; only variable defaults are exposed and locked where needed.
+- **Zero overrides (official-variable layer)**: the base layer contains no native-rule changes; only variable defaults are exposed and locked where needed.
 - **Light / dark compatibility**: dual-mode variables (shadows, input field backgrounds, text selection, RGB palettes, …) are separated per mode and locked to official light-mode values in light theme.
 - **Separate accent colors per mode** (Blue Topaz style): the accent HSL settings are split into light/dark groups (`accent-h/s/l-light`, `accent-h/s/l-dark`), since Obsidian's `--accent-h/s/l` is otherwise shared between themes.
+- **Layered CSS-snippet merges**: beyond the official-variable layer, CSS snippets are appended at the end of `theme.css` as self-contained layers (`#region 吞并片段·…`, currently List and Custom) — each with its own independent Style Settings panel and its own `--*` namespace, never mixing into the official panel.
 - **Preset management**: the optional companion plugin [silence-presets](https://github.com/Dyse-Sofqi/silence-presets) adds a preset bar (apply / save / restore official defaults) on top of this panel.
 
 ## Installation

@@ -1,14 +1,21 @@
 /*
- * Ethereal 官方变量
- * 说明：本主题完全基于 Obsidian 原生主题（零覆盖），仅通过 Style Settings 暴露
- * Obsidian 官方 CSS 变量（基于 Obsidian 1.13.7 app.css 提取，共 874 个变量）。
+ * Ethereal — 分层主题
+ * 第 1 层（基础）：Ethereal 官方变量。完全基于 Obsidian 原生主题（零覆盖），仅通过
+ * Style Settings 暴露 Obsidian 官方 CSS 变量（基于 Obsidian 1.13.7 app.css 提取，共 874 个变量）。
+ * 第 2 层起（拓展）：在官方变量之外，以「吞并 CSS 片段」的方式逐层拼接（见文件末尾
+ * 「吞并片段」分区，按 第 1 层、第 2 层… 顺序追加）。每个吞并片段携带自己独立的
+ * Style Settings 面板，与官方变量面板互不混入；片段的自定义变量（--list-* 等）
+ * 仅引用官方变量作回退，不修改官方变量本身。
  * 使用方式：
  *  1. 安装并启用 Style Settings 插件（社区插件）
  *  2. 在 外观 → 主题 中选择 Ethereal 后，打开 设置 → 外观 → 样式设置
  *  3. 分组默认折叠，按需展开；每项默认值 = 官方默认值，修改即覆盖，重置按钮可恢复
- * 注意：所有设置项 id 与官方 CSS 变量同名（不含 -- 前缀），
+ * 注意：第 1 层所有设置项 id 与官方 CSS 变量同名（不含 -- 前缀），
  *       变量被修改后会注入 body.css-settings-manager，优先级高于官方默认。
+ * ⚠️ npm run gen:settings 会整体重写本文件（仅官方变量层）；吞并片段层不在其生成
+ *    内容中，重跑前需先保留/迁移文件末尾的片段层。
  */
+/* #region style settings*/
 /* @settings
 name: Ethereal 官方变量
 id: ethereal-official-vars
@@ -6032,7 +6039,7 @@ settings:
         description: '暗色默认 250, 153, 205；亮色默认 213, 57, 132；注：原生与另一模式不同；暗色模式下本值独立生效，亮色由底部兜底规则保持原生；⚠️ 官方已标记为兼容保留（Deprecated）'
 
 */
-
+/* #endregion */
 
 /* ---- 主题本体（零覆盖）：不改动任何原生规则，外观完全由原生变量 + 上方设置决定 ---- */
 
@@ -6049,41 +6056,41 @@ settings:
 
 /* 强调色派生：亮/暗偏移不同（亮 -1/-3，暗 -3/-5） */
 body.theme-light.css-settings-manager.theme-light {
-        --color-accent-1: hsl(calc(var(--accent-h) - 1), calc(var(--accent-s) * 1.01), calc(var(--accent-l) * 1.075));
-        --color-accent-2: hsl(calc(var(--accent-h) - 3), calc(var(--accent-s) * 1.02), calc(var(--accent-l) * 1.15));
-        /* 交互与文本（亮色基线在 :root） */
-        --highlight-mix-blend-mode: darken;
-        --text-selection: color-mix(in oklch, var(--interactive-accent) 20%, transparent);
-        --text-accent: var(--color-accent);
-        --interactive-normal: var(--color-base-00);
-        --interactive-hover: var(--color-base-10);
-        --interactive-accent: var(--color-accent-1);
-        --interactive-accent-hover: var(--color-accent-2);
-        /* 背景与遮罩（亮色基线在 :root） */
-        --background-modifier-form-field: var(--color-base-00);
-        --background-secondary-alt: var(--color-base-05);
-        --blur-background: color-mix(in srgb, var(--background-primary) var(--blur-opacity-s), transparent) linear-gradient(var(--background-primary), color-mix(in srgb, var(--background-primary) var(--blur-opacity-s), transparent));
-        --raised-mask-background: linear-gradient(to bottom left, white, transparent, white) border-box no-repeat;
-        /* 输入框与阴影（暗色重、亮色轻） */
-        --input-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.065), 0 0 0 0 transparent;
-        --input-shadow-hover: inset 0 0 0 1px rgba(0, 0, 0, 0.17), 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 0 0 0 transparent;
-        --shadow-edges: 0 0 transparent;
-        --shadow-xs: 0 1px 6px rgba(0, 0, 0, 0.015), 0 4px 24px rgba(0, 0, 0, 0.065), var(--shadow-edges);
-        --shadow-s: 0px 1px 2px rgba(0, 0, 0, 0.028), 0px 3.4px 6.7px rgba(0, 0, 0, 0.042), 0px 15px 30px rgba(0, 0, 0, 0.07);
-        --shadow-l: 0px 1.8px 7.3px rgba(0, 0, 0, 0.071), 0px 6.3px 24.7px rgba(0, 0, 0, 0.112), 0px 15px 30px rgba(0, 0, 0, 0.1);
-        --pdf-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.1);
-        --pdf-thumbnail-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2);
-        /* 单色与 RGB 调色板 */
-        --mono-rgb-0: 255, 255, 255;
-        --mono-rgb-100: 0, 0, 0;
-        --color-red-rgb: 233, 49, 71;
-        --color-orange-rgb: 236, 117, 0;
-        --color-yellow-rgb: 224, 172, 0;
-        --color-green-rgb: 8, 185, 78;
-        --color-cyan-rgb: 0, 191, 188;
-        --color-blue-rgb: 8, 109, 221;
-        --color-purple-rgb: 120, 82, 238;
-        --color-pink-rgb: 213, 57, 132;
+    --color-accent-1: hsl(calc(var(--accent-h) - 1), calc(var(--accent-s) * 1.01), calc(var(--accent-l) * 1.075));
+    --color-accent-2: hsl(calc(var(--accent-h) - 3), calc(var(--accent-s) * 1.02), calc(var(--accent-l) * 1.15));
+    /* 交互与文本（亮色基线在 :root） */
+    --highlight-mix-blend-mode: darken;
+    --text-selection: color-mix(in oklch, var(--interactive-accent) 20%, transparent);
+    --text-accent: var(--color-accent);
+    --interactive-normal: var(--color-base-00);
+    --interactive-hover: var(--color-base-10);
+    --interactive-accent: var(--color-accent-1);
+    --interactive-accent-hover: var(--color-accent-2);
+    /* 背景与遮罩（亮色基线在 :root） */
+    --background-modifier-form-field: var(--color-base-00);
+    --background-secondary-alt: var(--color-base-05);
+    --blur-background: color-mix(in srgb, var(--background-primary) var(--blur-opacity-s), transparent) linear-gradient(var(--background-primary), color-mix(in srgb, var(--background-primary) var(--blur-opacity-s), transparent));
+    --raised-mask-background: linear-gradient(to bottom left, white, transparent, white) border-box no-repeat;
+    /* 输入框与阴影（暗色重、亮色轻） */
+    --input-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.065), 0 0 0 0 transparent;
+    --input-shadow-hover: inset 0 0 0 1px rgba(0, 0, 0, 0.17), 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 0 0 0 transparent;
+    --shadow-edges: 0 0 transparent;
+    --shadow-xs: 0 1px 6px rgba(0, 0, 0, 0.015), 0 4px 24px rgba(0, 0, 0, 0.065), var(--shadow-edges);
+    --shadow-s: 0px 1px 2px rgba(0, 0, 0, 0.028), 0px 3.4px 6.7px rgba(0, 0, 0, 0.042), 0px 15px 30px rgba(0, 0, 0, 0.07);
+    --shadow-l: 0px 1.8px 7.3px rgba(0, 0, 0, 0.071), 0px 6.3px 24.7px rgba(0, 0, 0, 0.112), 0px 15px 30px rgba(0, 0, 0, 0.1);
+    --pdf-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.1);
+    --pdf-thumbnail-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2);
+    /* 单色与 RGB 调色板 */
+    --mono-rgb-0: 255, 255, 255;
+    --mono-rgb-100: 0, 0, 0;
+    --color-red-rgb: 233, 49, 71;
+    --color-orange-rgb: 236, 117, 0;
+    --color-yellow-rgb: 224, 172, 0;
+    --color-green-rgb: 8, 185, 78;
+    --color-cyan-rgb: 0, 191, 188;
+    --color-blue-rgb: 8, 109, 221;
+    --color-purple-rgb: 120, 82, 238;
+    --color-pink-rgb: 213, 57, 132;
 }
 
 /* ============================================================
@@ -6096,13 +6103,1054 @@ body.theme-light.css-settings-manager.theme-light {
  * ============================================================ */
 
 body.theme-light.css-settings-manager.theme-light {
-        --accent-h: var(--accent-h-light, 258);
-        --accent-s: var(--accent-s-light, 88%);
-        --accent-l: var(--accent-l-light, 66%);
+    --accent-h: var(--accent-h-light, 258);
+    --accent-s: var(--accent-s-light, 88%);
+    --accent-l: var(--accent-l-light, 66%);
 }
 
 body.theme-dark.css-settings-manager.theme-dark {
-        --accent-h: var(--accent-h-dark, 258);
-        --accent-s: var(--accent-s-dark, 88%);
-        --accent-l: var(--accent-l-dark, 66%);
+    --accent-h: var(--accent-h-dark, 258);
+    --accent-s: var(--accent-s-dark, 88%);
+    --accent-l: var(--accent-l-dark, 66%);
 }
+
+/* ============================================================
+ * 吞并片段 第 1 层：List（源自 CSS 片段 List.css）
+ * ------------------------------------------------------------
+ * 本主题在官方变量之外，以「吞并 CSS 片段」的方式逐层拓展；
+ * 本层为第 1 个吞并片段，后续片段按层号继续追加在文件末尾。
+ * 独立性：携带自己的 Style Settings 面板（name: List / id: list-snippet），
+ * 与上方「Ethereal 官方变量」面板完全独立；默认值与自定义变量（--list-*）
+ * 全部定义在本层 :root，仅引用官方变量作为回退（--list-marker-color 等），
+ * 不修改任何官方变量本身。面板 id 沿用片段原 id（list-snippet），
+ * 保证 Style Settings 中已有自定义值（list-snippet@@…）继续生效。
+ * 原片段文件 List.css 可在 Obsidian 外观设置中停用，效果与本层一致。
+ * ============================================================ */
+
+/* #region 吞并片段·List */
+/* @settings
+name: List
+id: list-snippet
+settings:
+  -
+    id: list-symbol-custom
+    title: Unordered list ulist
+    title.zh: 无序列表 ulist
+    type: heading
+    level: 2
+    collapsed: true
+  -
+    id: list-bullet-h-adjust-heading
+    title: Bullet horizontal adjust
+    title.zh: 符号左右调整
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: list-bullet-h-adjust
+    title: Adjust amount
+    title.zh: 调整量
+    description: Larger value pushes the symbol left and widens the gap to text; 0 disables the adjustment.
+    description.zh: 数值越大，符号越靠左、与文本间距越大；0 为不调整。（CSS 中负内边距无效，故不开放负值。）
+    type: variable-number-slider
+    default: 2
+    min: 0
+    max: 10
+    step: 0.5
+    format: px
+  -
+    id: ul-level-1
+    title: 1th level
+    title.zh: 第一层级
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: list-ul-marker-1
+    title: List symbol (1th level)
+    title.zh: 符号（第一层级）
+    type: variable-text
+    default: '"\2022"'
+  -
+    id: list-ul-marker-size-1
+    title: Bullet size (1th level)
+    title.zh: 符号大小（第一层级）
+    type: variable-text
+    default: 1em
+  -
+    id: list-ul-marker-color-1
+    title: Bullet color (1th level)
+    title.zh: 符号颜色（第一层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ghost-color-1
+    title: Ghost background color (1th level)
+    title.zh: 虚影背景色（第一层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ghost-size-1
+    title: Ghost halo size (1th level)
+    title.zh: 虚影光环大小（第一层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ghost-offset-x-1
+    title: Ghost offset X (1th level)
+    title.zh: 虚影水平偏移（第一层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ghost-offset-y-1
+    title: Ghost offset Y (1th level)
+    title.zh: 虚影垂直偏移（第一层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: ul-level-2
+    title: 2th level
+    title.zh: 第二层级
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: list-ul-marker-2
+    title: List symbol (2th level)
+    title.zh: 符号（第二层级）
+    type: variable-text
+    default: '"\25E6"'
+  -
+    id: list-ul-marker-size-2
+    title: Bullet size (2th level)
+    title.zh: 符号大小（第二层级）
+    type: variable-text
+    default: 1em
+  -
+    id: list-ul-marker-color-2
+    title: Bullet color (2th level)
+    title.zh: 符号颜色（第二层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ghost-color-2
+    title: Ghost background color (2th level)
+    title.zh: 虚影背景色（第二层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ghost-size-2
+    title: Ghost halo size (2th level)
+    title.zh: 虚影光环大小（第二层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ghost-offset-x-2
+    title: Ghost offset X (2th level)
+    title.zh: 虚影水平偏移（第二层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ghost-offset-y-2
+    title: Ghost offset Y (2th level)
+    title.zh: 虚影垂直偏移（第二层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: ul-level-3
+    title: 3th level
+    title.zh: 第三层级
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: list-ul-marker-3
+    title: List symbol (3th level)
+    title.zh: 符号（第三层级）
+    type: variable-text
+    default: '"\25AA"'
+  -
+    id: list-ul-marker-size-3
+    title: Bullet size (3th level)
+    title.zh: 符号大小（第三层级）
+    type: variable-text
+    default: 1em
+  -
+    id: list-ul-marker-color-3
+    title: Bullet color (3th level)
+    title.zh: 符号颜色（第三层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ghost-color-3
+    title: Ghost background color (3th level)
+    title.zh: 虚影背景色（第三层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ghost-size-3
+    title: Ghost halo size (3th level)
+    title.zh: 虚影光环大小（第三层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ghost-offset-x-3
+    title: Ghost offset X (3th level)
+    title.zh: 虚影水平偏移（第三层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ghost-offset-y-3
+    title: Ghost offset Y (3th level)
+    title.zh: 虚影垂直偏移（第三层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: ul-level-4
+    title: 4th level
+    title.zh: 第四层级
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: list-ul-marker-4
+    title: List symbol (4th level)
+    title.zh: 符号（第四层级）
+    type: variable-text
+    default: '"\25E6"'
+  -
+    id: list-ul-marker-size-4
+    title: Bullet size (4th level)
+    title.zh: 符号大小（第四层级）
+    type: variable-text
+    default: 1em
+  -
+    id: list-ul-marker-color-4
+    title: Bullet color (4th level)
+    title.zh: 符号颜色（第四层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ghost-color-4
+    title: Ghost background color (4th level)
+    title.zh: 虚影背景色（第四层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ghost-size-4
+    title: Ghost halo size (4th level)
+    title.zh: 虚影光环大小（第四层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ghost-offset-x-4
+    title: Ghost offset X (4th level)
+    title.zh: 虚影水平偏移（第四层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ghost-offset-y-4
+    title: Ghost offset Y (4th level)
+    title.zh: 虚影垂直偏移（第四层级）
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+*/
+
+
+/* 默认值：即使未安装 Style Settings 也能正常显示 */
+:root {
+  --list-ul-marker-1: '\2022';
+  --list-ul-marker-2: '\25E6';
+  --list-ul-marker-3: '\25AA';
+  --list-ul-marker-4: '\25E6';
+  --list-ul-marker-size-1: 1em;
+  --list-ul-marker-size-2: 1em;
+  --list-ul-marker-size-3: 1em;
+  --list-ul-marker-size-4: 1em;
+  /* 符号左右调整：右内边距与左外边距互为相反数，单变量驱动（Style Settings 接口） */
+  --list-bullet-h-adjust: 2px;
+  /* 虚影：各层独立；默认 0 = 圆盘恰为 1em、无偏移，背景色跟随主题 */
+  --list-ghost-color-1: var(--background-modifier-hover);
+  --list-ghost-color-2: var(--background-modifier-hover);
+  --list-ghost-color-3: var(--background-modifier-hover);
+  --list-ghost-color-4: var(--background-modifier-hover);
+  --list-ghost-size-1: 0em;
+  --list-ghost-size-2: 0em;
+  --list-ghost-size-3: 0em;
+  --list-ghost-size-4: 0em;
+  --list-ghost-offset-x-1: 0em;
+  --list-ghost-offset-x-2: 0em;
+  --list-ghost-offset-x-3: 0em;
+  --list-ghost-offset-x-4: 0em;
+  --list-ghost-offset-y-1: 0em;
+  --list-ghost-offset-y-2: 0em;
+  --list-ghost-offset-y-3: 0em;
+  --list-ghost-offset-y-4: 0em;
+}
+/* 左右调整无序列表符号：右内边距与左外边距互为相反数，由同一变量驱动；
+   逻辑属性在 RTL 布局下自动镜像，与文件其余部分（padding-inline-end 等）一致 */
+.list-bullet {
+  padding-inline-end: var(--list-bullet-h-adjust, 2px);
+  margin-inline-start: calc(var(--list-bullet-h-adjust, 2px) * -1);
+}
+
+/* ==========================================================================
+   无序列表符号（从 Blue Topaz 主题 2.3.2.1.2 剥离，始终生效）
+   视觉方案：::before = 虚影圆盘（悬停/折叠时直接浮现，无动画）
+            ::after  = 符号（叠在圆盘之上）
+   层级判定（不依赖 .has-list-bullet 类，按 DOM 树深度）：
+     阅读视图用 ul/li 子链（app.css:7178 证实 li 直接包含 ul）；
+     编辑视图用 CodeMirror 的 HyperMD-list-line-N 行类。
+   基础规则即"第 4 层兜底"（与 Blue Topaz 行为一致），层级特异性覆盖。
+   虚影颜色/大小/偏移全部按层独立（无全局设置）。
+   ========================================================================== */
+
+/* --- 基础几何：全部伪元素显式定位，几何中心 = 符号点 ------------------ */
+.markdown-rendered .list-bullet::before,
+.markdown-rendered .list-bullet::after,
+.markdown-source-view.mod-cm6 .list-bullet::before,
+.markdown-source-view.mod-cm6 .list-bullet::after {
+  top: 50% !important;
+  left: 50% !important;
+  position: absolute !important;
+  pointer-events: none !important;
+}
+
+/* ==========================================================================
+   修复：阅读视图 .list-bullet 几何塌缩（Obsidian 1.12.x 默认 CSS 重构后，
+   .list-bullet 无显式宽高，其 ::before/::after 均被上方规则置为 absolute，
+   弹性容器无在流内容 → 0×0 盒子，left/top 50% 中心落到左上角，符号上偏）。
+   恢复一行行高，使 50% 中心 = 首行文本中心；宽度保持 0 以避免浮动挤压首行文本。
+   ========================================================================== */
+.markdown-rendered ul > li .list-bullet {
+  width: 0 !important;
+  height: calc(var(--line-height-normal) * 1em) !important;
+}
+
+/* 圆盘 ::before：尺寸由各层 --ghost-disk-size-current 驱动（负值 = 圆盘收缩） */
+.markdown-rendered .list-bullet::before,
+.markdown-source-view.mod-cm6 .list-bullet::before {
+  width: var(--ghost-disk-size-current, 1em) !important;
+  height: var(--ghost-disk-size-current, 1em) !important;
+  margin: calc(var(--ghost-disk-size-current, 1em) * -0.5) 0 0 calc(var(--ghost-disk-size-current, 1em) * -0.5) !important;
+}
+
+/* 符号 ::after：固定 1em 盒 */
+.markdown-rendered .list-bullet::after,
+.markdown-source-view.mod-cm6 .list-bullet::after {
+  width: 1em !important;
+  height: 1em !important;
+  margin: -0.5em 0 0 -0.5em !important;
+}
+
+/* --- 圆盘（虚影）基础：也是第 4 层的兜底定义 --------------------------- */
+.markdown-rendered .list-bullet::before,
+.markdown-source-view.mod-cm6 .list-bullet::before {
+  content: '' !important;
+  background-color: var(--ghost-color-current, var(--background-modifier-hover)) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  transform: translate(var(--ghost-offset-x-current, 0em), var(--ghost-offset-y-current, 0em)) scale(0) !important;
+  font-size: var(--list-ul-marker-size-4);
+  /* 基础即第 4 层兜底：局部变量按层解析，层级规则覆盖 */
+  --ghost-size-current: var(--list-ghost-size-4, 0em);
+  --ghost-offset-x-current: var(--list-ghost-offset-x-4, 0em);
+  --ghost-offset-y-current: var(--list-ghost-offset-y-4, 0em);
+  --ghost-color-current: var(--list-ghost-color-4, var(--background-modifier-hover));
+  --ghost-disk-size-current: calc(1em + var(--ghost-size-current, 0em) * 2);
+}
+
+/* --- 符号基础（= 第 4 层兜底）：清场 + 默认符号 ------------------------- */
+.markdown-rendered .list-bullet::after,
+.markdown-source-view.mod-cm6 .list-bullet::after {
+  content: var(--list-ul-marker-4);
+  font-size: var(--list-ul-marker-size-4);
+  color: var(--list-ul-marker-color-4, var(--list-marker-color));
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+}
+
+/* ==========================================================================
+   第 1 层：符号 + 圆盘共享字号，各层虚影颜色/大小/偏移独立
+   ========================================================================== */
+.markdown-rendered ul>li .list-bullet::before,
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-1 .list-bullet::before {
+  font-size: var(--list-ul-marker-size-1);
+  --ghost-size-current: var(--list-ghost-size-1, 0em);
+  --ghost-offset-x-current: var(--list-ghost-offset-x-1, 0em);
+  --ghost-offset-y-current: var(--list-ghost-offset-y-1, 0em);
+  --ghost-color-current: var(--list-ghost-color-1, var(--background-modifier-hover));
+  --ghost-disk-size-current: calc(1em + var(--ghost-size-current, 0em) * 2);
+}
+
+.markdown-rendered ul>li .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-1 .list-bullet::after {
+  content: var(--list-ul-marker-1);
+  font-size: var(--list-ul-marker-size-1);
+  color: var(--list-ul-marker-color-1, var(--list-marker-color));
+}
+
+/* --- 第 2 层 ---------------------------------------------------------- */
+.markdown-rendered ul>li>ul>li .list-bullet::before,
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-2 .list-bullet::before {
+  font-size: var(--list-ul-marker-size-2);
+  --ghost-size-current: var(--list-ghost-size-2, 0em);
+  --ghost-offset-x-current: var(--list-ghost-offset-x-2, 0em);
+  --ghost-offset-y-current: var(--list-ghost-offset-y-2, 0em);
+  --ghost-color-current: var(--list-ghost-color-2, var(--background-modifier-hover));
+  --ghost-disk-size-current: calc(1em + var(--ghost-size-current, 0em) * 2);
+}
+
+.markdown-rendered ul>li>ul>li .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-2 .list-bullet::after {
+  content: var(--list-ul-marker-2);
+  font-size: var(--list-ul-marker-size-2);
+  color: var(--list-ul-marker-color-2, var(--list-marker-color));
+}
+
+/* --- 第 3 层 ---------------------------------------------------------- */
+.markdown-rendered ul>li>ul>li>ul>li .list-bullet::before,
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-3 .list-bullet::before {
+  font-size: var(--list-ul-marker-size-3);
+  --ghost-size-current: var(--list-ghost-size-3, 0em);
+  --ghost-offset-x-current: var(--list-ghost-offset-x-3, 0em);
+  --ghost-offset-y-current: var(--list-ghost-offset-y-3, 0em);
+  --ghost-color-current: var(--list-ghost-color-3, var(--background-modifier-hover));
+  --ghost-disk-size-current: calc(1em + var(--ghost-size-current, 0em) * 2);
+}
+
+.markdown-rendered ul>li>ul>li>ul>li .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-3 .list-bullet::after {
+  content: var(--list-ul-marker-3);
+  font-size: var(--list-ul-marker-size-3);
+  color: var(--list-ul-marker-color-3, var(--list-marker-color));
+}
+
+/* --- 第 4 层：四层嵌套链（5+ 层同样命中，逐层递减） --------------------- */
+.markdown-rendered ul>li>ul>li>ul>li>ul>li .list-bullet::before,
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-4 .list-bullet::before {
+  font-size: var(--list-ul-marker-size-4);
+  --ghost-size-current: var(--list-ghost-size-4, 0em);
+  --ghost-offset-x-current: var(--list-ghost-offset-x-4, 0em);
+  --ghost-offset-y-current: var(--list-ghost-offset-y-4, 0em);
+  --ghost-color-current: var(--list-ghost-color-4, var(--background-modifier-hover));
+  --ghost-disk-size-current: calc(1em + var(--ghost-size-current, 0em) * 2);
+}
+
+.markdown-rendered ul>li>ul>li>ul>li>ul>li .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-4 .list-bullet::after {
+  content: var(--list-ul-marker-4);
+  font-size: var(--list-ul-marker-size-4);
+  color: var(--list-ul-marker-color-4, var(--list-marker-color));
+}
+
+/* ==========================================================================
+   虚影浮现：圆盘 scale(0→1) 瞬时切换，悬停/折叠时直接完整显示
+   仅"有可折叠内容"的列表项出现（.list-collapse-indicator / .cm-fold-indicator
+   悬停触发；折叠态由 .is-collapsed 固定显示为背景色）。点击折叠为原生行为。
+   所有 transform 均保留各层偏移校正，状态切换时虚影中心一致。
+   ========================================================================== */
+
+/* --- 悬停（仅可折叠项）------------------------------------------------ */
+@media (hover: hover) {
+
+  .list-collapse-indicator:hover~.list-bullet:before,
+  .cm-fold-indicator:hover~.list-bullet:before,
+  .list-collapse-indicator:hover~.cm-formatting-list .list-bullet:before,
+  .cm-fold-indicator:hover~.cm-formatting-list .list-bullet:before {
+    transform: translate(var(--ghost-offset-x-current, 0em), var(--ghost-offset-y-current, 0em)) scale(1) !important;
+  }
+}
+
+/* --- 折叠：虚影固定（常驻）-------------------------------------------- */
+li.is-collapsed .list-bullet:before,
+.is-collapsed~.cm-formatting-list .list-bullet:before {
+  transform: translate(var(--ghost-offset-x-current, 0em), var(--ghost-offset-y-current, 0em)) scale(1) !important;
+}
+
+/* --- 折叠 + 悬停：保持同一背景色，不换色 ------------------------------- */
+li.is-collapsed .list-collapse-indicator:hover~.list-bullet:before,
+li.is-collapsed .cm-fold-indicator:hover~.list-bullet:before,
+.list-collapse-indicator:hover.is-collapsed~.list-bullet:before,
+.cm-fold-indicator:hover.is-collapsed~.list-bullet:before,
+li.is-collapsed .list-collapse-indicator:hover~.cm-formatting-list .list-bullet:before,
+li.is-collapsed .cm-fold-indicator:hover~.cm-formatting-list .list-bullet:before,
+.list-collapse-indicator:hover.is-collapsed~.cm-formatting-list .list-bullet:before,
+.cm-fold-indicator:hover.is-collapsed~.cm-formatting-list .list-bullet:before {
+  transform: translate(var(--ghost-offset-x-current, 0em), var(--ghost-offset-y-current, 0em)) scale(1) !important;
+}
+
+/* ==========================================================================
+   活动行列表折叠增强（纯 CSS 片段版，源自 MDRazor 2.5.3「光标行列表符号折叠」）
+   --------------------------------------------------------------------------
+   Obsidian 原生规则（app.css）通过 :not(.cm-active) 把「光标所在行」的折叠
+   指示器压缩为 0 尺寸（原作者注释：only allow this if line is not active,
+   so that it's still editable），导致活动行悬停不出虚影、点击列表符号无法
+   折叠/展开。折叠的鼠标处理器本身无活动行守卫，恢复指示器几何即可让
+   「悬停虚影 + 点击折叠」在活动行原生回归。
+   --------------------------------------------------------------------------
+   说明：
+   · 与 MDRazor 插件设置「光标行列表符号折叠」等效；两者同时启用无冲突
+     （声明完全相同；插件版受 body.mdrazor-fold-active-line 开关类控制，
+     片段版无条件生效）。
+   · 任务行（.HyperMD-task-line）与原生规则保持一致，排除在外。
+   · 特异性 9 类（0,9,0）> 原生 7 类（0,7,0），且片段加载顺序在后，保证覆盖。
+   ========================================================================== */
+.markdown-source-view.mod-cm6.is-live-preview .cm-line.HyperMD-list-line.cm-active:not(.HyperMD-task-line) .cm-fold-indicator .collapse-indicator {
+  padding-inline-end: var(--list-bullet-end-padding);
+  inset-inline-end: calc(var(--list-bullet-end-padding) * -1);
+}
+
+.markdown-source-view.mod-cm6 .task-list-label .task-list-item-checkbox {
+  margin-inline-start: var(--checkbox-margin-inline-start);
+  margin-inline-end: -0.3em;
+}
+
+/* 阅读模式标题箭头下沉避让标题标识 */
+.markdown-preview-view .heading-collapse-indicator {
+  padding-top: 8px;
+}
+/* #endregion */
+
+
+/* ============================================================
+ * 吞并片段 第 2 层：Custom（源自 CSS 片段 Custom.css）
+ * ------------------------------------------------------------
+ * 独立性：携带自己的 Style Settings 面板（name: Ethereal 自定义 /
+ * id: custom-snippet），与顶层「Ethereal 官方变量」面板完全独立；
+ * 面板 id 沿用片段原 id，Style Settings 中已有自定义值
+ * （custom-snippet@@…）继续生效。
+ * 原片段文件 Custom.css 可在 Obsidian 外观设置中停用，效果与本层一致。
+ * 注：本层引用的部分变量（--theme-color、--theme-color-translucent-04、
+ * --letter-space-main、--font-family-em、--font-style-em）在本主题中
+ * 无定义，相关规则按无效值静默忽略，与片段启用时行为一致。
+ * ============================================================ */
+
+/* #region 吞并片段·Custom */
+  /* @settings
+name: Ethereal 自定义
+id: custom-snippet
+settings:
+  -
+    id: hd-typography
+    title: '排版 Typography'
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: file-line-width
+    title: Line width (in the mode of 'readable line length')
+    title.zh: 行宽（缩减栏宽模式下）
+    description: The maximum line width in rem units (1rem = Body font size)
+    type: variable-number
+    default: 45
+    format: rem
+  -
+    id: line-height-main
+    title: Line height
+    title.zh: 行间距
+    type: variable-number
+    default: 1.8
+  -
+    id: activeline-highlight
+    title: Active line highlight
+    title.zh: 当前行高亮
+    description: 为当前行添加背景色
+    type: class-toggle
+    default: true
+  -
+    id: header-titile-shadow
+    title: Header titile shadow
+    title.zh: 标签页标题栏阴影
+    description: 为当前标签页的标题栏下添加阴影
+    type: class-toggle
+    default: true
+  -
+    id: inline-titile-center
+    title: Inline-titile-center
+    title.zh: 页面内标题居中
+    description: 预览模式和阅读模式下，页面内大标题居中
+    type: class-toggle
+    default: true
+  -
+    id: hide-fold-placeholder
+    title: Hide fold placeholder
+    title.zh: 隐藏标题后的省略号
+    description: 隐藏标题被折叠后的…
+    type: class-toggle
+    default: true
+  -
+    id: disable-embedded-backlinks
+    title: 隐藏文末链接栏
+    description: 开启后隐藏文档底部反向链接
+    type: class-toggle
+    default: false
+  -
+    id: disable-caret-blink
+    title: 光标常亮
+    description: 开启后，编辑器中的文字输入光标将停止闪烁（注：受限于Electron内核，部分环境可能无效）
+    type: class-toggle
+    default: true
+*/
+
+body {
+  --file-line-width: 45rem;
+  --theme-color-translucent-005: hsla(var(--color-accent-hsl),0.05);
+  --activeline-background: var(--theme-color-translucent-005);
+  --line-height-main: 1.5;
+}
+
+/* 行宽（缩减栏宽模式下） */
+:is(.markdown-preview-view,.markdown-rendered).is-readable-line-width:not(.matrix) .markdown-preview-sizer,
+.markdown-source-view.is-readable-line-width:not(.matrix) .CodeMirror,
+:is(.markdown-preview-view,.markdown-rendered):not(.matrix) .is-readable-line-width :is(.markdown-preview-section,.markdown-rendered),
+:is(.markdown-preview-view,.markdown-rendered):not(.matrix) .is-readable-line-width :is(.markdown-preview-section,.markdown-rendered) > div,
+:is(.markdown-preview-view,.markdown-rendered).is-readable-line-width:not(.matrix) :is(.markdown-preview-section,.markdown-rendered) {
+  width: var(--file-line-width);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* 行高 */
+:is(.markdown-preview-view,.markdown-rendered).is-readable-line-width :is(.markdown-preview-section,.markdown-rendered),
+.markdown-source-view.is-readable-line-width .CodeMirror,
+:is(.markdown-preview-view,.markdown-rendered).is-readable-line-width .markdown-preview-sizer,
+:is(.markdown-preview-view,.markdown-rendered) :is(.markdown-preview-section,.markdown-rendered),
+.markdown-source-view .CodeMirror,
+:is(.markdown-preview-view,.markdown-rendered) .markdown-preview-sizer,
+.markdown-source-view.mod-cm6 .cm-scroller,
+.cm-s-obsidian.is-folding.is-readable-line-width .markdown-reading-view {
+  line-height: var(--line-height-main);
+  letter-spacing: calc(var(--letter-space-main) * 0.03em);
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* 当前行高亮（仅编辑器聚焦时显示，失焦自动取消）
+Obsidian 当前行实际带的行装饰类：.cm-active（Obsidian 自定义）与 .cm-activeLine（CM6 标准），两者都兼容；
+由 Style Settings 开关 activeline-highlight 门控（body.activeline-highlight）。
+兼容性按主题发布标准（与 MDRazor styles.css 当前行高亮同源）：
+  - 变量带 fallback（--activeline-background 未定义时回退等价色 hsla(accent,0.05)）
+  - 覆盖 CM5 变体（.CodeMirror-activeline 等，旧版 Obsidian 兼容） */
+body.activeline-highlight .cm-fat-cursor .CodeMirror-activeline .CodeMirror-linebackground,
+body.activeline-highlight .CodeMirror-activeline-background.CodeMirror-linebackground,
+body.activeline-highlight .markdown-source-view.mod-cm6 .cm-editor.cm-focused .cm-line:is(.cm-active, .cm-activeLine) {
+  background-color: var(--activeline-background, hsla(var(--color-accent-hsl), 0.05)) !important;
+  border-radius: 8px;
+  box-shadow: 0 0 0 22px var(--activeline-background, hsla(var(--color-accent-hsl), 0.05));
+  clip-path: inset(0px -22px 0px -22px round 8px);
+}
+
+/* 编辑器失焦（如点击侧边栏）时清除当前行高亮 */
+body.activeline-highlight .markdown-source-view.mod-cm6 .cm-editor:not(.cm-focused) .cm-line:is(.cm-active, .cm-activeLine) {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  clip-path: none !important;
+}
+
+/* 当前标签页标题栏下阴影 */
+body.header-titile-shadow .workspace-split.mod-vertical.mod-root .view-content {
+  box-shadow: inset 0 6px 6px -6px rgba(0, 0, 0, 0.2);
+}
+
+/* 高亮文本highlight */
+:is(.markdown-preview-view, .markdown-rendered) mark,
+.cm-s-obsidian span.cm-highlight {
+  background-color: transparent !important;
+  background-image: linear-gradient(var(--text-highlight-bg, yellow), var(--text-highlight-bg, yellow)) !important;
+  background-size: 100% 85% !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  border-radius: 16px !important;
+  box-decoration-break: clone !important;
+  -webkit-box-decoration-break: clone !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+  margin-left: -4px !important;
+  margin-right: -4px !important;
+}
+
+/* #region =========================VS Code布局-开始========================= */
+/* 隐藏功能区边界 */
+.workspace-ribbon.side-dock-ribbon.mod-left {
+  border-right: 0px;
+}
+/* 文件列表顶部圆角、仓库底部圆角、中间分界线、背景颜色 */
+div.workspace-split.mod-horizontal.mod-sidedock.mod-left-split>div.workspace-tabs.mod-top.mod-top-left-space>div.workspace-tab-container {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px 8px 0px 0px;
+  border-bottom: 0px;
+  margin: 0px;
+}
+body:not(.is-mobile) .workspace-split.mod-left-split .workspace-sidedock-vault-profile {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 0px 0px 8px 8px;
+  border-top: 0px;
+  background-color: var(--background-secondary-alt);
+}
+.workspace-tabs .workspace-leaf {
+  background-color: var(--background-secondary-alt);
+}
+
+/* 工作区布局、右边栏工作区布局圆角、边框和间隙，工作区分割线透明 */
+.workspace-tab-container {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  margin: 0px 0px 0px 5px;
+}
+div.workspace-tabs.mod-top.mod-top-right-space>div.workspace-tab-container {
+  margin: 0px 10px 0px 5px;
+}
+.workspace-split.mod-vertical>*>.workspace-leaf-resize-handle,
+.workspace-split.mod-left-split>.workspace-leaf-resize-handle,
+.workspace-split.mod-right-split>.workspace-leaf-resize-handle {
+  border-inline-end-style: none;
+  border-inline-end-width: var(--divider-width);
+  border-color: transparent;
+}
+
+/* 隐藏标签页底部小凹角、原标签页标签阴影，用内部阴影取代 */
+.workspace-split.mod-root .workspace-tab-header-container .workspace-tab-header.is-active::before, 
+.workspace-split.mod-root .workspace-tab-header-container .workspace-tab-header.is-active::after, 
+.workspace-tab-header-container .workspace-tab-header.is-active {
+  box-shadow: none;
+  background-color: transparent;
+}
+div.workspace-tab-header.tappable.is-active>div.workspace-tab-header-inner {
+  background-color: var(--background-modifier-border);
+}
+/* 标签页标签上边距 */
+.workspace-tab-header-container-inner {
+  margin: 6px -5px calc(var(--tab-outline-width) * -1);
+}
+/* 标签页关闭按钮常驻显示（默认仅悬停标签页时出现；!important 用于压过
+  Obsidian 内置的 display:none 规则，包括标签页过窄时的容器查询规则） */
+.workspace .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header .workspace-tab-header-inner-close-button {
+  display: flex !important;
+}
+/* 非活动标签页关闭按钮的悬停底色（内置样式只给活动标签页定义了悬停底色） */
+@media (hover: hover) {
+  .workspace .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header:not(.is-active) .workspace-tab-header-inner-close-button:hover {
+    background-color: var(--background-modifier-hover);
+  }
+}
+/* #endregion =========================VS Code布局-结束========================= */
+
+
+/* 状态栏 */
+.status-bar {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+/* #region =========================目录区-开始========================= */
+.nav-files-container {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+.nav-folder-title-content {
+  font-weight: 500;
+}
+.tree-item-self {
+  align-items: center;
+}
+
+/* 一级目录 */
+.nav-files-container>.tree-item.nav-folder>.tree-item-self.is-clickable.nav-folder-title:not(.tree-item-children),
+.nav-files-container>div>.tree-item.nav-folder>.nav-folder-title.mod-collapsible {
+  background-color: var(--background-secondary);
+  border-radius: var(--nav-item-radius);
+}
+/* 选中项外边框 */
+body:not(.is-phone) .workspace-leaf.mod-active .tree-item-self.has-focus {
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+@media (hover: hover) {
+  body:not(.is-grabbing) .tree-item-self.nav-folder-title.is-clickable.mod-collapsible:hover {
+    color: var(--nav-item-color-hover);
+    background-color: var(--nav-item-background-hover);
+    font-weight: var(--nav-item-weight-hover);
+  }
+}
+
+/* 一级目录缩进 */
+.tree-item-children.nav-folder-children:not(.tree-item-children .tree-item-children) {
+  margin-left: 0px !important;
+  border-inline-start: 0px;
+}
+
+/* 二级目录 */
+.mod-left-split .nav-folder-children>.tree-item:nth-child(n+2) .nav-folder-title.mod-collapsible {
+  justify-content: start;
+}
+
+/* 目录项 */
+.workspace-leaf-content[data-type="file-explorer"] .nav-file-title {
+  padding: 3px 0px 3px 8px;
+}
+
+/* 隐藏目录滚动条 */
+.nav-files-container.node-insert-event.show-unsupported::-webkit-scrollbar,
+.vertical-tab-header::-webkit-scrollbar {
+  display: none;
+}
+/* #endregion =========================目录区-结束========================= */
+
+/* 平替原生：标题上方紧挨着另一个标题且中间只有一个空行，就强行把这多余的顶部间距去掉，避免间距过宽。 */
+.cm-s-obsidian .cm-line.HyperMD-header + .cm-line:not(.HyperMD-header):has(>br:only-child) + .cm-line.HyperMD-header {
+  padding-top: var(--p-spacing);
+  margin-top: calc(var(--p-spacing) * -1) !important;
+}
+
+/* 隐藏折叠标题后的… */
+body.hide-fold-placeholder .cm-foldPlaceholder {
+  display: none;
+}
+
+/* 文档大标题居中 */
+body.inline-titile-center .inline-title {
+  align-self: center;
+  text-align: center;
+}
+
+/* 禁用光标闪烁，让光标保持常亮 */
+body.disable-caret-blink * {
+  caret-animation: manual !important;
+}
+
+/* 隐藏文末链接栏 */
+body.disable-embedded-backlinks .embedded-backlinks {
+  display: none;
+}
+
+/* 引用框背景 */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote {
+  border-left: 1px solid var(--theme-color-translucent-04);
+  border-color: var(--theme-color);
+  background-color: hsla(var(--interactive-accent-hsl), 0.05);
+}
+
+/* 引用框背景 */
+body.color-scheme-options-topaz-nord .theme-light,
+body.color-scheme-options-topaz-nord.theme-light {
+  --background-blockquote: hsla(var(--interactive-accent-hsl), 0.05);
+  /* --background-blockquote: #e2e1e4; */
+}
+
+/* 引用框文本 */
+body.blockquote-style-border-left :is(.markdown-preview-view, .markdown-rendered) blockquote {
+  border-left: 3px solid var(--theme-color-translucent-04);
+  background-color: hsla(var(--interactive-accent-hsl), 0.05);
+  border-radius: 0;
+}
+
+.cm-quote:not([class*="link"]):not([class*="string"]):not([class*="em"]):not([class*="strong"]) {
+  font-family: 'Segoe UI', 'Cambria Math', '华光敦韵宋_CNKI', var(--font-default);
+  font-weight: normal;
+}
+
+:is(.markdown-preview-view, .markdown-rendered) blockquote p {
+  font-family: 'Segoe UI', 'Cambria Math', '华光敦韵宋_CNKI', var(--font-default);
+  font-weight: normal;
+}
+
+/* 编辑、阅读模式下的内链样式 */
+.cm-wiki-link,
+.markdown-source-view.mod-cm6 .cm-wiki-link,
+.cm-s-obsidian span.cm-hmd-internal-link,
+.markdown-preview-view .internal-link {
+  font-family: "Segoe UI", "Cambria Math", "梦源宋体 CN" !important;
+  font-weight: normal;
+  font-size: calc(var(--font-text-size) * var(--internal-link-scale));
+  /* 关键：使用负边距抵消高度增加 */
+  margin-top: -0.1em !important;
+  margin-bottom: -0.1em !important;
+  line-height: 1 !important;
+  vertical-align: baseline !important;
+  display: inline-block !important;
+  /* 防止缩放影响布局 */
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.cm-s-obsidian span.cm-hmd-internal-link:hover,
+.markdown-source-view.mod-cm6 .cm-hmd-internal-link .cm-underline,
+.markdown-source-view.mod-cm6 .cm-hmd-internal-link .cm-underline:hover {
+  text-decoration-line: none;
+  cursor: default;
+}
+
+/* 设置行内代码的字体粗细为常规 */
+/* .cm-content .cm-inline-code {
+  font-weight: normal !important;
+} */
+
+/* 斜体、内链、行内代码块缩放比例 */
+:root {
+  --italic-scale: 0.8;
+  --internal-link-scale: 1;
+  --internal-blockquote-scale: 1.1;
+}
+
+/* 应用到所有斜体 */
+.cm-em,
+.markdown-preview-view em {
+  font-size: calc(var(--font-text-size) * var(--italic-scale)) !important;
+}
+
+/* 斜体字体样式 */
+span.cm-em,
+span.cm-em.cm-highlight,
+span.cm-em.cm-quote,
+span.cm-em.cm-highlight.cm-quote,
+:is(.markdown-preview-view, .markdown-rendered) :not(font):not(strong)>em,
+:is(.markdown-preview-view, .markdown-rendered) em>mark {
+  font-family: var(--font-family-em);
+  font-style: var(--font-style-em);
+  font-weight: normal;
+  /* letter-spacing:calc(var(--letter-space-main) * 0.3em); */
+  /* font-size: calc(var(--font-text-size) + 0.047em); */
+}
+
+/* 两端对齐 */
+:is(.markdown-preview-view, .markdown-rendered, .markdown-source-view.mod-cm6) div.cm-line:not(.HyperMD-header) {
+  text-align: justify;
+  hyphens: auto;
+}
+
+/* #region 阅读模式标题左侧指示标签（H1-H6） */
+body:not(.remove-heading-indicator) :is(.markdown-preview-view,.markdown-rendered) :is(h1,h2,h3,h4,h5,h6) {
+  position: relative;
+}
+/* 阅读视图标题左侧指示标签（H1-H6） */
+body:not(.remove-heading-indicator) :is(.markdown-preview-view,.markdown-rendered) :is(h1,h2,h3,h4,h5,h6)::before {
+  position: absolute;
+  font-size: 0.4rem;
+  width: auto;
+  margin-left: -20px;
+  border: 1px solid var(--text-muted);
+  padding: 0px 3px;
+  border-radius: var(--radius-s, 3px);
+  bottom: 70%;
+  transform: translateY(50%);
+  background-color: var(--background-primary);
+  color: var(--text-muted);
+  z-index: 1;
+  pointer-events: none;
+}
+
+body:not(.remove-heading-indicator) :is(.markdown-preview-view,.markdown-rendered) h1::before { content: 'H1'; }
+body:not(.remove-heading-indicator) :is(.markdown-preview-view,.markdown-rendered) h2::before { content: 'H2'; }
+body:not(.remove-heading-indicator) :is(.markdown-preview-view,.markdown-rendered) h3::before { content: 'H3'; }
+body:not(.remove-heading-indicator) :is(.markdown-preview-view,.markdown-rendered) h4::before { content: 'H4'; }
+body:not(.remove-heading-indicator) :is(.markdown-preview-view,.markdown-rendered) h5::before { content: 'H5'; }
+body:not(.remove-heading-indicator) :is(.markdown-preview-view,.markdown-rendered) h6::before { content: 'H6'; }
+
+/* 编辑模式标题左侧指示标签（H1-H6）
+   兄弟守卫 :not(… ~ …)：Obsidian 会把标题末尾的「两个空格+换行」渲染为额外两个
+   同样带 cm-header-N 的兄弟 span（cm-trailing-space-a、cm-trailing-space-new-line），
+   光标所在标题行还会显示带 cm-header-N 的标记 span（cm-formatting-header）；
+   守卫保证同一行只会给「第一个」cm-header-N span 画标签，防止重复指示标签 */
+body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line :is(.cm-header-1,.cm-header-2,.cm-header-3,.cm-header-4,.cm-header-5,.cm-header-6):not(:is(.cm-header-1,.cm-header-2,.cm-header-3,.cm-header-4,.cm-header-5,.cm-header-6) ~ :is(.cm-header-1,.cm-header-2,.cm-header-3,.cm-header-4,.cm-header-5,.cm-header-6))::before {
+  position: absolute;
+  font-size: 0.4rem;
+  width: auto;
+  margin-left: -20px;
+  border: 1px solid var(--text-muted);
+  padding: 0px 3px;
+  border-radius: var(--radius-s, 3px);
+  bottom: 60%;
+  transform: translateY(50%);
+  background-color: var(--background-primary);
+  color: var(--text-muted);
+  z-index: 1;
+  pointer-events: none;
+}
+
+body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-1:not(.cm-header-1 ~ .cm-header-1)::before { content: 'H1'; }
+body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-2:not(.cm-header-2 ~ .cm-header-2)::before { content: 'H2'; }
+body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-3:not(.cm-header-3 ~ .cm-header-3)::before { content: 'H3'; }
+body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-4:not(.cm-header-4 ~ .cm-header-4)::before { content: 'H4'; }
+body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-5:not(.cm-header-5 ~ .cm-header-5)::before { content: 'H5'; }
+body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-6:not(.cm-header-6 ~ .cm-header-6)::before { content: 'H6'; }
+/* #endregion */
+/* #endregion */
