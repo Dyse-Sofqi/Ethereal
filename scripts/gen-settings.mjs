@@ -1,10 +1,18 @@
 // Generate Ethereal theme.css @settings block from Obsidian 1.13.7 app.css
 // Runs: node gen-settings.mjs <appcss path> <output css path>
+// Theme default overrides: scripts/defaults.json (var name → default value)
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { zhName } from "./zh-translations.mjs";
 
 const appCssPath = process.argv[2];
 const outPath = process.argv[3];
+
+// Theme default overrides (official-variable layer). key = var name (no -- prefix);
+// string = same value both modes; {light,dark} = per-mode overrides (absent side stays official).
+const overridesPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "defaults.json");
+const overrides = fs.existsSync(overridesPath) ? JSON.parse(fs.readFileSync(overridesPath, "utf8")) : {};
 
 const css = fs.readFileSync(appCssPath, "utf8");
 const lines = css.split("\n");
@@ -200,6 +208,19 @@ for (const v of vars) {
   const defaultVal = type === "themed"
     ? { light: normColor(v.light ?? v.body ?? v.dark), dark: normColor(v.dark ?? v.light ?? v.body) }
     : (v.dark ?? v.body ?? v.light) ?? "";
+  // apply theme default overrides (scripts/defaults.json)
+  const ov = overrides[v.name];
+  if (ov !== undefined) {
+    if (type === "themed") {
+      if (typeof ov === "string") { defaultVal.light = ov; defaultVal.dark = ov; }
+      else {
+        if (typeof ov.light === "string") defaultVal.light = ov.light;
+        if (typeof ov.dark === "string") defaultVal.dark = ov.dark;
+      }
+    } else if (typeof ov === "string") {
+      defaultVal = ov;
+    }
+  }
   items.push({ v, c, type, defaultVal, d: descOf(v, type) });
 }
 
@@ -214,18 +235,51 @@ for (const it of items) (catGroups[it.c.group] ||= []).push(it);
 
 // ---------- emit ----------
 const out = [];
+const ovCount = Object.keys(overrides).length;
 out.push(`/*
  * Ethereal — Obsidian 官方 CSS 变量面板
  * 说明：本主题完全基于 Obsidian 原生主题（零覆盖），仅通过 Style Settings 暴露
- * Obsidian 官方 CSS 变量（基于 Obsidian 1.13.7 app.css 提取，共 ${vars.length} 个变量）。
+ * Obsidian 官方 CSS 变量（基于 Obsidian 1.13.7 app.css 提取，共 ${vars.length} 个变量；
+ * 其中常用 ${MOVED_TO_CUSTOM.size} 项已移至「Ethereal 定制」面板（带 ◉ 标识，生成时跳过）。
  * 使用方式：
  *  1. 安装并启用 Style Settings 插件（社区插件）
  *  2. 在 外观 → 主题 中选择 Ethereal 后，打开 设置 → 外观 → 样式设置
  *  3. 分组默认折叠，按需展开；每项默认值 = 官方默认值，修改即覆盖，重置按钮可恢复
  * 注意：所有设置项 id 与官方 CSS 变量同名（不含 -- 前缀），
  *       变量被修改后会注入 body.css-settings-manager，优先级高于官方默认。
- */`);
+${ovCount ? ` * 注：其中 ${ovCount} 个变量的主题默认值已自定义（见「主题默认值（官方变量层）」区域，数据源 scripts/defaults.json）。\n` : ""} */`);
 
+// 已移至「Ethereal 定制」面板的官方变量（定制面板为唯一入口，生成时跳过，避免重复）
+// 数据源：scripts/moved-to-custom.mjs 同名单 —— 仅此处维护
+const MOVED_TO_CUSTOM = new Set([
+  "color-accent", "text-normal", "text-muted", "text-faint", "text-highlight-bg",
+  "background-primary", "background-primary-alt", "background-secondary",
+  "background-modifier-hover", "background-modifier-border",
+  "font-interface", "font-text", "font-monospace", "font-text-size",
+  "radius-s", "radius-m", "radius-l", "radius-xl",
+  "h1-color", "h2-color", "h3-color", "h4-color", "h5-color", "h6-color",
+  "link-color", "link-color-hover",
+  "file-line-width", "bold-color", "bold-weight",
+  "h1-font", "h2-font", "h3-font", "h4-font", "h5-font", "h6-font",
+  "h1-size", "h2-size", "h3-size", "h4-size", "h5-size", "h6-size",
+  "h1-weight", "h2-weight", "h3-weight", "h4-weight", "h5-weight", "h6-weight",
+]);
+
+
+// “中文 English” 双拼标题 → [中文, English]，供 title/title.zh 分语言展示（个别名称特例处理）
+const TITLE_OVERRIDE = {
+	"强调色 HSL（亮暗分离）Accent": ["强调色（亮暗分离）", "Accent (HSL)"],
+	"数据库（Bases）": ["数据库", "Bases"],
+	"PDF 视图": ["PDF 视图", "PDF view"],
+	"UI 字号 Font sizes (UI)": ["UI 字号", "Font sizes (UI)"],
+	"__Other__": ["其他", "__Other__"],
+};
+const splitBi = (s) => {
+	const ov = TITLE_OVERRIDE[s];
+	if (ov) return ov;
+	const m = s.match(/^([\u4e00-\u9fff0-9（）·、]+)\s+(.+)$/);
+	return m ? [m[1], m[2]] : [s, s];
+};
 const CAT_TITLE = {
   colors: "颜色 Colors",
   typography: "排版 Typography",
@@ -242,12 +296,14 @@ id: ethereal-official-vars
 settings:
     -
         id: ethereal-info
-        title: 使用说明
+        title: Usage
+        title.zh: 使用说明
         type: info-text
         description: "本面板暴露 Obsidian 官方 CSS 变量（基于 1.13.7 提取，共 ${vars.length} 项），主题本体零覆盖、完全依赖原生。修改即覆盖，恢复默认请点击行右侧重置按钮。颜色类变量多为「明/暗双模式」类型，明暗可分别设置（强调色 HSL 亦分亮/暗两组）；其余为文本框，默认值=官方默认。"
     -
         id: ethereal-presets-info
-        title: 💾 方案管理（选择 / 保存 / 导入导出）
+        title: 💾 Presets management (Select / Save / Export / Import)
+        title.zh: 💾 方案管理（选择 / 保存 / 导入导出）
         type: info-text
         description: "想要把整套自定义值保存为方案、随时切换、导出分享？请安装配套插件「Ethereal 方案管理」（silence-presets）：启用后本面板顶部会直接出现方案栏（选择→应用、保存当前、恢复官方默认），完整管理在 设置 → Silence 方案管理 标签页（含逐方案导出/删除与 JSON 导入）。方案＝本面板全部变量的快照，明/暗双模式一并保存。"
 `);
@@ -263,7 +319,8 @@ for (const cat of CAT_ORDER) {
   // level-2 headings nest under it (Style Settings follows document order)
   out.push(`    -
         id: hd-${cat}
-        title: ${yq(CAT_TITLE[cat])}
+        title: ${yq(splitBi(CAT_TITLE[cat])[1])}
+        title.zh: ${yq(splitBi(CAT_TITLE[cat])[0])}
         type: heading
         level: 1
         collapsed: true
@@ -275,7 +332,8 @@ for (const cat of CAT_ORDER) {
     const info = GROUP_MAP[g] || ["components", g];
     out.push(`    -
         id: hd-g-${gi}
-        title: ${yq(info[1])}
+        title: ${yq(splitBi(info[1])[1])}
+        title.zh: ${yq(splitBi(info[1])[0])}
         type: heading
         level: 2
         collapsed: true
@@ -283,6 +341,8 @@ for (const cat of CAT_ORDER) {
     const sorted = [...(catGroups[g] || [])].sort((a, b) => a.v.line - b.v.line);
     for (const it of sorted) {
       const { v, type, defaultVal } = it;
+      // 常用官方变量已移至「Ethereal 定制」面板（唯一入口），此处跳过，避免重复
+      if (MOVED_TO_CUSTOM.has(v.name)) continue;
       const d = descOf(v, type);
       // collect light fallback for dual text vars
       const lightV = v.light ?? v.body;
@@ -296,7 +356,7 @@ for (const cat of CAT_ORDER) {
         for (const [mode, sfx] of [["light", "-light"], ["dark", "-dark"]]) {
           out.push(`    -
         id: ${v.name}${sfx}
-        title: ${yq(`${zh}（${mode === "light" ? "亮色" : "暗色"}）（--${v.name}${sfx}）`)}
+        title: ${yq(`◉ ${zh}（${mode === "light" ? "亮色" : "暗色"}）`)}
         type: variable-text
         default: ${yq(defaultVal)}
         description: ${yq(`明/暗模式分别设置（默认=官方 ${base}）`)}
@@ -306,7 +366,7 @@ for (const cat of CAT_ORDER) {
       }
       out.push(`    -
         id: ${v.name}
-        title: ${yq(`${zhName(v.name)}（--${v.name}）`)}
+        title: ${yq(`◉ ${zhName(v.name)}`)}
         type: ${type === "themed" ? "variable-themed-color" : "variable-text"}
 ${type === "themed"
         ? `        format: hex
@@ -354,6 +414,31 @@ body.theme-dark.css-settings-manager.theme-dark {
         --accent-l: var(--accent-l-dark, 66%);
 }
 `);
+
+// ---------- theme default overrides CSS block ----------
+const ovEntries = Object.entries(overrides);
+if (ovEntries.length) {
+  const singles = [], light = [], dark = [];
+  for (const [name, ov] of ovEntries) {
+    if (typeof ov === "string") { singles.push(`  --${name}: ${ov};`); }
+    else {
+      if (typeof ov.light === "string") light.push(`  --${name}: ${ov.light};`);
+      if (typeof ov.dark === "string") dark.push(`  --${name}: ${ov.dark};`);
+    }
+  }
+  out.push(`
+/* #region 主题默认值（官方变量层） */
+/* ============================================================
+ * 主题默认值（官方变量层）：以下官方 CSS 变量在本主题中的默认值
+ * 与 Obsidian 官方默认不同，在此统一覆盖（优先级低于 Style Settings
+ * 注入的 body.css-settings-manager，用户自定义值始终优先）。
+ * 数据源：scripts/defaults.json；重跑 gen:settings 时据此重新生成。
+ * ============================================================ */`);
+  if (singles.length) out.push(`:root {\n${singles.join("\n")}\n}\n/* 官方 app.css 中大部分此类变量定义在 body 级，:root 覆盖会被就近继承遮蔽；\n   此处同一组默认值在 body 级再声明一遍，确保对全部 UI 元素生效 */\nbody {\n${singles.join("\n")}\n}`);
+  if (light.length) out.push(`/* 明暗差异化变量：按模式分别锁定（无差异变量的模式不覆盖，保持官方值） */\nbody.theme-light {\n${light.join("\n")}\n}`);
+  if (dark.length) out.push(`body.theme-dark {\n${dark.join("\n")}\n}`);
+  out.push(`/* #endregion */`);
+}
 fs.writeFileSync(outPath, out.join("\n"), "utf8");
 // stats
 let themed = 0, text = 0;

@@ -27,7 +27,7 @@ for (const l0 of raw) {
   const l = l0.replace(/\r$/, ""); // tolerate CRLF working-tree copies (git autocrlf)
   if (/^\s+-\s*$/.test(l)) { if (cur) entries.push(cur); cur = {}; continue; }
   if (!cur) continue;
-  const kv = l.match(/^\s{8}(\w[\w-]*):\s*(.*)$/);
+  const kv = l.match(/^\s+(\w[\w-]*):\s*(.*)$/);
   if (kv) cur[kv[1]] = kv[2];
 }
 if (cur) entries.push(cur);
@@ -52,14 +52,25 @@ for (const e of entries) {
   if (!e.type) errors.push(`${e.id}: missing type`);
   types.add(unquote(e.type));
   const t = unquote(e.type);
-  if (t === "variable-text") {
+  if (t === "variable-text" || t === "variable-editable-text") {
     const d = unquote(e.default);
-    if (typeof d !== "string" || d === "") errors.push(`${e.id}: variable-text default not non-empty string (${d})`);
+    if (typeof d !== "string" || d === "") errors.push(`${e.id}: ${t} default not non-empty string (${d})`);
   } else if (t === "variable-themed-color") {
     const dl = unquote(e["default-light"]), dd = unquote(e["default-dark"]);
     if (typeof dl !== "string" || !getCSSVarRE.test(dl)) errors.push(`${e.id}: bad default-light ${JSON.stringify(dl)}`);
     if (typeof dd !== "string" || !getCSSVarRE.test(dd)) errors.push(`${e.id}: bad default-dark ${JSON.stringify(dd)}`);
     if (!e.format) errors.push(`${e.id}: themed missing format`);
+  } else if (t === "variable-color") {
+    const d = unquote(e.default);
+    if (typeof d !== "string" || !getCSSVarRE.test(d)) errors.push(`${e.id}: bad default ${JSON.stringify(d)}`);
+  } else if (t === "variable-number" || t === "variable-number-slider") {
+    const d = unquote(e.default);
+    if (typeof d !== "string" || d === "") errors.push(`${e.id}: ${t} default not non-empty`);
+  } else if (t === "variable-select") {
+    const d = unquote(e.default);
+    if (typeof d !== "string" || d === "") errors.push(`${e.id}: select default missing`);
+  } else if (t === "class-toggle" || t === "class-select") {
+    // no required fields; class-toggle default may be boolean
   } else if (t === "heading") {
     const lvl = Number(unquote(e.level));
     if (!lvl || lvl < 1) errors.push(`${e.id}: heading missing/invalid level`);
@@ -92,7 +103,7 @@ console.log(`headings: l1=${l1s.length} l2=${l2s.length}`);
 let empty = 0;
 for (const h of l1s) {
   const kids = children.get(h.id) || [];
-  const directGroups = kids.filter(k => /^hd-g-/.test(k)).length;
+  const directGroups = kids.filter(k => /^hd-/.test(k)).length;
   if (!kids.length) { empty++; errors.push(`l1 heading ${h.id} (${unquote(h.title)}) has NO children — panel shows empty`); }
   else if (l2s.length && !directGroups) console.warn(`note: l1 heading ${h.id} (${unquote(h.title)}) has leaves but no l2 groups — plugin nests leaves under nearest preceding heading, renders fine`);
 }

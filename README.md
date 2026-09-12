@@ -8,7 +8,7 @@ A minimal, zero-override theme for [Obsidian](https://obsidian.md/) (formerly *S
 
 ## Features
 
-- **Zero overrides (official-variable layer)**: the base layer contains no native-rule changes; only variable defaults are exposed and locked where needed.
+- **Zero overrides (official-variable layer)**: the base layer contains no native-rule changes; only variable defaults are exposed and locked where needed. A curated set of official variables gets the theme's own defaults (source: `scripts/defaults.json`), still fully overridable via Style Settings.
 - **Light / dark compatibility**: dual-mode variables (shadows, input field backgrounds, text selection, RGB palettes, …) are separated per mode and locked to official light-mode values in light theme.
 - **Separate accent colors per mode** (Blue Topaz style): the accent HSL settings are split into light/dark groups (`accent-h/s/l-light`, `accent-h/s/l-dark`), since Obsidian's `--accent-h/s/l` is otherwise shared between themes.
 - **Layered CSS-snippet merges**: beyond the official-variable layer, CSS snippets are appended at the end of `theme.css` as self-contained layers (`#region 吞并片段·…`, currently List and Custom) — each with its own independent Style Settings panel and its own `--*` namespace, never mixing into the official panel.
