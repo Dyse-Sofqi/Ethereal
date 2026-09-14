@@ -34,7 +34,7 @@
   "h3-color": { "light": "#984806", "dark": "#629A53" },
   "h4-color": { "light": "#1971C2", "dark": "#4C8DAE" },
   "h5-color": { "dark": "#815476" },
-  "h1-font": "Segoe UI, 得意黑",
+  "h1-font": "得意黑, Segoe UI",
   "h2-font": "Segoe UI, Source Han Serif SC VF",
   "h3-font": "Segoe UI, Source Han Sans SC VF",
   "checkbox-size": "14px",

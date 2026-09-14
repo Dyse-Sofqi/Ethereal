@@ -11,6 +11,8 @@
  * ⚠️ npm run gen:settings 会整体重写本文件（仅官方变量层）；吞并片段层不在其生成
  *    内容中，重跑前需先保留/迁移文件末尾的片段层。「主题默认值」区域由
  *    scripts/defaults.json 生成，重跑时不会丢失。
+ * 文件末尾另有「Web 字体兜底」区域（本机未装思源宋体/黑体时从 CDN 自动加载，
+ * 由 scripts/gen-webfonts.mjs 原地生成，见 npm run gen:webfonts）。
  */
 /* #region Ethereal 定制*/
 
@@ -23,7 +25,7 @@ settings:
     title: 'Usage'
     title.zh: '使用说明'
     type: info-text
-    description: "本面板收录日常最高频的样式设置（面向小白用户）：文字、背景、字体、圆角、标题颜色、链接与主题特色功能。带 ◉ 的选项为 Obsidian 官方变量（自「官方变量」面板整理而来，此处为唯一入口，修改直接作用于对应官方变量）；进阶、完整的官方变量请展开下方「Ethereal 官方变量」面板。"
+    description: "本面板收录日常最高频的样式设置（面向小白用户）：文字、背景、字体、圆角、标题颜色、链接、复选框与主题特色功能。带 ◉ 的选项为 Obsidian 官方变量（自「官方变量」面板整理而来，此处为唯一入口，修改直接作用于对应官方变量）；进阶、完整的官方变量请展开下方「Ethereal 官方变量」面板。"
   -
     id: hd-c-common
     title: 'Essentials'
@@ -285,7 +287,7 @@ settings:
     id: h1-font
     title: '◉ 标题 1（字体）'
     type: variable-text
-    default: 'Segoe UI, 得意黑'
+    default: '得意黑, Segoe UI'
 
   -
     id: h2-font
@@ -445,7 +447,6 @@ settings:
     min: 0.5
     max: 1.5
     step: 0.05
-    format: ×
   -
     id: bold-font-family
     title: Font
@@ -472,7 +473,9 @@ settings:
     description: Font weight for bold text, e.g. 700, 600, bold.
     description.zh: 粗体文字的字重，如 700、600、bold。
     type: variable-text
-    default: 700
+    # 必须加引号：YAML 里 default: 700 是**数字**，而 Style Settings 的 variable-text
+    # 渲染器要求 typeof default === "string"，否则直接 return、该项静默不渲染
+    default: '700'
   -
     id: hd-c-italic
     title: 'Italic'
@@ -491,7 +494,6 @@ settings:
     min: 0.5
     max: 1.5
     step: 0.05
-    format: ×
   -
     id: em-font-family
     title: Font
@@ -556,7 +558,8 @@ settings:
     min: 0.5
     max: 1.5
     step: 0.05
-    format: ×
+    # 不能写 format: ×：format 会被原样拼到取值后面（--wiki-scale: 1×），
+    # 而它用于 calc(var(--font-text-size) * var(--wiki-scale))，会得到无效 CSS。
   -
     id: wiki-font-family
     title: Font
@@ -925,6 +928,108 @@ settings:
     description: 开启后隐藏文档底部反向链接
     type: class-toggle
     default: true
+  -
+    id: hd-c-components
+    title: 'Components'
+    title.zh: '组件'
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: hd-c-checkbox
+    title: 'Checkboxes'
+    title.zh: '复选框'
+    type: heading
+    level: 2
+    collapsed: true
+  -
+    id: checkbox-size
+    title: '◉ Checkbox size'
+    title.zh: '◉ 复选框大小'
+    description: Side length of the checkbox box. Any CSS length works, e.g. 14px, 1em, 16px.
+    description.zh: 复选框方框的边长，支持任意 CSS 长度（如 14px、1em、16px）。
+    type: variable-text
+    default: '14px'
+  -
+    id: checkbox-radius
+    title: '◉ Checkbox corner radius'
+    title.zh: '◉ 复选框圆角'
+    description: Corner rounding of the checkbox box; the default follows the theme radius setting.
+    description.zh: 复选框方框的圆角；默认 var(--radius-xl) 跟随主题「圆角」设置。
+    type: variable-text
+    default: 'var(--radius-xl)'
+  -
+    id: checkbox-color
+    title: '◉ Checkbox color'
+    title.zh: '◉ 复选框颜色'
+    description: Background color of a checked checkbox.
+    description.zh: 已勾选复选框的底色。
+    type: variable-text
+    default: 'var(--interactive-accent)'
+  -
+    id: checkbox-color-hover
+    title: '◉ Checkbox color (hover)'
+    title.zh: '◉ 悬停复选框颜色'
+    description: Background color of a checked checkbox while the pointer is over it.
+    description.zh: 鼠标悬停时已勾选复选框的底色。
+    type: variable-text
+    default: 'var(--interactive-accent-hover)'
+  -
+    id: checkbox-border-color
+    title: '◉ Checkbox border color'
+    title.zh: '◉ 复选框边框色'
+    description: Border color of an unchecked checkbox.
+    description.zh: 未勾选复选框的边框色。
+    type: variable-text
+    default: 'var(--text-faint)'
+  -
+    id: checkbox-border-color-hover
+    title: '◉ Checkbox border color (hover)'
+    title.zh: '◉ 悬停复选框边框色'
+    description: Border color of an unchecked checkbox while the pointer is over it.
+    description.zh: 鼠标悬停时未勾选复选框的边框色。
+    type: variable-text
+    default: 'var(--text-muted)'
+  -
+    id: checkbox-marker-color
+    title: '◉ Checkbox marker color'
+    title.zh: '◉ 复选框标记色'
+    description: Color of the tick mark drawn inside a checked checkbox.
+    description.zh: 勾选标记（√）本身的颜色。
+    type: variable-text
+    default: 'var(--background-primary)'
+  -
+    id: checkbox-margin-inline-start
+    title: '◉ Checkbox start margin (edit view)'
+    title.zh: '◉ 复选框行内起始边距'
+    description: Leading margin of the task checkbox in edit view (Live Preview / Source mode). Example values 1.3em, 20px.
+    description.zh: 编辑视图（实时预览 / 源码模式）中任务复选框的起始侧边距，如 1.3em、20px。
+    type: variable-text
+    default: '0.8em'
+  -
+    id: checkbox-margin-inline-end
+    title: 'Checkbox end margin (edit view)'
+    title.zh: '复选框行内结束边距'
+    description: Trailing margin of the task checkbox in edit view. Negative values pull the task text closer to the checkbox, positive values push it away.
+    description.zh: 编辑视图（实时预览 / 源码模式）中任务复选框的结束侧边距；负值让任务文字更靠近复选框，正值则拉开距离。
+    type: variable-text
+    default: '-0.1em'
+  -
+    id: checklist-done-decoration
+    title: '◉ Completed task decoration'
+    title.zh: '◉ 清单完成项装饰'
+    description: Text decoration applied to completed tasks, e.g. line-through, none.
+    description.zh: 已完成任务的文字装饰，如 line-through（删除线）、none（无）。
+    type: variable-text
+    default: 'line-through'
+  -
+    id: checklist-done-color
+    title: '◉ Completed task color'
+    title.zh: '◉ 清单完成项颜色'
+    description: Text color of completed tasks.
+    description.zh: 已完成任务的文字颜色。
+    type: variable-text
+    default: 'var(--text-muted)'
 */
 
 /* #endregion Ethereal 定制 */
@@ -4826,74 +4931,6 @@ settings:
         default: 'var(--text-accent)'
 
     -
-        id: hd-g-38
-        title: 'Checkboxes'
-        title.zh: '复选框'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: checkbox-radius
-        title: '◉ 复选框圆角'
-        type: variable-text
-        default: 'var(--radius-xl)'
-
-    -
-        id: checkbox-size
-        title: '◉ 复选框大小'
-        type: variable-text
-        default: '14px'
-
-    -
-        id: checkbox-marker-color
-        title: '◉ 复选框标记色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: checkbox-color
-        title: '◉ 复选框颜色'
-        type: variable-text
-        default: 'var(--interactive-accent)'
-
-    -
-        id: checkbox-color-hover
-        title: '◉ 悬停复选框颜色'
-        type: variable-text
-        default: 'var(--interactive-accent-hover)'
-
-    -
-        id: checkbox-border-color
-        title: '◉ 复选框边框色'
-        type: variable-text
-        default: 'var(--text-faint)'
-
-    -
-        id: checkbox-border-color-hover
-        title: '◉ 悬停复选框边框色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: checkbox-margin-inline-start
-        title: '◉ 复选框行内起始边距'
-        type: variable-text
-        default: '1.3em'
-
-    -
-        id: checklist-done-decoration
-        title: '◉ 清单完成项装饰'
-        type: variable-text
-        default: 'line-through'
-
-    -
-        id: checklist-done-color
-        title: '◉ 清单完成项颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
         id: hd-g-40
         title: 'Dialogs'
         title.zh: '对话框'
@@ -6853,11 +6890,11 @@ body.theme-dark.css-settings-manager.theme-dark {
   --ribbon-width: 42px;
   --nav-item-margin-bottom: 1px;
   --nav-item-weight-active: bold;
-  --h1-font: Segoe UI, 得意黑;
+  --h1-font: 得意黑, Segoe UI;
   --h2-font: Segoe UI, Source Han Serif SC VF;
   --h3-font: Segoe UI, Source Han Sans SC VF;
   --checkbox-size: 14px;
-  --checkbox-margin-inline-start: 1.3em;
+  --checkbox-margin-inline-start: 0.8em;
   --tab-outline-width: -2px;
   --titlebar-background: var(--background-primary);
   --titlebar-background-focused: var(--background-primary);
@@ -6897,11 +6934,11 @@ body {
   --ribbon-width: 42px;
   --nav-item-margin-bottom: 1px;
   --nav-item-weight-active: bold;
-  --h1-font: Segoe UI, 得意黑;
+  --h1-font: 得意黑, Segoe UI;
   --h2-font: Segoe UI, Source Han Serif SC VF;
   --h3-font: Segoe UI, Source Han Sans SC VF;
   --checkbox-size: 14px;
-  --checkbox-margin-inline-start: 1.3em;
+  --checkbox-margin-inline-start: 0.8em;
   --tab-outline-width: -2px;
   --titlebar-background: var(--background-primary);
   --titlebar-background-focused: var(--background-primary);
@@ -7227,13 +7264,28 @@ body.blockquote-style-border-left :is(.markdown-preview-view, .markdown-rendered
   --wiki-scale: 1;
   --wiki-font-family: "Segoe UI", "Cambria Math", "Source Han Serif SC VF", var(--font-default);
   --wiki-weight: normal;
-  /* 粗体：正文尺寸、粗体字重，字体与颜色继承正文 */
+  /* 粗体：正文尺寸、字体与颜色继承正文（字重见下方 body 级声明） */
   --bold-scale: 1;
   --bold-font-family: inherit;
-  --bold-weight: 700;
   /* 颜色由 Style Settings 注入（--em-color/--wiki-color/--bold-color，明暗各自设置；
      不设置时无定义，规则内 fallback 生效） */
   --internal-blockquote-scale: 1.1;
+}
+
+/* 粗体字重的主题默认值必须声明在 body 级，不能放进上面的 :root。
+   官方 app.css 在 body 上声明了同名变量（app.css:2096）：
+     body { --bold-weight: calc(var(--font-weight) + var(--bold-modifier)); }
+   CSS 自定义属性按“就近继承”解析：消费元素（strong / .cm-strong）向上找最近的声明，
+   先命中 body 上的官方值，:root(html) 上的同名声明会被完全遮蔽 —— 写在那里就是死代码。
+   放到 body 级后与官方声明同为 (0,0,1)，而主题样式表在 app.css 之后加载
+   （Obsidian 把主题写进 <head> 末尾的 <style>，app.css 是更早的 <link>），同特异性下后者胜。
+   用户在 Style Settings 里改「字重」时，注入的 body.css-settings-manager 为 (0,1,1)，
+   特异性更高，照常覆盖本默认值。
+   副作用：本声明是字面量，会顶掉官方那条 calc，官方面板里的「◉ 粗体修饰符」因此
+   不再影响正文粗体（它与定制面板的「字重」本就是重复入口，需要保留它就把这里
+   改成 --bold-modifier: 300，等价于 400 + 300 = 700）。 */
+body {
+  --bold-weight: 700;
 }
 
 /* 应用到所有斜体 */
@@ -7593,9 +7645,12 @@ li.is-collapsed .cm-fold-indicator:hover~.cm-formatting-list .list-bullet:before
   inset-inline-end: calc(var(--list-bullet-end-padding) * -1);
 }
 
+/* 任务列表复选框间距（编辑视图）：左右两侧均由变量驱动，可在
+   Style Settings → Ethereal 定制 → 组件 → 复选框 中调整；
+   未启用 Style Settings 时回退到主题默认值（与 defaults.json 保持一致）。 */
 .markdown-source-view.mod-cm6 .task-list-label .task-list-item-checkbox {
-  margin-inline-start: var(--checkbox-margin-inline-start);
-  margin-inline-end: -0.3em;
+  margin-inline-start: var(--checkbox-margin-inline-start, 0.8em);
+  margin-inline-end: var(--checkbox-margin-inline-end, -0.1em);
 }
 
 /* 阅读模式标题箭头下沉避让标题标识 */

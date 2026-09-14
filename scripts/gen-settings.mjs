@@ -233,6 +233,28 @@ const CAT_ORDER = ["colors", "typography", "layout", "components", "views", "eff
 const catGroups = {};
 for (const it of items) (catGroups[it.c.group] ||= []).push(it);
 
+// 已移至「Ethereal 定制」面板的官方变量（定制面板为唯一入口，生成时跳过，避免重复）
+// 与 theme.css 顶部「Ethereal 定制」面板保持同步：该面板新增/删除 ◉ 条目时，此名单需一并维护。
+const MOVED_TO_CUSTOM = new Set([
+  "color-accent", "text-normal", "text-muted", "text-faint", "text-highlight-bg",
+  "background-primary", "background-primary-alt", "background-secondary",
+  "background-modifier-hover", "background-modifier-border",
+  "font-interface", "font-text", "font-monospace", "font-text-size",
+  "radius-s", "radius-m", "radius-l", "radius-xl",
+  "h1-color", "h2-color", "h3-color", "h4-color", "h5-color", "h6-color",
+  "link-color", "link-color-hover",
+  "file-line-width", "bold-color", "bold-weight",
+  "h1-font", "h2-font", "h3-font", "h4-font", "h5-font", "h6-font",
+  "h1-size", "h2-size", "h3-size", "h4-size", "h5-size", "h6-size",
+  "h1-weight", "h2-weight", "h3-weight", "h4-weight", "h5-weight", "h6-weight",
+  // 复选框 Checkboxes（整组搬至定制面板「组件 → 复选框」）
+  "checkbox-radius", "checkbox-size", "checkbox-marker-color",
+  "checkbox-color", "checkbox-color-hover",
+  "checkbox-border-color", "checkbox-border-color-hover",
+  "checkbox-margin-inline-start",
+  "checklist-done-decoration", "checklist-done-color",
+]);
+
 // ---------- emit ----------
 const out = [];
 const ovCount = Object.keys(overrides).length;
@@ -250,20 +272,7 @@ out.push(`/*
 ${ovCount ? ` * 注：其中 ${ovCount} 个变量的主题默认值已自定义（见「主题默认值（官方变量层）」区域，数据源 scripts/defaults.json）。\n` : ""} */`);
 
 // 已移至「Ethereal 定制」面板的官方变量（定制面板为唯一入口，生成时跳过，避免重复）
-// 数据源：scripts/moved-to-custom.mjs 同名单 —— 仅此处维护
-const MOVED_TO_CUSTOM = new Set([
-  "color-accent", "text-normal", "text-muted", "text-faint", "text-highlight-bg",
-  "background-primary", "background-primary-alt", "background-secondary",
-  "background-modifier-hover", "background-modifier-border",
-  "font-interface", "font-text", "font-monospace", "font-text-size",
-  "radius-s", "radius-m", "radius-l", "radius-xl",
-  "h1-color", "h2-color", "h3-color", "h4-color", "h5-color", "h6-color",
-  "link-color", "link-color-hover",
-  "file-line-width", "bold-color", "bold-weight",
-  "h1-font", "h2-font", "h3-font", "h4-font", "h5-font", "h6-font",
-  "h1-size", "h2-size", "h3-size", "h4-size", "h5-size", "h6-size",
-  "h1-weight", "h2-weight", "h3-weight", "h4-weight", "h5-weight", "h6-weight",
-]);
+// 名单见上方 MOVED_TO_CUSTOM 定义处（须在 emit 之前声明，供头部注释统计使用）。
 
 
 // “中文 English” 双拼标题 → [中文, English]，供 title/title.zh 分语言展示（个别名称特例处理）
@@ -315,6 +324,9 @@ for (const cat of CAT_ORDER) {
   const catsGroups = Object.entries(groupInsert).filter(([g, info]) => info.cat === cat)
     .sort((a, b) => a[1].firstLine - b[1].firstLine);
   if (!catsGroups.length) continue;
+  // 整类变量均已移至「Ethereal 定制」面板 → 不输出空的 level-1 分类标题
+  // （空标题会触发 validate:settings 的「l1 heading has NO children」错误）
+  if (!catsGroups.some(([g]) => (catGroups[g] || []).some(it => !MOVED_TO_CUSTOM.has(it.v.name)))) continue;
   // emit level-1 heading for this category FIRST, so subsequent
   // level-2 headings nest under it (Style Settings follows document order)
   out.push(`    -
@@ -330,6 +342,10 @@ for (const cat of CAT_ORDER) {
     emitted.add(g);
     gi++;
     const info = GROUP_MAP[g] || ["components", g];
+    const sorted = [...(catGroups[g] || [])].sort((a, b) => a.v.line - b.v.line);
+    // 组内变量已全部移至「Ethereal 定制」面板（唯一入口）→ 不输出空分组标题，
+    // 否则 Style Settings 会显示一个点开什么都没有的折叠分组。
+    if (!sorted.some(it => !MOVED_TO_CUSTOM.has(it.v.name))) continue;
     out.push(`    -
         id: hd-g-${gi}
         title: ${yq(splitBi(info[1])[1])}
@@ -338,7 +354,6 @@ for (const cat of CAT_ORDER) {
         level: 2
         collapsed: true
 `);
-    const sorted = [...(catGroups[g] || [])].sort((a, b) => a.v.line - b.v.line);
     for (const it of sorted) {
       const { v, type, defaultVal } = it;
       // 常用官方变量已移至「Ethereal 定制」面板（唯一入口），此处跳过，避免重复
