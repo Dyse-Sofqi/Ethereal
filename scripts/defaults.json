@@ -38,10 +38,12 @@
   "h2-font": "Segoe UI, Source Han Serif SC VF",
   "h3-font": "Segoe UI, Source Han Sans SC VF",
   "checkbox-size": "14px",
-  "checkbox-margin-inline-start": "1.3em",
+  "checkbox-margin-inline-start": "0.8em",
   "tab-outline-width": "-2px",
   "titlebar-background": "var(--background-primary)",
   "titlebar-background-focused": "var(--background-primary)",
   "indentation-guide-editing-indent": "0.6em",
-  "list-indent-editing": "0.5em"
+  "list-indent-editing": "0.5em",
+  "code-border-width": "1px",
+  "code-radius": "6px"
 }

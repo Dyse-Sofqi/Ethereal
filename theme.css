@@ -522,6 +522,42 @@ settings:
     type: variable-text
     default: normal
   -
+    id: hd-c-inline-code
+    title: 'Inline code'
+    title.zh: '行内代码'
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: inline-code-info
+    title: 'Note'
+    title.zh: '说明'
+    type: info-text
+    description: "行内代码的底色、边框与圆角沿用 Obsidian 官方变量 --code-background / --code-border-width / --code-border-color / --code-radius，本主题已把 --code-border-width 的默认值设为 1px，边框色随官方 --background-modifier-border 自动适配日间/夜间。需要细调请到下方「Ethereal 官方变量」面板的 Code 分组；这里只提供悬停效果。"
+  -
+    id: inline-code-hover-darken
+    title: Hover darken
+    title.zh: 悬停压暗
+    description: Tint inline code on hover with Obsidian's own hover colour — darkens in light mode, lightens in dark mode — matching the variable chips in Style Tuner's settings UI. Turn off to keep the background static on hover.
+    description.zh: 鼠标悬停时用官方悬停色给行内代码加一层底色（日间压暗、夜间提亮，与 Style Tuner 设置界面的变量代码块一致）；关闭后悬停不再变化。
+    type: class-toggle
+    default: true
+  -
+    id: hd-c-text-selection
+    title: 'Text selection'
+    title.zh: '选中文本'
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: text-selection
+    title: '◉ Selection background'
+    title.zh: '◉ 选区底色'
+    description: Background colour of selected text. Any CSS colour works, including color-mix(...); the default follows the accent colour and is defined separately per mode.
+    description.zh: 选中文本的底色。可填任意 CSS 颜色（含 color-mix(...)）；默认值跟随强调色，且日间/夜间各有一档。
+    type: variable-text
+    default: 'color-mix(in oklch, var(--interactive-accent) 33%, transparent)'
+  -
     id: hd-c-links
     title: 'Links'
     title.zh: '链接'
@@ -589,8 +625,8 @@ settings:
     default: normal
   -
     id: hd-c-lists
-    title: 'Lists'
-    title.zh: '列表'
+    title: 'Unordered list'
+    title.zh: '无序列表'
     type: heading
     level: 2
     collapsed: true
@@ -598,10 +634,10 @@ settings:
     id: list-bullet-h-adjust
     title: Adjust amount
     title.zh: 符号左右调整量
-    description: Larger value pushes the symbol left and widens the gap to text; 0 disables the adjustment.
-    description.zh: 数值越大，符号越靠左、与文本间距越大；0 为不调整。（CSS 中负内边距无效，故不开放负值。）
+    description: Larger value pushes the symbol further left without moving the text. The caret stays put too, so 0 keeps the unordered-list caret aligned with the ordered-list one. Edit view only.
+    description.zh: 数值越大，符号越靠左，正文与光标都不受影响。0 时无序列表的行首光标与有序列表精确对齐。仅编辑视图生效。
     type: variable-number-slider
-    default: 2
+    default: 0
     min: 0
     max: 10
     step: 0.5
@@ -868,6 +904,319 @@ settings:
     id: list-ghost-offset-y-4
     title: Ghost offset Y (4th level)
     title.zh: 虚影垂直偏移（第四层级）
+    type: variable-number-slider
+    default: 0.1
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: hd-c-ol
+    title: 'Ordered list'
+    title.zh: '有序列表'
+    type: heading
+    level: 2
+    collapsed: true
+  -
+    id: list-ol-info
+    title: 'Note'
+    title.zh: '说明'
+    type: info-text
+    description: "样式与「无序列表」对齐，但**保留序号**（不做符号替换，因此没有「符号」项）。受浏览器限制，阅读模式下的序号是原生 ::marker，只能调字号/颜色；「虚影」只有编辑视图能显示（那里的序号是真实元素）。下面两个是全局微调：「序号左右调整量」默认 0（序号光标与无序列表对齐；改为正值可让它与无序列表的符号对齐，但光标会一起移动）；「虚影水平内缩」用来抵消序号容器比数字多出的空白，数值越大虚影越贴数字。"
+  -
+    id: list-ol-h-adjust
+    title: Horizontal adjust
+    title.zh: 序号左右调整量
+    description: "Default 0 = the number's caret lines up exactly with the unordered-list one. A positive value shifts the number left so it lines up with the unordered-list *symbol* instead — but the caret moves with it, and the gap before the body text grows by the same amount. The two alignments are mutually exclusive: a number is plain text, so its glyph and its caret share one coordinate, whereas the unordered-list symbol is a pseudo-element drawn centred on the marker point and therefore always sits left of its own caret. Edit view only."
+    description.zh: "默认 0：序号的**光标**与无序列表精确对齐。正值把序号左移、改为与无序列表的**符号**对齐 —— 但光标会跟着一起移，且序号与正文之间的空隙会等量变大。这两种对齐**互斥**：序号是普通文本，字形与光标共用一个坐标；而无序列表的符号是伪元素、以标记点为圆心绘制，永远比它自己的光标靠左。仅编辑视图生效。"
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 1.5
+    step: 0.01
+    format: em
+  -
+    id: list-ol-ghost-pad-x
+    title: Ghost horizontal inset
+    title.zh: 虚影水平内缩
+    description: The number's box is wider than the digits themselves (trailing space plus alignment padding), so the halo is first pulled in by this amount and then expanded by the halo size. Larger value hugs the digits more tightly. Edit view only.
+    description.zh: 序号容器比数字本身宽（尾部空格与对齐留白），虚影先按此值向内收、再按光环大小向外扩。数值越大虚影越贴数字。仅编辑视图生效。
+    type: variable-number-slider
+    default: 0.15
+    min: 0
+    max: 1
+    step: 0.01
+    format: em
+  -
+    id: hd-c-ol-1
+    title: '1st level'
+    title.zh: '第一层级'
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: list-ol-marker-size-1
+    title: Number size (1st level)
+    title.zh: 数字大小（第一层级）
+    type: variable-text
+    default: 1em
+  -
+    id: list-ol-marker-color-1
+    title: Number color (1st level)
+    title.zh: 数字颜色（第一层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#2B4490'
+    default-dark: '#D6821E'
+  -
+    id: list-ol-ghost-color-1
+    title: Ghost background color (1st level)
+    title.zh: 虚影背景色（第一层级）
+    description: Halo behind the number on hover or when the item is collapsed. Edit view only.
+    description.zh: 悬停或该项折叠时数字背后的光环底色。仅编辑视图生效。
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ol-ghost-size-1
+    title: Ghost halo size (1st level)
+    title.zh: 虚影光环大小（第一层级）
+    description: How far the halo extends beyond the number. Edit view only; 0 hides it.
+    description.zh: 光环在数字四周外扩的量。仅编辑视图生效；0 为不显示。
+    type: variable-number-slider
+    default: 0.1
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ol-ghost-offset-x-1
+    title: Ghost offset X (1st level)
+    title.zh: 虚影水平偏移（第一层级）
+    description: Edit view only.
+    description.zh: 仅编辑视图生效。
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ol-ghost-offset-y-1
+    title: Ghost offset Y (1st level)
+    title.zh: 虚影垂直偏移（第一层级）
+    description: Edit view only.
+    description.zh: 仅编辑视图生效。
+    type: variable-number-slider
+    default: 0.05
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: hd-c-ol-2
+    title: '2nd level'
+    title.zh: '第二层级'
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: list-ol-marker-size-2
+    title: Number size (2nd level)
+    title.zh: 数字大小（第二层级）
+    type: variable-text
+    default: 1em
+  -
+    id: list-ol-marker-color-2
+    title: Number color (2nd level)
+    title.zh: 数字颜色（第二层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#2B4490'
+    default-dark: '#D6821E'
+  -
+    id: list-ol-ghost-color-2
+    title: Ghost background color (2nd level)
+    title.zh: 虚影背景色（第二层级）
+    description: Halo behind the number on hover or when the item is collapsed. Edit view only.
+    description.zh: 悬停或该项折叠时数字背后的光环底色。仅编辑视图生效。
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ol-ghost-size-2
+    title: Ghost halo size (2nd level)
+    title.zh: 虚影光环大小（第二层级）
+    description: How far the halo extends beyond the number. Edit view only; 0 hides it.
+    description.zh: 光环在数字四周外扩的量。仅编辑视图生效；0 为不显示。
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ol-ghost-offset-x-2
+    title: Ghost offset X (2nd level)
+    title.zh: 虚影水平偏移（第二层级）
+    description: Edit view only.
+    description.zh: 仅编辑视图生效。
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ol-ghost-offset-y-2
+    title: Ghost offset Y (2nd level)
+    title.zh: 虚影垂直偏移（第二层级）
+    description: Edit view only.
+    description.zh: 仅编辑视图生效。
+    type: variable-number-slider
+    default: 0.1
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: hd-c-ol-3
+    title: '3rd level'
+    title.zh: '第三层级'
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: list-ol-marker-size-3
+    title: Number size (3rd level)
+    title.zh: 数字大小（第三层级）
+    type: variable-text
+    default: 1.1em
+  -
+    id: list-ol-marker-color-3
+    title: Number color (3rd level)
+    title.zh: 数字颜色（第三层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#2B4490'
+    default-dark: '#D6821E'
+  -
+    id: list-ol-ghost-color-3
+    title: Ghost background color (3rd level)
+    title.zh: 虚影背景色（第三层级）
+    description: Halo behind the number on hover or when the item is collapsed. Edit view only.
+    description.zh: 悬停或该项折叠时数字背后的光环底色。仅编辑视图生效。
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ol-ghost-size-3
+    title: Ghost halo size (3rd level)
+    title.zh: 虚影光环大小（第三层级）
+    description: How far the halo extends beyond the number. Edit view only; 0 hides it.
+    description.zh: 光环在数字四周外扩的量。仅编辑视图生效；0 为不显示。
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ol-ghost-offset-x-3
+    title: Ghost offset X (3rd level)
+    title.zh: 虚影水平偏移（第三层级）
+    description: Edit view only.
+    description.zh: 仅编辑视图生效。
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ol-ghost-offset-y-3
+    title: Ghost offset Y (3rd level)
+    title.zh: 虚影垂直偏移（第三层级）
+    description: Edit view only.
+    description.zh: 仅编辑视图生效。
+    type: variable-number-slider
+    default: 0.1
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: hd-c-ol-4
+    title: '4th level'
+    title.zh: '第四层级'
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: list-ol-marker-size-4
+    title: Number size (4th level)
+    title.zh: 数字大小（第四层级）
+    type: variable-text
+    default: 1em
+  -
+    id: list-ol-marker-color-4
+    title: Number color (4th level)
+    title.zh: 数字颜色（第四层级）
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#2B4490'
+    default-dark: '#D6821E'
+  -
+    id: list-ol-ghost-color-4
+    title: Ghost background color (4th level)
+    title.zh: 虚影背景色（第四层级）
+    description: Halo behind the number on hover or when the item is collapsed. Edit view only.
+    description.zh: 悬停或该项折叠时数字背后的光环底色。仅编辑视图生效。
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: list-ol-ghost-size-4
+    title: Ghost halo size (4th level)
+    title.zh: 虚影光环大小（第四层级）
+    description: How far the halo extends beyond the number. Edit view only; 0 hides it.
+    description.zh: 光环在数字四周外扩的量。仅编辑视图生效；0 为不显示。
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ol-ghost-offset-x-4
+    title: Ghost offset X (4th level)
+    title.zh: 虚影水平偏移（第四层级）
+    description: Edit view only.
+    description.zh: 仅编辑视图生效。
+    type: variable-number-slider
+    default: 0
+    min: -0.5
+    max: 0.5
+    step: 0.01
+    format: em
+  -
+    id: list-ol-ghost-offset-y-4
+    title: Ghost offset Y (4th level)
+    title.zh: 虚影垂直偏移（第四层级）
+    description: Edit view only.
+    description.zh: 仅编辑视图生效。
     type: variable-number-slider
     default: 0.1
     min: -0.5
@@ -2337,18 +2686,21 @@ settings:
         title: '◉ 列表标记颜色'
         type: variable-text
         default: 'var(--text-faint)'
+        description: '⚠️ 本主题的正文列表标记颜色（无序列表符号、有序列表序号）已改由「Ethereal 定制 → 正文排版 → 无序列表 / 有序列表」的逐层「符号颜色 / 数字颜色」接管，此项对正文列表无效。仍对 Bases 表格的行号生效。'
 
     -
         id: list-marker-color-hover
         title: '◉ 悬停列表标记颜色'
         type: variable-text
         default: 'var(--text-muted)'
+        description: '⚠️ 本主题的无序列表符号与虚影由「Ethereal 定制」接管，此项对列表无效。'
 
     -
         id: list-marker-color-collapsed
         title: '◉ 折叠列表标记颜色'
         type: variable-text
         default: 'var(--text-accent)'
+        description: '⚠️ 本主题的无序列表符号与虚影由「Ethereal 定制」接管，此项对列表无效。'
 
     -
         id: list-bullet-border
@@ -2626,7 +2978,7 @@ settings:
         id: code-border-width
         title: '◉ 代码边框宽度'
         type: variable-text
-        default: '0px'
+        default: '1px'
 
     -
         id: code-border-color
@@ -2644,7 +2996,7 @@ settings:
         id: code-radius
         title: '◉ 代码圆角'
         type: variable-text
-        default: 'var(--radius-s)'
+        default: '6px'
 
     -
         id: code-size
@@ -6296,13 +6648,6 @@ settings:
         description: '注：原生与另一模式不同；暗色模式下本值独立生效，亮色由底部兜底规则保持原生'
 
     -
-        id: text-selection
-        title: '◉ 文本选区颜色'
-        type: variable-text
-        default: 'color-mix(in oklch, var(--interactive-accent) 33%, transparent)'
-        description: '注：原生与另一模式不同；暗色模式下本值独立生效，亮色由底部兜底规则保持原生'
-
-    -
         id: text-accent
         title: '◉ 强调文本色'
         type: variable-text
@@ -6900,6 +7245,8 @@ body.theme-dark.css-settings-manager.theme-dark {
   --titlebar-background-focused: var(--background-primary);
   --indentation-guide-editing-indent: 0.6em;
   --list-indent-editing: 0.5em;
+  --code-border-width: 1px;
+  --code-radius: 6px;
 }
 
 /* 官方 app.css 中大部分此类变量定义在 body 级；:root 覆盖会被“就近继承”
@@ -6944,6 +7291,8 @@ body {
   --titlebar-background-focused: var(--background-primary);
   --indentation-guide-editing-indent: 0.6em;
   --list-indent-editing: 0.5em;
+  --code-border-width: 1px;
+  --code-radius: 6px;
 }
 /* 明暗差异化变量：按模式分别锁定（无差异变量的模式不覆盖，保持官方值） */
 body.theme-light {
@@ -7176,10 +7525,17 @@ body.highlight-strengthen .cm-s-obsidian span.cm-highlight {
   padding-bottom: 2px;
 }
 
-/* 平替原生：标题上方紧挨着另一个标题且中间只有一个空行，就强行把这多余的顶部间距去掉，避免间距过宽。 */
+/* 平替原生：标题上方紧挨着另一个标题且中间只有一个空行 —— 收紧两标题的间距。
+   做法：保留标题顶部间距（padding-top），改由「压缩中间空行的高度」来收紧，不再用负 margin 上拉标题。
+   ⚠️ 禁止用垂直 margin 调整 .cm-line：CM6 行高表只累加 border-box 高度、不含 margin，
+   盒高 ≠ 行进距会让行高表比 DOM 实际位置低该 margin 值，此后每一行顶部都会被映射到上一行
+   （点击/拖拽落错行，view.measure() 也修不好）。空行高度属盒内几何，行高表可正确测量。 */
+.cm-s-obsidian .cm-line.HyperMD-header + .cm-line:not(.HyperMD-header):has(>br:only-child):has(+ .cm-line.HyperMD-header) {
+  line-height: calc(var(--line-height-main, 1.8) * 1em - var(--p-spacing));
+}
 .cm-s-obsidian .cm-line.HyperMD-header + .cm-line:not(.HyperMD-header):has(>br:only-child) + .cm-line.HyperMD-header {
   padding-top: var(--p-spacing);
-  margin-top: calc(var(--p-spacing) * -1) !important;
+  margin-top: 0 !important;
 }
 
 /* 隐藏折叠标题后的… */
@@ -7317,6 +7673,44 @@ span.cm-strong.cm-highlight,
   color: var(--bold-color, inherit);
 }
 
+/* #region 行内代码 */
+/* 行内代码的底色 / 边框 / 圆角一律交给 Obsidian 官方变量
+   （--code-background / --code-border-width / --code-border-color / --code-radius），
+   本主题只把 --code-border-width 的默认值提到 1px（见文件中部「主题默认值（官方变量层）」区域），
+   边框色沿用官方 --background-modifier-border，自动适配日间/夜间。
+   因此这里不再覆盖任何外观属性，只做两件事：清掉一处官方多 span 结构的副产物 + 悬停压暗。
+   作用范围：阅读模式的 code（父级非 pre）与实时预览/源码模式的 .cm-inline-code；
+   围栏代码块（pre > code）与设置界面里的 code 不受影响。
+
+   副产物清理：官方把实时预览的行内代码拆成多个 span，其中「反引号格式段」带
+   border-width: var(--code-border-width) 0 var(--code-border-width) var(--code-border-width)
+   （即左侧一道竖边）。官方默认 --code-border-width 是 0px 所以看不出来，
+   本主题把它提到 1px 后，嵌套结构下内层反引号段就会在 chip 内部多画两道竖线，
+   这里只把「嵌套在另一个 .cm-inline-code 里的反引号段」清零，外层内容段的整框保持不变。 */
+.markdown-source-view.mod-cm6 .cm-s-obsidian span.cm-inline-code .cm-inline-code.cm-formatting {
+  border: 0;
+  padding: 0;
+}
+
+/* 悬停压暗（由开关 inline-code-hover-darken 门控，默认开启）。
+   叠加层直接用官方 --background-modifier-hover —— 它正是 Style Tuner 变量代码块悬停时用的
+   那个值（`color-mix(in oklch, var(--mono-100) 6.7%, transparent)`：日间 6.7% 黑、夜间 6.7% 白），
+   所以强度与参照物完全一致，且明暗自适应，不必写死数字。边框同步换成
+   --background-modifier-border-hover，也与参照物一致。
+   注意别把 alpha 调大：深色模式下行内代码底色（#232323）只比页面（#1e1e1e）亮一点，
+   压过头会糊成一片；也刻意不用 filter: brightness()，它会把文字一起压暗。 */
+body.inline-code-hover-darken .markdown-rendered :not(pre) > code:hover,
+body.inline-code-hover-darken .cm-s-obsidian span.cm-inline-code:not(.cm-formatting):not(.cm-inline-code *):hover {
+  background-image: linear-gradient(var(--background-modifier-hover), var(--background-modifier-hover));
+  border-color: var(--background-modifier-border-hover);
+}
+/* #endregion 行内代码 */
+
+/* 文本选区：底色沿用官方变量 --text-selection（已在「Ethereal 定制 → 正文排版 → 文本样式 →
+   选中文本」暴露，默认跟随强调色，日间/夜间各一档），主题不需要任何覆盖规则，故此处不留 CSS。
+   圆角已决定不做：原生 ::selection 不支持 border-radius（Chromium 实测 computed 值恒为 0px，
+   规范白名单里也没有），只有编辑视图的 CodeMirror 选区图层能加，收益与复杂度不成正比。 */
+
 /* 两端对齐 */
 :is(.markdown-preview-view, .markdown-rendered, .markdown-source-view.mod-cm6) div.cm-line:not(.HyperMD-header) {
   text-align: justify;
@@ -7391,8 +7785,13 @@ body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-6:not(.cm
   --list-ul-marker-size-2: 1em;
   --list-ul-marker-size-3: 1.1em;
   --list-ul-marker-size-4: 1em;
-  /* 符号左右调整：右内边距与左外边距互为相反数，单变量驱动（Style Settings 接口） */
-  --list-bullet-h-adjust: 2px;
+  /* 符号左右调整：把符号**本身**左移（正值靠左），文本与光标位置不受影响。
+     ⚠️ 历史写法是 `padding-inline-end: A; margin-inline-start: -A` —— 虽然净前进宽度为 0
+     （不推挤正文），但 `margin-inline-start` 会把 .list-bullet **元素盒连同光标**一起左推，
+     导致无序列表的「行首光标」比有序列表偏左 A。这正是光标无法对齐的 2px 残差来源。
+     现改为对伪元素 ::after/::before 做 `translateX`：只动绘制位置，元素盒与光标都不动。
+     默认 0 —— 与有序列表（--list-ol-h-adjust 默认 0）配合，两者光标精确对齐。 */
+  --list-bullet-h-adjust: 0px;
   /* 虚影：各层独立；默认 0 = 圆盘恰为 1em、无偏移，背景色跟随主题 */
   --list-ghost-color-1: var(--background-modifier-hover);
   --list-ghost-color-2: var(--background-modifier-hover);
@@ -7424,11 +7823,17 @@ body.theme-dark {
   --list-ul-marker-color-3: #D6821E;
   --list-ul-marker-color-4: #D6821E;
 }
-/* 左右调整无序列表符号：右内边距与左外边距互为相反数，由同一变量驱动；
-   逻辑属性在 RTL 布局下自动镜像，与文件其余部分（padding-inline-end 等）一致 */
-.list-bullet {
-  padding-inline-end: var(--list-bullet-h-adjust, 2px);
-  margin-inline-start: calc(var(--list-bullet-h-adjust, 2px) * -1);
+/* 左右调整无序列表符号：只把**符号本身**左移，不动元素盒、不动光标、不动正文。
+   ⚠️ 不要改回 `padding-inline-end + 负 margin-inline-start` —— 那个写法虽然净前进宽度为 0
+   （不推挤正文），但会把 .list-bullet 的元素盒连同**行首光标**一起左推，
+   使无序列表的光标与有序列表错位（实测字号 35px 时差 2px，正是本变量旧默认值）。
+   改为给伪元素加 translateX：纯绘制位移，几何零影响。
+   正负号：本变量正值 = 符号靠左（与旧写法的手感一致），故取负号。 */
+.markdown-source-view.mod-cm6 .list-bullet::after,
+.markdown-source-view.mod-cm6 .list-bullet::before,
+.markdown-rendered .list-bullet::after,
+.markdown-rendered .list-bullet::before {
+  translate: calc(var(--list-bullet-h-adjust, 0px) * -1) 0;
 }
 
 /* ========================
@@ -7658,3 +8063,233 @@ li.is-collapsed .cm-fold-indicator:hover~.cm-formatting-list .list-bullet:before
   padding-top: 8px;
 }
 /* #endregion  无序列表*/
+
+/* #region 有序列表 */
+/* 有序列表的样式与「无序列表」对齐，但**保留序号**（不做符号替换）。
+   两个视图的渲染方式不同，能做的事也不同：
+     · 阅读模式：序号是浏览器原生 ::marker —— 实测只接受字体属性（font-size / color /
+       font-weight 生效），background / padding / border-radius 全部被丢弃（规范白名单如此）。
+       所以这里只能调字号与颜色，虚影做不了。
+     · 编辑视图：序号是 CodeMirror 的真实 span（.list-number），字号 / 颜色 / 虚影都能做。
+       虚影用 ::before 画**胶囊形**（数字比单个符号宽，用 50% 圆会拉成椭圆），
+       并由 z-index: -1 压到文字下方（.list-number 上加 z-index: 0 建立层叠上下文，
+       否则负 z-index 会逃逸到更外层、可能被编辑器底色盖住）。
+   虚影的显现时机（悬停折叠箭头 / 已折叠）与无序列表共用同一套选择器写法。
+
+   ⚠️ 刻意**不做**「正文与无序列表正文对齐」这一项（2026-09-21 试过又回退，用户确认保持现状）：
+   有序列表标记段（.list-number）的宽度**随光标状态变化** —— 光标不在该行时渲染折叠后的标记
+   （尾部空格被吃掉），光标在该行时渲染原始 markdown（带空格，标记变灰），两者前进宽度差一个空格。
+   因此任何固定值的宽度补偿（margin-inline-end / margin-inline-start）只能对其中一态正确，
+   另一态不是正文撞到数字上就是留大缝。对比无序列表：它用 padding-inline-end + 负
+   margin-inline-start 互相抵消，净前进宽度为 0，天然与状态无关。
+   结论：只改「视觉位置」（position: relative / transform）是安全的；改「前进宽度」必然两态冲突。
+   check-css.cjs 里有回归守卫，出现 list-ol-text-adjust 会直接报错。
+
+   ⚠️ 也**不做**「标记段固定宽度」（同日第二轮评估后放弃）。根因是宽度差无法调和：
+     正文起点 = 标记段左边缘 + 标记段宽度
+       有序：标记段含**真实文本数字** → 占流宽度（1位 39.3 / 2位 59.8 / 3位 80.4，字号 35px）
+       无序：符号是 ::after **伪元素** → 不占流宽度（标记段仅 25.5）
+     数字右边缘（1位 76.5）已越过无序的正文起点（73.0）→ 有序正文的物理下限在无序右侧，无法左移。
+     （阅读模式无此问题：原生 ::marker 是悬挂的，list-style-position: outside，正文起点固定。）
+   三条试过的路线，均已排除：
+     ① 数字悬挂（.list-number 改 position:absolute + 标记段固定宽度）：正文起点完美对齐
+        （1/2/3 位均 0.0px）且无序不用动，但**光标所在行会跳动 51px** —— 该行不生成
+        .list-number（装饰跳过与选区相交的 mark），渲染的是原始 markdown、数字仍在流内。
+        无法修（活动行结构不受主题控制），故放弃。
+     ② 标记段固定宽度（有序+无序都设 width、数字右对齐）：活动行不跳动，正文起点永久对齐
+        （1位/2位/无序全 = 86.0），还顺带消除 9→10 时正文右移 20px 的隐性跳动；
+        代价是正文整体右移 13px、缩进变深、2 位数时间隙变窄。用户评估后认为不值。
+     ③ 只给无序加 padding-inline-end：能把无序正文推到有序位置，但有序仍随位数变化，等于放弃一致性。
+   现状（保持）：**行首光标精确对齐**（--list-ol-h-adjust: 0，实测差 0.00px）；
+   正文起点随位数变化 —— 这是编辑视图行内标记的固有特性，不是 bug。 */
+:root {
+  --list-ol-marker-size-1: 1em;
+  --list-ol-marker-size-2: 1em;
+  --list-ol-marker-size-3: 1.1em;
+  --list-ol-marker-size-4: 1em;
+  /* 序号整体左移量。默认 0：序号的**光标**与无序列表精确对齐（实测差 0.00px）。
+     设为正值会把序号左移、改为与无序列表的**符号**对齐，但光标会跟着一起移
+     （序号是普通文本，字形与光标共用同一坐标，无法解耦），且序号与正文之间的
+     视觉空隙会等量变大 —— 这正是「未知空白」的来源。
+     这两种对齐互斥：无序列表的符号是伪元素、以标记点为圆心绘制（向左伸 0.5em），
+     所以符号字形永远比它自己的光标靠左；而序号没有这个自由度。
+     历史：默认曾是 0.35em（按「与符号左对齐」的诉求加的），实测发现它同时把光标
+     左推了 0.35em、并制造出等宽空隙，用户确认改为「光标对齐优先」后归零。 */
+  --list-ol-h-adjust: 0em;
+  /* 序号容器比数字本身宽（左侧对齐留白，右侧尾部空格），虚影按容器画就会胖出去；
+     这里先按此值向内收，再按「虚影光环大小」向外扩。数值越大虚影越贴数字。 */
+  --list-ol-ghost-pad-x: 0.15em;
+  /* 虚影默认值与无序列表一致：第 1 层 0.1em 光环，其余 0（不显示） */
+  --list-ol-ghost-color-1: var(--background-modifier-hover);
+  --list-ol-ghost-color-2: var(--background-modifier-hover);
+  --list-ol-ghost-color-3: var(--background-modifier-hover);
+  --list-ol-ghost-color-4: var(--background-modifier-hover);
+  --list-ol-ghost-size-1: 0.1em;
+  --list-ol-ghost-size-2: 0em;
+  --list-ol-ghost-size-3: 0em;
+  --list-ol-ghost-size-4: 0em;
+  --list-ol-ghost-offset-x-1: 0em;
+  --list-ol-ghost-offset-x-2: 0em;
+  --list-ol-ghost-offset-x-3: 0em;
+  --list-ol-ghost-offset-x-4: 0em;
+  --list-ol-ghost-offset-y-1: 0.05em;
+  --list-ol-ghost-offset-y-2: 0.1em;
+  --list-ol-ghost-offset-y-3: 0.1em;
+  --list-ol-ghost-offset-y-4: 0.1em;
+}
+/* 序号颜色默认值（亮/暗模式分别定义；Style Settings 注入优先） */
+body.theme-light {
+  --list-ol-marker-color-1: #2B4490;
+  --list-ol-marker-color-2: #2B4490;
+  --list-ol-marker-color-3: #2B4490;
+  --list-ol-marker-color-4: #2B4490;
+}
+body.theme-dark {
+  --list-ol-marker-color-1: #D6821E;
+  --list-ol-marker-color-2: #D6821E;
+  --list-ol-marker-color-3: #D6821E;
+  --list-ol-marker-color-4: #D6821E;
+}
+
+/* --- 阅读模式：原生 ::marker，只能调字号与颜色（层级按 ol 嵌套链判定） --- */
+.markdown-rendered ol > li::marker {
+  font-size: var(--list-ol-marker-size-1);
+  color: var(--list-ol-marker-color-1, var(--list-marker-color));
+}
+.markdown-rendered ol > li > ol > li::marker {
+  font-size: var(--list-ol-marker-size-2);
+  color: var(--list-ol-marker-color-2, var(--list-marker-color));
+}
+.markdown-rendered ol > li > ol > li > ol > li::marker {
+  font-size: var(--list-ol-marker-size-3);
+  color: var(--list-ol-marker-color-3, var(--list-marker-color));
+}
+.markdown-rendered ol > li > ol > li > ol > li > ol > li::marker {
+  font-size: var(--list-ol-marker-size-4);
+  color: var(--list-ol-marker-color-4, var(--list-marker-color));
+}
+
+/* --- 编辑视图：字号 / 颜色（基础规则即第 4 层兜底，层级特异性覆盖） ------ */
+.markdown-source-view.mod-cm6 .HyperMD-list-line .list-number {
+  position: relative;
+  z-index: 0;   /* 建立层叠上下文，把下面 ::before 的 z-index:-1 限制在本元素内 */
+  /* 相对定位左移：只移动序号本身，不影响后续正文（默认 0，见 :root 里该变量的说明）。
+     注意 left 会**同时移动字形与光标**（同一坐标），所以它无法「只对齐字形」；
+     用户已确认「光标与无序列表对齐」优先，故默认值为 0。 */
+  left: calc(var(--list-ol-h-adjust, 0em) * -1);
+  font-size: var(--list-ol-marker-size-4);
+  color: var(--list-ol-marker-color-4, var(--list-marker-color));
+  --list-ol-ghost-size-current: var(--list-ol-ghost-size-4, 0em);
+  --list-ol-ghost-offset-x-current: var(--list-ol-ghost-offset-x-4, 0em);
+  --list-ol-ghost-offset-y-current: var(--list-ol-ghost-offset-y-4, 0em);
+  --list-ol-ghost-color-current: var(--list-ol-ghost-color-4, var(--background-modifier-hover));
+}
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-1 .list-number {
+  font-size: var(--list-ol-marker-size-1);
+  color: var(--list-ol-marker-color-1, var(--list-marker-color));
+  --list-ol-ghost-size-current: var(--list-ol-ghost-size-1, 0em);
+  --list-ol-ghost-offset-x-current: var(--list-ol-ghost-offset-x-1, 0em);
+  --list-ol-ghost-offset-y-current: var(--list-ol-ghost-offset-y-1, 0em);
+  --list-ol-ghost-color-current: var(--list-ol-ghost-color-1, var(--background-modifier-hover));
+}
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-2 .list-number {
+  font-size: var(--list-ol-marker-size-2);
+  color: var(--list-ol-marker-color-2, var(--list-marker-color));
+  --list-ol-ghost-size-current: var(--list-ol-ghost-size-2, 0em);
+  --list-ol-ghost-offset-x-current: var(--list-ol-ghost-offset-x-2, 0em);
+  --list-ol-ghost-offset-y-current: var(--list-ol-ghost-offset-y-2, 0em);
+  --list-ol-ghost-color-current: var(--list-ol-ghost-color-2, var(--background-modifier-hover));
+}
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-3 .list-number {
+  font-size: var(--list-ol-marker-size-3);
+  color: var(--list-ol-marker-color-3, var(--list-marker-color));
+  --list-ol-ghost-size-current: var(--list-ol-ghost-size-3, 0em);
+  --list-ol-ghost-offset-x-current: var(--list-ol-ghost-offset-x-3, 0em);
+  --list-ol-ghost-offset-y-current: var(--list-ol-ghost-offset-y-3, 0em);
+  --list-ol-ghost-color-current: var(--list-ol-ghost-color-3, var(--background-modifier-hover));
+}
+.markdown-source-view.mod-cm6 .HyperMD-list-line.HyperMD-list-line-4 .list-number {
+  font-size: var(--list-ol-marker-size-4);
+  color: var(--list-ol-marker-color-4, var(--list-marker-color));
+  --list-ol-ghost-size-current: var(--list-ol-ghost-size-4, 0em);
+  --list-ol-ghost-offset-x-current: var(--list-ol-ghost-offset-x-4, 0em);
+  --list-ol-ghost-offset-y-current: var(--list-ol-ghost-offset-y-4, 0em);
+  --list-ol-ghost-color-current: var(--list-ol-ghost-color-4, var(--background-modifier-hover));
+}
+
+/* --- 编辑视图虚影：胶囊形，几何由各层 --list-ol-ghost-*-current 驱动 -------
+   垂直：固定高度 + 居中，不受行高影响（行高会把容器撑高，虚影跟着变胖）。
+   水平：容器比数字宽（尾部空格 + 对齐留白），先按 --list-ol-ghost-pad-x 向内收贴住数字，
+         再按「光环大小」向外扩。 --------------------------------------------- */
+.markdown-source-view.mod-cm6 .HyperMD-list-line .list-number::before {
+  content: '' !important;
+  position: absolute !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+  top: 50% !important;
+  height: calc(1em + var(--list-ol-ghost-size-current, 0em) * 2) !important;
+  margin-top: calc((1em + var(--list-ol-ghost-size-current, 0em) * 2) * -0.5) !important;
+  left: calc((var(--list-ol-ghost-pad-x, 0.15em) - var(--list-ol-ghost-size-current, 0em)) * -1) !important;
+  right: calc((var(--list-ol-ghost-pad-x, 0.15em) - var(--list-ol-ghost-size-current, 0em)) * -1) !important;
+  border-radius: 999px !important;
+  background-color: var(--list-ol-ghost-color-current, var(--background-modifier-hover)) !important;
+  transform: translate(var(--list-ol-ghost-offset-x-current, 0em), var(--list-ol-ghost-offset-y-current, 0em)) scale(0) !important;
+}
+
+/* --- 虚影浮现：与无序列表同一套触发（悬停折叠箭头 / 已折叠） -------------- */
+@media (hover: hover) {
+  .list-collapse-indicator:hover~.list-number:before,
+  .cm-fold-indicator:hover~.list-number:before,
+  .list-collapse-indicator:hover~.cm-formatting-list .list-number:before,
+  .cm-fold-indicator:hover~.cm-formatting-list .list-number:before {
+    transform: translate(var(--list-ol-ghost-offset-x-current, 0em), var(--list-ol-ghost-offset-y-current, 0em)) scale(1) !important;
+  }
+}
+li.is-collapsed .list-number:before,
+.is-collapsed~.cm-formatting-list .list-number:before {
+  transform: translate(var(--list-ol-ghost-offset-x-current, 0em), var(--list-ol-ghost-offset-y-current, 0em)) scale(1) !important;
+}
+
+/* --- 兜底层：**没有 .list-number 的标记段** -------------------------------
+   Obsidian 提交行内装饰时会跳过与选区相交的 mark（app.js buildDeco）：
+     o = function(e,t){ return LL(n,e,t) || OL(i,r,e,t) }   // n = 选区的 ranges
+     p = function(e){ if(c){ if(o(i,r)){ 只加 always 装饰 } else { 加全部装饰 } } }
+   .list-number 不是 always 装饰，所以**凡标记段与选区相交的行**都不生成它，
+   只剩 CM6 原生的 .cm-formatting-list-ol 包着源码文本。
+
+   ⚠️ 受影响的行**不等于「活动行」**：`.cm-active` 只挂在 selection.head 那一行
+   （app.js: Zz=nn.line({attributes:{class:"cm-active"}})，按 lineBlockAt(head) 施加），
+   而拖拽选择 / 跨行选区会让选区覆盖的**每一行**都命中抑制条件。
+   所以这里**不按 .cm-active 判断**，而是按「有没有 .list-number」这个事实本身 ——
+   主规则（上面的 .list-number 那批）管有的行，本层兜住没有的行，两者互斥、不会重复偏移。
+   （.list-number 只在实时预览里生成，故必须限定 .is-live-preview。另一条
+     .markdown-source-view 下的列表缩进也用同一分流，见 app.css --list-padding-inline-start。）
+
+   本层补的是**视觉**：偏移量 + 逐层字号 + 逐层颜色。不补的话这些行会整体退回
+   源码样式 —— 灰字（app.css `.cm-s-obsidian .cm-formatting-list`）、默认字号、
+   序号右移，也就是「活动行符号变灰」与「序号回退」两个现象。
+
+   虚影**不补**：它需要 .list-number 这个真实盒子来画胶囊，而本层只有裸文本；
+   且这些行正处于编辑中，显示源码是 Obsidian 的原生设计（无序列表同样如此）。 */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line .cm-formatting-list-ol:not(:has(.list-number)) {
+  position: relative;
+  left: calc(var(--list-ol-h-adjust, 0em) * -1);
+}
+/* 兜底字号 / 颜色：与 .list-number 那批逐层一致，设置项在两类行上表现相同 */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line-1 .cm-formatting-list-ol:not(:has(.list-number)) {
+  font-size: var(--list-ol-marker-size-1);
+  color: var(--list-ol-marker-color-1, var(--list-marker-color));
+}
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line-2 .cm-formatting-list-ol:not(:has(.list-number)) {
+  font-size: var(--list-ol-marker-size-2);
+  color: var(--list-ol-marker-color-2, var(--list-marker-color));
+}
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line-3 .cm-formatting-list-ol:not(:has(.list-number)) {
+  font-size: var(--list-ol-marker-size-3);
+  color: var(--list-ol-marker-color-3, var(--list-marker-color));
+}
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line-4 .cm-formatting-list-ol:not(:has(.list-number)) {
+  font-size: var(--list-ol-marker-size-4);
+  color: var(--list-ol-marker-color-4, var(--list-marker-color));
+}
+/* #endregion 有序列表 */

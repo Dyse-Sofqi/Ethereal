@@ -12,7 +12,10 @@ const outPath = process.argv[3];
 // Theme default overrides (official-variable layer). key = var name (no -- prefix);
 // string = same value both modes; {light,dark} = per-mode overrides (absent side stays official).
 const overridesPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "defaults.json");
-const overrides = fs.existsSync(overridesPath) ? JSON.parse(fs.readFileSync(overridesPath, "utf8")) : {};
+// 过滤掉 `_` 开头的说明键（defaults.json 里用 "_comment" 写文档），
+// 否则它们会被当成变量名，生成 `--_comment: <整段说明>;` 这种垃圾声明。
+const overridesRaw = fs.existsSync(overridesPath) ? JSON.parse(fs.readFileSync(overridesPath, "utf8")) : {};
+const overrides = Object.fromEntries(Object.entries(overridesRaw).filter(([k]) => !k.startsWith("_")));
 
 const css = fs.readFileSync(appCssPath, "utf8");
 const lines = css.split("\n");
@@ -200,12 +203,28 @@ function descOf(v, type) {
   return parts.join("；") || null;
 }
 
+// 手工补充说明：这些官方变量在本主题里已被「Ethereal 定制」面板的逐层颜色项接管，
+// 改了没反应，需要在官方面板条目上给出指引 —— 否则用户只会觉得是 bug。
+// 写在这里而不是直接改 theme.css：官方面板由本脚本整体重写，手改会被覆盖。
+// 只加 description，不动 default / title / 条目本身（保持「零覆盖」原则）。
+const EXTRA_DESC = {
+  "list-marker-color":
+    "⚠️ 本主题的正文列表标记颜色（无序列表符号、有序列表序号）已改由「Ethereal 定制 → 正文排版 → 无序列表 / 有序列表」的逐层「符号颜色 / 数字颜色」接管，此项对正文列表无效。仍对 Bases 表格的行号生效。",
+  "list-marker-color-hover":
+    "⚠️ 本主题的无序列表符号与虚影由「Ethereal 定制」接管，此项对列表无效。",
+  "list-marker-color-collapsed":
+    "⚠️ 本主题的无序列表符号与虚影由「Ethereal 定制」接管，此项对列表无效。",
+};
+
 // ---------- build ----------
 const items = [];
 for (const v of vars) {
   const c = classify(v);
   const type = displayType(v);
-  const defaultVal = type === "themed"
+  // 注意：必须用 let —— 下面 defaults.json 的字符串覆盖会整体重新赋值（非 themed 分支），
+  // 写成 const 会在「任何一个非主题色变量带覆盖」时直接抛
+  // TypeError: Assignment to constant variable，脚本完全跑不起来。
+  let defaultVal = type === "themed"
     ? { light: normColor(v.light ?? v.body ?? v.dark), dark: normColor(v.dark ?? v.light ?? v.body) }
     : (v.dark ?? v.body ?? v.light) ?? "";
   // apply theme default overrides (scripts/defaults.json)
@@ -253,6 +272,9 @@ const MOVED_TO_CUSTOM = new Set([
   "checkbox-border-color", "checkbox-border-color-hover",
   "checkbox-margin-inline-start",
   "checklist-done-decoration", "checklist-done-color",
+  // 选中文本 Text selection（搬至定制面板「正文排版 → 文本样式 → 选中文本」；
+  // 圆角是主题自有变量 --text-selection-radius，官方没有对应项）
+  "text-selection",
 ]);
 
 // ---------- emit ----------
@@ -359,6 +381,10 @@ for (const cat of CAT_ORDER) {
       // 常用官方变量已移至「Ethereal 定制」面板（唯一入口），此处跳过，避免重复
       if (MOVED_TO_CUSTOM.has(v.name)) continue;
       const d = descOf(v, type);
+      // 手工补充说明（EXTRA_DESC）：本主题已接管该变量的用途时，在条目上给出指引。
+      // 与自动生成的说明合并，手工的那条放前面（用户最需要先看到）。
+      const extra = EXTRA_DESC[v.name];
+      const desc = extra ? (d ? `${extra} ${d}` : extra) : d;
       // collect light fallback for dual text vars
       const lightV = v.light ?? v.body;
       if (type === "text" && lightV !== null && lightV !== (v.dark ?? v.body)) {
@@ -387,8 +413,8 @@ ${type === "themed"
         ? `        format: hex
         default-light: ${yq(defaultVal.light)}
         default-dark: ${yq(defaultVal.dark)}`
-        : `        default: ${yq(defaultVal)}`}${d ? `
-        description: ${yq(d)}` : ""}
+        : `        default: ${yq(defaultVal)}`}${desc ? `
+        description: ${yq(desc)}` : ""}
 `);
     }
   }

@@ -15,11 +15,41 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Create Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" \
-            --title "${GITHUB_REF_NAME}" \
-            --generate-notes \
-            manifest.json theme.css
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+
+          # 幂等：release 已存在时直接跳过。
+          # 发版有两条路径 —— ① 推 tag 让本工作流建；② 用 REST API 先建好 release 再建 tag。
+          # 路径 ② 下 `gh release create` 必然报「已存在」→ 仓库挂红叉，所以先探测。
+          # 已存在时不要顺手 --clobber 上传 CI 产物：API 路径上传的资产已按 digest 逐项核对过。
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists — skipping creation (assets left as-is)."
+            gh release view "$tag" --json tagName,isDraft,assets \
+              --jq '"  tag=\(.tagName) draft=\(.isDraft) assets=\([.assets[].name] | join(", "))"'
+            exit 0
+          fi
+
+          # body 取 CHANGELOG.md 里该版本的章节，与历史 release 的格式保持一致
+          awk -v v="$tag" '
+            $0 ~ "^## \\[" v "\\]" { found = 1 }
+            found && NR > 1 && $0 ~ "^## \\[" && $0 !~ "^## \\[" v "\\]" { exit }
+            found { print }
+          ' CHANGELOG.md > _release_body.md
+
+          if [ -s _release_body.md ]; then
+            gh release create "$tag" \
+              --title "$tag" \
+              --notes-file _release_body.md \
+              manifest.json theme.css
+          else
+            echo "No CHANGELOG section for $tag — falling back to generated notes."
+            gh release create "$tag" \
+              --title "$tag" \
+              --generate-notes \
+              manifest.json theme.css
+          fi
