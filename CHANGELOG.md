@@ -5,6 +5,111 @@ All notable changes to this theme are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.5.2] - 2026-09-28
+
+**Overview.** Two vault snippets join the theme as self-contained merged
+layers, and their looks become the theme defaults: `Callout.css` as the third
+layer (settings under 「Ethereal 定制 → 组件 → Callouts」) and
+`Blank-line-hide.css` as the fourth (settings under 「Ethereal 定制 → 正文排版 →
+段落」). Eleven official layout/title/content callout variables moved from the
+official panel into the custom panel — a single entry point — with six of them
+re-defaulted to the snippet's look; eight theme-owned callout variables add
+controls the official set has no knob for, and the blank-line compression
+gained a height slider plus a native-restore toggle. The settings validator
+learned to parse `variable-select` `options:` lists.
+
+**功能构建.** 吞并 Callout.css 与 Blank-line-hide.css 为「Callout片段」「空白行
+片段」两层；官方 callout 布局/标题/内容变量 11 项上收定制面板并改写 6 项默认值，
+另增 8 项主题自有设置与两个开关；「段落」分组新增空白行行高滑杆（0–2em，默认
+0.5em）与原生恢复开关。
+**错误修复.** 校验脚本此前会把 `variable-select` 的 `options:` 子列表误判为
+独立的 id-less 设置项（报出成堆 "entry missing id" 与虚假重复 id），已修复并
+补齐选项完整性校验。
+
+### Added
+
+- **Callout layer** (「Ethereal 定制 → 组件 → Callouts」, 21 new entries; the
+  fourteen per-type colours such as `callout-tip` remain in the official panel).
+  The snippet's rules were merged verbatim at the end of `theme.css` under
+  `/* #region Callout片段 */`, with three integration decisions:
+
+  - **Official variables carry the look.** The container's border, radius and
+    padding and the title/content paddings, colours, sizes and weights are
+    consumed by Obsidian's own callout rules, so the layer re-declares none of
+    them — it only re-defaults six via `scripts/defaults.json` → the
+    「主题默认值（官方变量层）」region: `--callout-radius: 6px`,
+    `--callout-padding: 0px`, `--callout-title-color: var(--text-normal)`,
+    `--callout-title-padding: 4px 12px`, `--callout-title-weight: 600`,
+    `--callout-content-padding: 0px 12px`. Because they are panel settings too
+    (◉), every one of them stays user-tunable in one place.
+  - **Theme-owned variables are declared on `body`, not `:root`.** Their values
+    reference element-scoped variables — `--callout-color` is defined per
+    callout on `.callout`, so a `:root`-declared default would substitute on
+    `html`, find nothing, and silently invalidate (custom properties compute
+    where they are declared, not where they are consumed). `body` sees every
+    global variable and is also where Style Settings injects, so the defaults
+    remain overridable. The title's tint therefore lives in the rule itself —
+    `color-mix(in oklch, var(--callout-color) var(--callout-title-bg-alpha),
+    transparent)` — where `--callout-color` resolves per element, driven by an
+    injectable percentage slider (「标题底色浓度」, default 20%, 0% removes it).
+  - **The width-adaptive geometry is preserved with its full measurement
+    record** (2026-09-22, Obsidian 1.13.7 + Chrome 150): reading view keeps
+    `display: inline-block`, the edit view uses `display: block` +
+    `width: fit-content` — the same shrink-to-fit formula, widths identical to
+    the pixel — which keeps CM6's line-height table consistent because the
+    widget is a real block (the old inline-level widget hung a ~10px strut
+    descent below itself and shifted every following line). The minimum-width
+    floor stays on the `.cm-callout` widget, where `min(200px, 100%)` resolves
+    against the full line instead of the shrunken box.
+
+  The eight theme-owned settings: minimum width (`min(200px, 100%)`), title
+  tint opacity, title font stack, title alignment (`variable-select`, centre by
+  default — `flex-start` is the official look), icon/title gap, icon colour,
+  and two class toggles: **撑满整行** `callout-full-width` (off by default; on
+  restores the official full-width geometry) and **显示 tip 标注图标**
+  `callout-show-tip-icon` (the merged snippet hides the `tip` callout's icon by
+  default; written as `body:not(.callout-show-tip-icon)` so the hidden default
+  also holds without Style Settings). The snippet's two virtual types survive:
+  a callout type containing `empty` loses its whole title bar, `notitle` only
+  its title text; the dormant `body.shade-callout-style` compat rule is kept
+  for Style-Manager-style class toggles.
+
+- **Blank-line layer** (「Ethereal 定制 → 正文排版 → 段落」, 2 new entries).
+  The snippet compresses blank lines in the live-preview edit view — a line
+  holding only a line break shrinks to `--blank-line-height` (0.5em by
+  default), and so does any line sitting directly before or after a blockquote,
+  callout or heading, even a non-blank one (selector kept verbatim). The rules
+  are gated on `body:not(.blank-line-native)` — the inverse-class pattern, so
+  the compressed default also holds without Style Settings, and the
+  **空白行恢复原生** toggle (`blank-line-native`, off by default) restores
+  native full-height blank lines. The height is a 0–2em slider (step 0.05em):
+  0 hides blank lines completely, a value near the line height (e.g. 1.8em) is
+  close to the native look. The snippet's `--hover-color` definition ships
+  verbatim even though nothing consumes it, as insurance for external tools
+  that might read the variable name.
+
+### Fixed
+
+- **Validator support for `variable-select` options.** `parseEntries` used to
+  treat each `value:`/`label:` item under `options:` as an id-less entry,
+  producing bogus "entry missing id"/duplicate-id errors; it now attaches them
+  to `entry.options` (indent-aware, working for both panel indent styles) and
+  `variable-select` entries are checked for a non-empty options list where
+  every item has `value` and `label`.
+
+### Changed
+
+- **Panel accounting.** 「Ethereal 定制」171 → 194 entries / 136 → 158 settings;
+  「Ethereal 官方变量」907 → 896 / 820 → 809. The eleven moved ids are recorded
+  in `MOVED_TO_CUSTOM` (scripts/gen-settings.mjs) so a re-run of
+  `npm run gen:settings` skips them in the official panel, same as the
+  checkbox/text-selection moves before.
+- **Vault config.** The original `Callout.css` snippet was disabled in the
+  vault's `appearance.json` (`Blank-line-hide.css` was already off) — snippets
+  load after themes, so leaving one on would override the new panel settings;
+  the files themselves stay in `.obsidian/snippets/` for reference, like
+  `Custom.css` and `List.css`.
+
 ## [1.4.3] - 2026-09-22
 
 **Overview.** This release closes the two remaining gaps in the theme's own list

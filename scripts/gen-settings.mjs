@@ -275,6 +275,13 @@ const MOVED_TO_CUSTOM = new Set([
   // 选中文本 Text selection（搬至定制面板「正文排版 → 文本样式 → 选中文本」；
   // 圆角是主题自有变量 --text-selection-radius，官方没有对应项）
   "text-selection",
+  // 标注 Callouts（布局/标题/内容 11 项搬至定制面板「组件 → Callout」；
+  // 逐类颜色 callout-bug/…/callout-quote 共 14 项仍留官方面板。
+  // 六项默认值已按吞并的 Callout 片段改写，见 defaults.json）
+  "callout-border-width", "callout-border-opacity", "callout-padding",
+  "callout-radius", "callout-blend-mode",
+  "callout-title-color", "callout-title-padding", "callout-title-size", "callout-title-weight",
+  "callout-content-padding", "callout-content-background",
 ]);
 
 // ---------- emit ----------

@@ -25,7 +25,7 @@ settings:
     title: 'Usage'
     title.zh: '使用说明'
     type: info-text
-    description: "本面板收录日常最高频的样式设置（面向小白用户）：文字、背景、字体、圆角、标题颜色、链接、复选框与主题特色功能。带 ◉ 的选项为 Obsidian 官方变量（自「官方变量」面板整理而来，此处为唯一入口，修改直接作用于对应官方变量）；进阶、完整的官方变量请展开下方「Ethereal 官方变量」面板。"
+    description: "本面板收录日常最高频的样式设置（面向小白用户）：文字、背景、字体、圆角、标题颜色、链接、复选框、标注与主题特色功能。带 ◉ 的选项为 Obsidian 官方变量（自「官方变量」面板整理而来，此处为唯一入口，修改直接作用于对应官方变量）；进阶、完整的官方变量请展开下方「Ethereal 官方变量」面板。"
   -
     id: hd-c-common
     title: 'Essentials'
@@ -205,6 +205,26 @@ settings:
     description: 预览模式和阅读模式下，页面内大标题居中
     type: class-toggle
     default: true
+  -
+    id: blank-line-height
+    title: 'Blank line height'
+    title.zh: '空白行行高'
+    description: Height of blank lines in the live-preview edit view. A line holding only a line break shrinks to this height, and so does any line sitting directly before or after a blockquote, callout or heading — even a non-blank one (from the merged Blank-line-hide snippet; natively a blank line is a full line tall). 0 hides them completely; a value near your line height (e.g. 1.8em) is close to the native look.
+    description.zh: 实时预览编辑视图中空白行的高度 —— 只有一个换行符的空行会被压缩到此高度；紧邻引用块 / 标注 / 标题的行（即使不是空行）也同样压缩（源自吞并的 Blank-line-hide 片段；原生空行占满一整行）。0 为完全隐藏；接近行间距的值（如 1.8em）≈ 原生观感。
+    type: variable-number-slider
+    default: 0.5
+    min: 0
+    max: 2
+    step: 0.05
+    format: em
+  -
+    id: blank-line-native
+    title: 'Native blank lines'
+    title.zh: '空白行恢复原生'
+    description: Turn on to disable the compression above and let blank lines take their natural height again. Off by default, matching the merged snippet.
+    description.zh: 开启后停用上述压缩，空白行回到原生行高。默认关闭、保持吞并片段的外观。
+    type: class-toggle
+    default: false
   -
     id: hd-c-headings
     title: 'Headings'
@@ -1379,6 +1399,188 @@ settings:
     description.zh: 已完成任务的文字颜色。
     type: variable-text
     default: 'var(--text-muted)'
+  -
+    id: hd-c-callout
+    title: 'Callouts'
+    title.zh: '标注'
+    type: heading
+    level: 2
+    collapsed: true
+  -
+    id: callout-snippet-info
+    title: 'Note'
+    title.zh: '说明'
+    type: info-text
+    description: "本组由 CSS 片段 Callout.css 吞并而来，原片段可在外观设置中停用（片段若仍启用会加载在本主题之后，压过这里的一切设置）。带 ◉ 的是 Obsidian 官方 callout 变量（自官方面板上收，此处为唯一入口），默认值已按片段外观改写；其余为本主题自有变量。逐类标注颜色（tip / warning / info 等 14 种）仍在「Ethereal 官方变量」面板。另有两个虚拟类型：类型名含 empty 时隐藏整个标题栏（如 [note|empty]），含 notitle 时仅隐藏标题文字（如 [note|notitle]）。"
+  -
+    id: callout-radius
+    title: '◉ Border radius'
+    title.zh: '◉ 标注圆角'
+    description: Corner rounding of the whole callout box. Theme default 6px; Obsidian's own default is var(--radius-s), which follows the small theme radius.
+    description.zh: 标注容器的圆角。主题默认 6px（Obsidian 官方默认 var(--radius-s)，随「圆角」小档变化）。
+    type: variable-text
+    default: '6px'
+  -
+    id: callout-border-width
+    title: '◉ Border width'
+    title.zh: '◉ 标注边框宽度'
+    description: Border around the callout box. 0px (default) hides it; the border colour is the callout's type colour at the opacity of the next setting.
+    description.zh: 标注容器的边框宽度，默认 0px 即无边框；边框颜色为该标注的类型色，不透明度见下一项。
+    type: variable-text
+    default: '0px'
+  -
+    id: callout-border-opacity
+    title: '◉ Border opacity'
+    title.zh: '◉ 标注边框不透明度'
+    description: Opacity of the border colour. Only visible when the border width above is non-zero.
+    description.zh: 边框颜色的不透明度。仅在上一项边框宽度不为 0 时可见。
+    type: variable-text
+    default: '0.25'
+  -
+    id: callout-padding
+    title: '◉ Container padding'
+    title.zh: '◉ 标注容器内边距'
+    description: Padding of the callout box itself. Theme default 0px — spacing is provided by the title / content paddings below (Obsidian's own default is four size variables).
+    description.zh: 标注容器自身的内边距。主题默认 0px —— 间距改由下方「标题内边距 / 内容内边距」提供（Obsidian 官方默认是四组尺寸变量）。
+    type: variable-text
+    default: '0px'
+  -
+    id: callout-min-width
+    title: 'Minimum width'
+    title.zh: '标注最小宽度'
+    description: Floor for the shrink-to-fit width in the edit view, so a very short callout does not collapse to a sliver. Default min(200px, 100%) — grows to 200px at most, never wider than the available line.
+    description.zh: 编辑视图中自适应宽度下的最小宽度，防止极短的标注塌缩成一小条。默认 min(200px, 100%) —— 最多撑到 200px，且不超过可用行宽。
+    type: variable-text
+    default: 'min(200px, 100%)'
+  -
+    id: callout-full-width
+    title: 'Full width'
+    title.zh: '撑满整行'
+    description: Make callouts span the whole line instead of shrinking to fit their content. Off by default, matching the merged snippet — the edit view uses width fit-content and the reading view inline-block, two formulas that give identical widths.
+    description.zh: 开启后标注不再自适应内容宽度，而是像官方那样撑满整行。默认关闭、保持吞并片段的外观 —— 编辑视图用 fit-content 收缩、阅读视图用 inline-block，两种写法的收缩公式一致，宽度逐像素相同。
+    type: class-toggle
+    default: false
+  -
+    id: callout-title-color
+    title: '◉ Title color'
+    title.zh: '◉ 标注标题颜色'
+    description: Text colour of the title bar. Theme default var(--text-normal); the official default is inherit.
+    description.zh: 标题栏文字颜色。主题默认 var(--text-normal)（官方默认 inherit）。
+    type: variable-text
+    default: 'var(--text-normal)'
+  -
+    id: callout-title-size
+    title: '◉ Title size'
+    title.zh: '◉ 标注标题字号'
+    description: Font size of the title bar. inherit follows the body text size.
+    description.zh: 标题栏字号。inherit 跟随正文字号。
+    type: variable-text
+    default: 'inherit'
+  -
+    id: callout-title-weight
+    title: '◉ Title weight'
+    title.zh: '◉ 标注标题字重'
+    description: Font weight of the title bar. Theme default 600; the official default follows the body weight plus the bold modifier.
+    description.zh: 标题栏字重。主题默认 600（官方默认跟随正文字重加粗体修正量）。
+    type: variable-text
+    default: '600'
+  -
+    id: callout-title-padding
+    title: '◉ Title padding'
+    title.zh: '◉ 标注标题内边距'
+    description: Padding of the title bar. Theme default 4px 12px — the main source of a callout's vertical breathing room.
+    description.zh: 标题栏内边距。主题默认 4px 12px（官方默认 0），是标注上下留白的主要来源。
+    type: variable-text
+    default: '4px 12px'
+  -
+    id: callout-title-bg-alpha
+    title: 'Title tint opacity'
+    title.zh: '标题底色浓度'
+    description: Strength of the tinted title bar, mixed from the callout's own type colour. Default 20%; 0% removes the tint. The content area keeps the official 10% type-colour wash underneath.
+    description.zh: 标题栏底色的浓度，由该标注的类型色混合而来，默认 20%；0% 即无底色。内容区仍透出容器自带的 10% 类型色底。
+    type: variable-number-slider
+    default: 20
+    min: 0
+    max: 100
+    step: 1
+    format: '%'
+  -
+    id: callout-title-font
+    title: 'Title font'
+    title.zh: '标题字体'
+    description: Font stack of the title bar, degrading gracefully — Segoe UI (Windows UI face), Cambria Math (math-flavoured serif), Source Han Serif SC VF (CJK serif), then the app default font.
+    description.zh: 标题栏字体栈，逐级回退 —— Segoe UI（Windows 界面字体）→ Cambria Math（偏数学的衬线）→ 思源宋体可变字体 → 应用默认字体。
+    type: variable-text
+    default: "'Segoe UI', 'Cambria Math', 'Source Han Serif SC VF', var(--font-default)"
+  -
+    id: callout-title-align
+    title: 'Title alignment'
+    title.zh: '标题对齐'
+    description: Horizontal alignment of the icon and title inside the title bar (the flex row's justify-content). Default centre; flex-start matches Obsidian's own left alignment.
+    description.zh: 标题栏内「图标 + 标题」的水平对齐（flex 行的 justify-content）。默认居中；左对齐（flex-start）即官方样式。
+    type: variable-select
+    default: 'center'
+    options:
+      -
+        value: 'center'
+        label: '居中 Center'
+      -
+        value: 'flex-start'
+        label: '左对齐 Flex-start'
+      -
+        value: 'flex-end'
+        label: '右对齐 Flex-end'
+      -
+        value: 'space-between'
+        label: '两端 Space-between'
+  -
+    id: callout-title-gap
+    title: 'Title gap'
+    title.zh: '标题间距'
+    description: Gap between the type icon and the title text. Theme default 8px (official 4px).
+    description.zh: 图标与标题文字之间的间距。主题默认 8px（官方为 4px）。
+    type: variable-text
+    default: '8px'
+  -
+    id: callout-icon-color
+    title: 'Icon color'
+    title.zh: '图标颜色'
+    description: Colour of the type icon in the title bar. Default var(--text-normal), same as the title text.
+    description.zh: 标题栏类型图标的颜色。默认 var(--text-normal)，与标题文字同色。
+    type: variable-text
+    default: 'var(--text-normal)'
+  -
+    id: callout-show-tip-icon
+    title: 'Show tip icon'
+    title.zh: '显示 tip 标注图标'
+    description: The merged snippet hides the icon of tip callouts (their titles are usually written by hand); turn this on to show it again. Other types are unaffected.
+    description.zh: 吞并的片段默认隐藏 tip 标注的图标（这类标注通常自拟标题）；开启后重新显示。其余类型不受影响。
+    type: class-toggle
+    default: false
+  -
+    id: callout-content-padding
+    title: '◉ Content padding'
+    title.zh: '◉ 标注内容内边距'
+    description: Padding of the content area under the title bar. Theme default 0px 12px — the sides line up with the title.
+    description.zh: 标题栏下方内容区的内边距。主题默认 0px 12px（官方默认 0），左右与标题对齐。
+    type: variable-text
+    default: '0px 12px'
+  -
+    id: callout-content-background
+    title: '◉ Content background'
+    title.zh: '◉ 标注内容背景色'
+    description: Background of the content area. Transparent by default so the callout's own 10% type-colour wash shows through.
+    description.zh: 内容区背景色。默认 transparent，透出标注容器自带的 10% 类型色底。
+    type: variable-text
+    default: 'transparent'
+  -
+    id: callout-blend-mode
+    title: '◉ Blend mode'
+    title.zh: '◉ 标注混合模式'
+    description: Mix-blend-mode of the whole callout. Default follows the theme's highlight blend mode.
+    description.zh: 整个标注的混合模式，默认跟随主题的高亮混合模式。
+    type: variable-text
+    default: 'var(--highlight-mix-blend-mode)'
 */
 
 /* #endregion Ethereal 定制 */
@@ -4077,72 +4279,6 @@ settings:
         type: heading
         level: 2
         collapsed: true
-
-    -
-        id: callout-border-width
-        title: '◉ 标注边框宽度'
-        type: variable-text
-        default: '0px'
-
-    -
-        id: callout-border-opacity
-        title: '◉ 标注边框不透明度'
-        type: variable-text
-        default: '0.25'
-
-    -
-        id: callout-padding
-        title: '◉ 标注内边距'
-        type: variable-text
-        default: 'var(--size-4-3) var(--size-4-3) var(--size-4-3) var(--size-4-6)'
-
-    -
-        id: callout-radius
-        title: '◉ 标注圆角'
-        type: variable-text
-        default: 'var(--radius-s)'
-
-    -
-        id: callout-blend-mode
-        title: '◉ 标注混合模式'
-        type: variable-text
-        default: 'var(--highlight-mix-blend-mode)'
-
-    -
-        id: callout-title-color
-        title: '◉ 标注标题色'
-        type: variable-text
-        default: 'inherit'
-
-    -
-        id: callout-title-padding
-        title: '◉ 标注标题内边距'
-        type: variable-text
-        default: '0'
-
-    -
-        id: callout-title-size
-        title: '◉ 标注标题大小'
-        type: variable-text
-        default: 'inherit'
-
-    -
-        id: callout-title-weight
-        title: '◉ 标注标题字重'
-        type: variable-text
-        default: 'calc(var(--font-weight) + var(--bold-modifier))'
-
-    -
-        id: callout-content-padding
-        title: '◉ 标注内容内边距'
-        type: variable-text
-        default: '0'
-
-    -
-        id: callout-content-background
-        title: '◉ 标注内容背景色'
-        type: variable-text
-        default: 'transparent'
 
     -
         id: callout-bug
@@ -7247,6 +7383,12 @@ body.theme-dark.css-settings-manager.theme-dark {
   --list-indent-editing: 0.5em;
   --code-border-width: 1px;
   --code-radius: 6px;
+  --callout-padding: 0px;
+  --callout-radius: 6px;
+  --callout-title-color: var(--text-normal);
+  --callout-title-padding: 4px 12px;
+  --callout-title-weight: 600;
+  --callout-content-padding: 0px 12px;
 }
 
 /* 官方 app.css 中大部分此类变量定义在 body 级；:root 覆盖会被“就近继承”
@@ -7293,6 +7435,12 @@ body {
   --list-indent-editing: 0.5em;
   --code-border-width: 1px;
   --code-radius: 6px;
+  --callout-padding: 0px;
+  --callout-radius: 6px;
+  --callout-title-color: var(--text-normal);
+  --callout-title-padding: 4px 12px;
+  --callout-title-weight: 600;
+  --callout-content-padding: 0px 12px;
 }
 /* 明暗差异化变量：按模式分别锁定（无差异变量的模式不覆盖，保持官方值） */
 body.theme-light {
@@ -8293,3 +8441,206 @@ li.is-collapsed .list-number:before,
   color: var(--list-ol-marker-color-4, var(--list-marker-color));
 }
 /* #endregion 有序列表 */
+
+/* #region Callout片段 */
+/* ==========
+ * 吞并片段：Callout（源自 CSS 片段 Callout.css）
+ * ------------------------------------------------------------
+ * 独立性：设置入口在「Ethereal 定制 → 组件 → Callout」。原片段文件
+ * Callout.css 可在 Obsidian 外观设置中停用，效果与本层一致；片段若仍启用，
+ * 会加载在本主题之后，同名规则将压过本层与面板设置。
+ *
+ * 与官方的关系：容器圆角/边框/混合模式、标题与内容的内边距/颜色/字号/字重
+ * 走 Obsidian 官方 callout 变量（官方 app.css 自行消费），本层不重写这些属性；
+ * 六个默认值已按片段外观改写（callout-padding 0px、callout-radius 6px、
+ * callout-title-color var(--text-normal)、callout-title-padding 4px 12px、
+ * callout-title-weight 600、callout-content-padding 0px 12px），数据源
+ * scripts/defaults.json，映射在文件中部「主题默认值（官方变量层）」区域。
+ *
+ * 主题自有变量（在 body 级声明：值内含 var() 引用，必须在 body 上求值 ——
+ * 声明在 :root 会因 var 在 html 上提前求值而失效；Style Settings 的注入值
+ * 同样落在 body 行内样式，恰好可覆盖这里的默认值）：
+ *   --callout-min-width      自适应宽度下的最小宽度地板
+ *   --callout-title-bg-alpha 标题底色浓度（对类型色 --callout-color 做 color-mix）
+ *   --callout-title-font     标题字体栈
+ *   --callout-title-align    标题水平对齐（justify-content）
+ *   --callout-title-gap      图标与标题的间距
+ *   --callout-icon-color     标题图标颜色
+ * ========== */
+
+body {
+  --callout-min-width: min(200px, 100%);
+  --callout-title-bg-alpha: 20%;
+  --callout-title-font: 'Segoe UI', 'Cambria Math', 'Source Han Serif SC VF', var(--font-default);
+  --callout-title-align: center;
+  --callout-title-gap: 8px;
+  --callout-icon-color: var(--text-normal);
+}
+
+/* 对于特别小的callout，调整最小宽度 */
+@media (max-width: 400px) {
+  .callout {
+    width: 100% !important;
+  }
+}
+
+.callout {
+  /* --callout-color 由官方 .callout / 逐类型规则定义，此处只消费不重定义；
+     容器 padding/border/border-radius 交由官方规则消费默认值改写后的变量 */
+  margin: 1em 0;
+  overflow: hidden;
+  height: auto;
+  width: auto;
+  display: flow-root;
+  max-width: 100%;
+  min-width: var(--callout-min-width, min(200px, 100%));
+}
+
+.callout-title {
+  /* 让标题栏背景变为 20% 浓度的类型色（浓度可在面板调整）；
+     var(--callout-color) 写在规则里而非自定义属性里，使其在 .callout-title 上
+     求值 —— 该变量定义在 .callout 元素上，:root/body 层拿不到 */
+  background-color: color-mix(in oklch, var(--callout-color, var(--interactive-accent)) var(--callout-title-bg-alpha, 20%), transparent);
+  font-family: var(--callout-title-font, var(--font-default));
+  justify-content: var(--callout-title-align, center);
+  gap: var(--callout-title-gap, 8px);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.callout-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--callout-icon-color, var(--text-normal));
+}
+
+.callout-content {
+  height: auto;
+  width: auto;
+  min-height: 0;
+  box-sizing: border-box;
+}
+/* 修复高度差异 */
+/* 含义：子元素的高度 = 父元素内容的100% + 额外的8px */
+/* 通过负margin将子元素向上拉8px，视觉上抵消额外的高度 */
+.markdown-rendered.el-div > div {
+  height: calc(100% + 8px) !important;
+  margin-bottom: -8px !important;
+}
+
+/* 调整表格样式以适应callout内容 */
+:is(.markdown-preview-section,.markdown-rendered) table:not(:is(.dataview.table-view-table,.table-editor)) {
+  border-collapse: collapse;
+  overflow: auto;
+  margin: 10px auto;
+}
+
+/* callout 宽度自适应（默认开；关闭见下方「撑满整行」开关）
+ *
+ * ⚠️ 规则来源与取舍说明（2026-09-22 实测，Obsidian 1.13.7 + Chrome 150）：
+ *   - 本条原为旧版 Obsidian app.css 的复制品，目的是让 callout **宽度自适应**
+ *     （贴合内容，而不是撑满整行）。
+ *   - 旧写法 display: inline-block 的副作用：它把块 widget 变成**行内级**，
+ *     以基线对齐参与匿名行盒，行盒在 widget 盒底之下还会挂出约半个行高的
+ *     strut descent 空隙（本环境实测 10px）→ CM6 行高表只测量 widget 盒本身
+ *     → callout 之后每一行的 DOM 位置都比行高表低 10px → 点击这些行下半部 /
+ *     按住拖拽时，选区错位到下一行同一列。
+ *   - 现写法 display: block + width: fit-content：fit-content 就是 inline-block
+ *     的 shrink-to-fit 公式，宽度自适应**逐像素一致**（实测长/短 callout 均为
+ *     350.88px / 86.34px，与 inline-block 完全相同，高度也同为 120px）；而块级
+ *     是 Obsidian 原生几何（widget 自身即一行，没有匿名行盒）→ 行高表天然一致
+ *     （实测各行 delta = 0），**不再依赖任何插件侧补偿**。
+ *   - MDRazor 侧的 vertical-align: bottom + padding-bottom: 10px 如今只剩「把
+ *     原来那段 10px 空隙留成视觉间距」的作用：删掉它只会让 callout 下方少 10px
+ *     空白，几何依旧一致（可选，见 styles.css 同名注释）。
+ *   - 最小宽度地板：注意 min(200px, 100%) 只有加在 **widget**（.cm-callout）上才有效——
+ *     百分比的基准是"包含块"：widget 的包含块是 .cm-content（整行宽），故取 200px；
+ *     而内层 .callout 的包含块是 widget 自身（自适应后可能只有 86px），
+ *     min(200px, 86px) = 86px 会自我抵消（实测短 callout 正是因此只有 86.34px）。
+ *     现把地板写在下方的 widget 规则里，短 callout 由此撑到 200px。 */
+.markdown-reading-view .callout {
+  /* 阅读视图没有行高表，保持原样；如改为 block + fit-content，下方会少约 10px 空白 */
+  display: inline-block;
+}
+.markdown-source-view.mod-cm6 .cm-callout {
+  display: block;
+  width: fit-content;
+  /* 最小宽度地板：短 callout 撑到 200px，且不超过可用行宽 */
+  min-width: var(--callout-min-width, min(200px, 100%));
+}
+/* 撑满整行（class-toggle「callout-full-width」）：回到官方满宽几何，
+   仅覆盖宽度行为，display 保持块级（勿改回 inline-block，理由见上） */
+body.callout-full-width .markdown-reading-view .callout {
+  display: block;
+}
+body.callout-full-width .markdown-source-view.mod-cm6 .cm-callout {
+  width: auto;
+  min-width: 0;
+}
+
+/* 取消阴影（body.shade-callout-style 供外部工具切换，如 Style Manager 类插件） */
+body.shade-callout-style .callout {
+  border: none;
+  box-shadow: inset 0 0 0 2px rgba(var(--callout-color), 0), 0px 0px 0px 0px rgba(0, 0, 0, 1) !important;
+}
+
+/* 隐藏callout标注外边框 */
+.markdown-source-view.mod-cm6 .cm-embed-block:not(.cm-table-widget, .cm-lang-base):hover {
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* 隐藏特定样式图标（默认隐藏，面板「显示 tip 标注图标」可开回；
+   反向类写法保证未启用 Style Settings 时仍保持片段原行为） */
+body:not(.callout-show-tip-icon) .callout[data-callout="tip"] .callout-icon {
+  display: none !important;
+}
+
+/*隐藏整个标题栏*/
+.callout[data-callout*="empty"] .callout-title {
+  display: none;
+}
+/*仅隐藏标题*/
+.callout[data-callout*="notitle"] .callout-title-inner {
+  display: none;
+}
+/* #endregion Callout片段 */
+
+/* #region 空白行片段 */
+/* ==========
+ * 吞并片段：空白行（源自 CSS 片段 Blank-line-hide.css）
+ * ------------------------------------------------------------
+ * 独立性：设置入口在「Ethereal 定制 → 正文排版 → 段落」。原片段文件
+ * Blank-line-hide.css 可在 Obsidian 外观设置中停用，效果与本层一致；片段若
+ * 仍启用会加载在本主题之后，同名规则将压过本层与面板设置。
+ *
+ * 主题自有变量：--blank-line-height（非官方变量；压缩后空白行的高度，
+ * 面板滑杆「空白行行高」可调）。原片段还定义了 --hover-color，但全库无任何
+ * 规则消费它，这里照搬保留、不设面板项（防外部插件读取该变量名）。
+ *
+ * 门控：压缩默认开启，面板「空白行恢复原生」（body.blank-line-native）可整体
+ * 停用 —— 反向类写法保证未启用 Style Settings 时仍保持片段原行为。
+ * ========== */
+
+body {
+  --hover-color: var(--text-accent);
+  --blank-line-height: 0.5em;
+}
+
+/* 实时预览中紧邻引用块 / 标注 / 标题的行（无论是否为空行，选择器原文照搬） */
+body:not(.blank-line-native) .is-live-preview :is([class=cm-line]:has(+
+:is(.HyperMD-quote, .cm-callout, .HyperMD-header)),
+:is(.HyperMD-quote, .cm-callout, .HyperMD-header) + [class=cm-line]) {
+  line-height: var(--blank-line-height);
+  border-radius: var(--radius-s);
+}
+
+/* 实时预览模式空行（.cm-line 直接包含 <br>） */
+body:not(.blank-line-native) .markdown-source-view.mod-cm6 .cm-line:has(> br:only-child) {
+  line-height: var(--blank-line-height) !important;
+  min-height: var(--blank-line-height) !important;
+}
+/* #endregion 空白行片段 */

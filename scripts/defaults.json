@@ -45,5 +45,11 @@
   "indentation-guide-editing-indent": "0.6em",
   "list-indent-editing": "0.5em",
   "code-border-width": "1px",
-  "code-radius": "6px"
+  "code-radius": "6px",
+  "callout-padding": "0px",
+  "callout-radius": "6px",
+  "callout-title-color": "var(--text-normal)",
+  "callout-title-padding": "4px 12px",
+  "callout-title-weight": "600",
+  "callout-content-padding": "0px 12px"
 }

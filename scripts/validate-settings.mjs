@@ -54,17 +54,58 @@ function yamlScalarType(raw) {
 //         type: ...
 //         level: 1   (headings only)
 //         default/default-light/default-dark/format/description: ...
+// variable-select entries carry a nested options: list
+//     -
+//         id: ...
+//         type: variable-select
+//         options:
+//           -
+//             value: 'x'
+//             label: 'X'
+// Option items are attached to entry.options (never treated as entries —
+// the naive "dash = new entry" rule would turn each into a bogus id-less entry).
 function parseEntries(text) {
   const raw = text.split("\n");
   const entries = [];
-  let cur = null;
+  let cur = null; // current entry
+  let opt = null; // current option item inside cur.options
+  let inOptions = false;
+  let dashIndent = 0; // indent of the current entry's "-" line
+  let keyIndent = 0; // indent of the current entry's keys
   for (const l0 of raw) {
     const l = l0.replace(/\r$/, ""); // tolerate CRLF working-tree copies (git autocrlf)
-    if (/^\s+-\s*$/.test(l)) { if (cur) entries.push(cur); cur = {}; continue; }
+    if (/^\s+-\s*$/.test(l)) {
+      const indent = l.match(/^\s*/)[0].length;
+      if (inOptions && indent > dashIndent) {
+        // option item opener: push the previous one, start a new one
+        if (opt) cur.options.push(opt);
+        opt = {};
+        continue;
+      }
+      if (cur) entries.push(cur);
+      cur = {}; opt = null; inOptions = false;
+      dashIndent = indent;
+      continue;
+    }
     if (!cur) continue;
-    const kv = l.match(/^\s+(\w[\w-]*):\s*(.*)$/);
-    if (kv) cur[kv[1]] = kv[2];
+    const kv = l.match(/^(\s*)(\w[\w-]*):\s*(.*)$/);
+    if (kv) {
+      const indent = kv[1].length;
+      if (inOptions) {
+        if (opt && indent > keyIndent) { opt[kv[2]] = kv[3]; continue; }
+        // key back at entry level (e.g. next entry's id:) ends the options list
+        if (opt) cur.options.push(opt);
+        opt = null; inOptions = false;
+      }
+      if (kv[2] === "options" && kv[3] === "") {
+        inOptions = true; keyIndent = indent; cur.options = [];
+        continue;
+      }
+      keyIndent = indent;
+      cur[kv[2]] = kv[3];
+    }
   }
+  if (opt) cur.options.push(opt);
   if (cur) entries.push(cur);
   return entries;
 }
@@ -114,6 +155,11 @@ blocks.forEach((m, bi) => {
     } else if (t === "variable-select") {
       const d = unquote(e.default);
       if (yamlScalarType(e.default) !== "string" || d === "") errors.push(`${label} ${e.id}: select default missing（且必须是 YAML 字符串）`);
+      const opts = e.options || [];
+      if (!opts.length) errors.push(`${label} ${e.id}: variable-select 缺少 options 列表（插件渲染为空下拉框）`);
+      opts.forEach((o, i) => {
+        if (!o.value || !o.label) errors.push(`${label} ${e.id}: option #${i + 1} 缺少 value/label（两行都必须有，且加引号）`);
+      });
     } else if (t === "class-toggle" || t === "class-select") {
       // no required fields; class-toggle default may be boolean
     } else if (t === "heading") {
