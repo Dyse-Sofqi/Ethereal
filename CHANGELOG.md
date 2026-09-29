@@ -5,6 +5,55 @@ All notable changes to this theme are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.5.3] - 2026-09-30
+
+**Overview.** A status-bar-only release, with no new settings: the bar keeps a
+single height from the first paint to the last plugin registration, and nothing
+that loads later can move it. The settled look is unchanged — 26px is where the
+bar already ended up on a normal vault — but it no longer ramps up to it.
+
+**功能构建.** 本次不新增功能，也不新增设置入口；状态栏几何改由两条**无条件规则**定义：
+高度预留 `.status-bar { min-height: 26px }`（22px 图标条目 + 上下各 2px），条目封顶
+`.status-bar-item { max-height: 22px }`。不做成开关是有意的：条目封顶之后，「不预留」
+那一态只在整条栏连一个图标条目都没有时才看得出来（纯文字条目 22px / 空栏 18px），
+对绝大多数库来说是个死设置。
+
+**错误修复.** 启动过程中状态栏「先窄后宽」。用 CDP 对真实启动逐帧采样（冷启动 + 重载各一次）
+定位到两段跳变：① 主题 CSS 比首绘晚 30–200ms 落地，空栏先从官方 18px 变成本主题的 26px；
+② 插件条目注册到位时整条栏从 26px 被撑到 34px —— 提词器插件的条目里包了一个 24px 的
+`.clickable-icon` 按钮（上下各 4px + 16px 图标），条目自身再加 3px×2 = 30px，而
+`.status-bar` 默认 `align-items: stretch` 会把最高条目应用到同排每一个条目。现在 ② 彻底
+消失，① 只剩首绘附近约一帧的交接（任何用 CSS 预留高度的主题都躲不掉，除非把状态栏压回
+官方 18px）。
+
+### Fixed
+
+- **Status-bar startup jump (先窄后宽).** Two changes, both measured against
+  Obsidian 1.13.7 with the official `app.css` + this `theme.css`:
+  - `.status-bar` reserves `min-height: 26px` (22px icon entry + the theme's 2px
+    padding), so no entry registration can move it. Official app.css renders
+    18px (empty) / 27px (text entry) / 31px (icon entry); the theme is a constant
+    26px in all three states.
+  - `.status-bar-item` is capped at `max-height: 22px`. Without the cap a plugin
+    entry that grows taller takes the whole bar with it: a teleprompter entry
+    (Glimpse) wraps a 24px `.clickable-icon` button (4px padding + 16px icon),
+    its own 3px padding makes that 30px, and `.status-bar`'s default
+    `align-items: stretch` drags every sibling entry to the same 30px — the bar
+    went to **34px** ~840ms into the boot, which is the jump users actually saw.
+    `max-height` is a different property from `height`, so plugin CSS loading
+    later cannot undo it — even a declared `height: 30px !important` stays
+    clamped (verified in the mock); only a plugin declaring its own
+    `max-height` / `min-height` can push past it. It caps the box without
+    clipping content (`overflow` stays visible), so icons still render.
+    Sampled timeline after the fix: 18px (official, pre-theme) → 26px when
+    `theme.css` lands → 26px for every later entry, including that one.
+
+  Both rules stay unconditional — no Style Settings switch. A switch that turns
+  the reservation off can only differ once the bar has no icon-bearing entry at
+  all (22px text-only / 18px empty), which is not a state most vaults reach; the
+  capped entry height makes the reservation the only sensible shape, so the
+  panel keeps one fewer dead option.
+
 ## [1.5.2] - 2026-09-28
 
 **Overview.** Two vault snippets join the theme as self-contained merged

@@ -7671,6 +7671,32 @@ body.highlight-strengthen .cm-s-obsidian span.cm-highlight {
 .status-bar {
   padding-top: 2px;
   padding-bottom: 2px;
+  /* 高度预留 —— 消除启动时「先窄后宽」。
+     高度账：官方 .status-bar-item 是 padding: 3px、line-height: 1，条目里只要有一个
+     16px 的图标（.status-bar-item .svg-icon { --icon-size: var(--icon-s) }），条目即
+     3+16+3 = 22px；纯文字条目 18px（核心「字数统计」）；核心 editor-status / sync 条目
+     padding 为 0、只有 12px，不参与撑高；官方 min-height: 18px 就是空栏的高度。
+     而条目是「后到」的：社区插件在 workspace 就绪之后才注册，核心「字数统计」要等打开
+     文件 —— 不预留的话栏高会 18 → 26 → 34 一路跳（34 是插件写死条目高度撑出来的，
+     见下面那条封顶规则；CDP 实测见 CHANGELOG 1.5.3）。
+     这里按 26px = 22px 条目 + 上下各 2px 预留。用 min-height 而非 height：万一有插件
+     条目更高（现已由下面的 max-height 兜住），也不会裁切内容。
+     不做成 Style Settings 开关：条目封顶之后「不预留」的那一态（22 / 18px）只在
+     「没有任何图标条目」时才出现，开关对绝大多数人是死设置。 */
+  min-height: 26px;
+}
+
+/* 状态栏条目高度上限 —— 让上面的 26px 预留永远够用。
+   条目的自然高度是 3px + 16px 图标 + 3px = 22px，但插件可以把内容做得更高：CDP 实测
+   提词器插件（Glimpse）的条目里包了一个 `.clickable-icon` 按钮（上下各 4px + 16px
+   图标 = 24px），条目自身再加 3px×2 → 30px；而 `.status-bar` 默认 `align-items:
+   stretch` 会把同一排条目一起拉到 30px —— 整条状态栏于是 34px，比预留高 8px，插件加载
+   完成那一刻就是一次可见跳变（实测时间线：theme.css 落地时 26px，该条目到位后 34px）。
+   max-height 与 height 是两个属性：插件 CSS 后加载、甚至写成 `height: 30px !important`
+   也照样被夹住（实测），只有插件自己声明 `max-height` / `min-height` 才可能顶开。
+   max-height 只封顶盒子、不裁切内容（overflow 默认 visible），图标照常显示。 */
+.status-bar-item {
+  max-height: 22px;
 }
 
 /* 平替原生：标题上方紧挨着另一个标题且中间只有一个空行 —— 收紧两标题的间距。
