@@ -5,6 +5,121 @@ All notable changes to this theme are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.5.4] - 2026-09-30
+
+**Overview.** A new 「Ethereal 定制 → 界面 → 背景」 group gives the main-area
+Markdown panes a background of their own: three drawn patterns (solid / grid /
+dots) plus a background image with fit, position and opacity. The drawn patterns
+can either stay pinned to the pane or **scroll with the document**, and a pair of
+offset sliders nudges their starting position. The patterns are pure CSS; the
+image is a variable only, because theme CSS cannot reach a file inside the vault.
+
+**功能构建.** 「界面」下新增 L2 分组「背景」，含四个 L3 子组：绘制背景、网格、点阵、
+背景图片，共 21 个设置项（定制面板 194 → 220 项 / 158 → 179 设置）。作用域刻意
+收在主区域的 Markdown 笔记窗格，侧边栏、其它 `data-type` 与悬浮预览都不受影响。
+网格为「细线 + 每 N 格一条粗线」，两者的颜色与不透明度各自可调；点阵提供圆形 /
+方形 / 菱形三种点形，另有间距、大小、颜色、不透明度；绘制背景另有「随文档滚动」
+开关与水平 / 垂直两个初始偏移滑杆。
+
+**分层与宿主（这一版的关键改动）.** 背景分两层画：「纸面」层仍是
+`.view-content`（官方在此声明 `--background-primary`），放白板纯色、背景图片与
+veil；**图案层则改挂到真正滚动的那个元素上** —— 编辑视图是
+`.cm-editor > .cm-scroller`，阅读视图是 `.markdown-reading-view >
+.markdown-preview-view`。改挂的理由有两条：一是 `.view-content` 自己**不滚动**
+（滚动发生在上面这两个后代里），挂在它上面时 `background-attachment: local`
+等于死设置；二是后代元素天然画在祖先背景之上，图案因此稳定地叠在图片层上方。
+两态只差 `background-attachment` 一个属性（`scroll` / `local`），默认 `scroll`。
+
+滚动容器是查证过的：`.cm-scroller` 的纵向滚动来自 CM6 baseTheme 的
+`overflow-x: auto`（另一轴的 `visible` 会**计算成 auto**）—— 这段在 `app.js` 里，
+`app.css` 查不到；阅读视图的 `.markdown-preview-view` 则是 `app.css` 明写
+`overflow-y: auto`，其高度来自官方在 `app.js` 里给 `.markdown-reading-view` 打的
+**内联** `width/height: 100%`。
+
+**验证.** 用「图案像素剖面互相关」量化，不靠肉眼：图案测试色取纯红、在右侧无文字区
+取纵向 / 横向剖面，两张截图（`scrollTop` = 0 与 137）求最佳位移。实测两个视图都满足：
+关闭开关时位移 ≡ 0，开启时 ≡ −137px（间距 20px 下 ≡ 3px）；偏移滑杆设 7/13 时
+x/y 位移分别 ≡ 7 与 ≡ 13。另有一项附带结论：两态在 `scrollTop = 0` 的相位差为
+**0px**，即拨动开关不会让图案跳一下。工具为 `bg-scroll-probe.cjs`（探针）、
+`bg-shot.cjs` / `bg-shot.sh`（27 个用例）、`mutate-bg.cjs`（8 条不变量的变异验证）。
+
+**错误修复.** 「随文档滚动」开关拨了没反应。Style Settings 的约定是 **`class-toggle`
+加的类名 = 设置项 id**（`class-select` 加的才是 option 的 value），这个开关的类名在 CSS
+里写成了 `ui-bg-scroll`，与 id `ui-background-scroll` 对不上 —— 类照样被加到 `body` 上，
+只是没有任何规则匹配它，**不报错、不警告，功能整个失效**。现已改正；并补上两道防线
+（`check-css.cjs` 的「类名对齐」通用守卫、mock 改用从 `theme.css` 抽出的真实类名），
+同类错误不会再静默溜过去。
+
+**已知限制（已写进面板说明）.**
+- 方形与菱形点阵的底色不透明，会盖住背景图片；想让图片透出来请用圆形。
+- 背景图片只能填 CSS 图片值（base64 data 地址或网络地址）。Obsidian 的主题 CSS
+  读不到库内文件 —— `file://` 与 `app://local/` 均被应用层拦截，官方文档只认可
+  base64 内嵌。想直接选仓库里的图片，需配合 *CSS Resource Variables* /
+  *Style Context* 这类插件，把图片映射到同一个变量名 `ui-background-image`。
+- 「随文档滚动」只作用于绘制图案：白板是纯色，背景图片始终固定在窗格上
+  （`cover` 图片若跟着滚，会被拉伸到整条文档长度）。
+
+### Added
+
+- **Note-area background (「Ethereal 定制 → 界面 → 背景」).** Three drawn
+  patterns — **solid**, **grid** (fine lines + a heavier line every N cells) and
+  **dots** (circle / square / diamond, with spacing, size, colour and opacity) —
+  painted on the main-area Markdown panes only, plus an optional background
+  image with fit / position / opacity.
+- **Scroll with document** (`ui-background-scroll`) and two **offset** sliders
+  (`ui-background-offset-x` / `-y`, ±200px). The pattern layer lives on the
+  element that actually scrolls — `.cm-editor > .cm-scroller` in the editor,
+  `.markdown-reading-view > .markdown-preview-view` in the reading view — so the
+  toggle is nothing more than `background-attachment: scroll` (default, pinned to
+  the pane) versus `local` (travels with the text). Being a descendant of
+  `.view-content` is also what keeps the pattern *above* the image layer.
+- The 「纸面」 layer stays on
+  `.workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] > .view-content`:
+  the element that already carries the official `--background-primary`. Its
+  reading-view background is made transparent so it cannot cover the pattern;
+  both layers are `var(--background-primary)`, so the baseline rule is a visual
+  no-op when the feature is off (verified by screenshot with and without Style
+  Settings).
+- Image opacity is a page-coloured veil layered between the pattern and the
+  image, so fading the image never fades the pattern.
+- Square and diamond dots use the dot colour as the base and cover everything
+  else with opaque page-coloured gradients — plain gradients cannot produce an
+  arbitrarily sized, arbitrarily spaced square or diamond (two `linear-gradient`
+  bands only ever intersect as a cross, and a `conic-gradient` quadrant is locked
+  to half the tile). The cost is stated in the panel: those two shapes cover a
+  background image.
+- `check-css.cjs` gained regression guards for the layer: the baseline image rule
+  must stay unconditional (scoping it to a mode class would silently kill the
+  background image whenever 「绘制背景」 is 「无」); every pattern rule must target
+  the scrolling containers rather than `.view-content` (both the "above the
+  image" and the "scrolls with the document" behaviours depend on it); each
+  pattern's `background-attachment` / `background-position` must stay
+  variable-driven; the defaults must be `scroll` + `body.ui-background-scroll → local`;
+  and the reading-view transparency rule must keep its direct-child chain so
+  embedded notes are not affected.
+
+### Changed
+
+- The drawn pattern moved from `.view-content` to the scrolling containers
+  (`.cm-editor > .cm-scroller` / `.markdown-reading-view > .markdown-preview-view`).
+  No visual change when 「随文档滚动」 is off — both hosts share the same origin
+  and size — but it is what makes the new toggle possible.
+- README panel counts: 「Ethereal 定制」 194 entries / 158 settings → **220 / 179**.
+- The 「UI」 row in the panel map now lists the Background sub-groups.
+
+### Fixed
+
+- **「随文档滚动」拨了没反应。** Style Settings 的约定是 **`class-toggle` 加的类名 =
+  设置项 id**，而 `class-select` 加的才是 option 的 value；这个开关的类名在 CSS 里写成了
+  `ui-bg-scroll`，与 id `ui-background-scroll` 对不上 —— 类照样被加到 `body` 上，
+  只是没有任何规则匹配它，**不报错、不警告，功能整个失效**。现已改正。
+- 为了不再犯：`check-css.cjs` 新增一条**通用守卫**，遍历两个面板的全部
+  `class-toggle` / `class-select`，逐个确认「插件会加的类名」在 CSS 里真的被引用
+  （当前 28 个，白名单只放 `ui-bg-none` —— 它靠「其它模式类都不存在」表达）；
+  `mutate-bg.cjs` 加了对应的变异体；`bg-shot.cjs` 也改成**从 `theme.css` 的
+  `@settings` 里读真实类名**再做白名单校验，写错直接报错退出 ——
+  这次之所以本地全绿而真机失效，正是因为 mock 里用的也是那串错名字。
+
 ## [1.5.3] - 2026-09-30
 
 **Overview.** A status-bar-only release, with no new settings: the bar keeps a

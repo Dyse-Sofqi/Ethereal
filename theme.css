@@ -1298,6 +1298,305 @@ settings:
     type: class-toggle
     default: true
   -
+    id: hd-c-ui-bg
+    title: 'Background'
+    title.zh: '背景'
+    type: heading
+    level: 2
+    collapsed: true
+  -
+    id: ui-bg-info
+    title: 'Note'
+    title.zh: '说明'
+    type: info-text
+    description: 背景只作用于主区域的 Markdown 笔记窗格（编辑器 + 阅读视图），侧边栏、其它类型标签页与悬浮预览都不受影响。绘制背景与背景图片可以叠加，图案画在图片之上。
+  -
+    id: hd-c-bg-draw
+    title: 'Drawn background'
+    title.zh: '绘制背景'
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: ui-background-style
+    title: 'Style'
+    title.zh: '背景样式'
+    description: none = off; solid = one flat colour; grid = fine lines plus a heavier line every N cells; dots = a dot lattice.
+    description.zh: 无 = 不绘制；白板 = 只铺一层纯色；网格 = 细线 + 每 N 格一条粗线；点阵 = 点阵平铺。
+    type: class-select
+    allowEmpty: false
+    default: ui-bg-none
+    options:
+      -
+        value: 'ui-bg-none'
+        label: '无 None'
+      -
+        value: 'ui-bg-solid'
+        label: '白板 Solid'
+      -
+        value: 'ui-bg-grid'
+        label: '网格 Grid'
+      -
+        value: 'ui-bg-dots'
+        label: '点阵 Dots'
+  -
+    id: ui-background-solid-color
+    title: 'Solid colour'
+    title.zh: '白板底色'
+    description: Fill colour of the solid mode. Leave empty to keep the normal primary background.
+    description.zh: 白板模式铺的底色。留空（默认）时沿用当前主背景色，等于没有变化。
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: ui-background-scroll
+    title: 'Scroll with document'
+    title.zh: '随文档滚动'
+    description: The drawn pattern scrolls together with the note text. Off by default, which pins it to the pane so it stays put while you scroll. Applies to the grid and dot patterns only — solid is a flat colour, and a background image always stays fixed to the pane.
+    description.zh: 绘制图案随正文一起滚动。默认关闭，图案钉在窗格上、滚动正文时不动。只对网格与点阵生效 —— 白板是纯色，背景图片始终固定在窗格上。
+    type: class-toggle
+    default: false
+  -
+    id: ui-background-offset-x
+    title: 'Horizontal offset'
+    title.zh: '水平偏移'
+    description: Shifts where the pattern starts, in pixels. The pattern repeats, so any value beyond one spacing is equivalent to a remainder.
+    description.zh: 微调图案的起始横向位置（像素）。图案是周期重复的，超过一个间距的值等价于取模。
+    type: variable-number-slider
+    default: 0
+    min: -200
+    max: 200
+    step: 1
+    format: px
+  -
+    id: ui-background-offset-y
+    title: 'Vertical offset'
+    title.zh: '垂直偏移'
+    description: Shifts where the pattern starts, in pixels. With 「Scroll with document」 on, this sets the pattern's phase at the top of the note.
+    description.zh: 微调图案的起始纵向位置（像素）。开启「随文档滚动」后，它就是图案在文档顶端的相位。
+    type: variable-number-slider
+    default: 0
+    min: -200
+    max: 200
+    step: 1
+    format: px
+  -
+    id: hd-c-bg-grid
+    title: 'Grid'
+    title.zh: '网格'
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: ui-background-grid-size
+    title: 'Cell size'
+    title.zh: '网格间距'
+    description: Side length of one fine grid cell, in pixels.
+    description.zh: 细网格的格子边长（像素）。
+    type: variable-number-slider
+    default: 20
+    min: 4
+    max: 200
+    step: 1
+    format: px
+  -
+    id: ui-background-grid-major-every
+    title: 'Heavy line every N cells'
+    title.zh: '每 N 格一条粗线'
+    description: A heavier line is drawn every N fine cells. Set the heavy line opacity to 0 to hide it entirely.
+    description.zh: 每隔 N 个细格画一条粗线。把「粗线不透明度」调到 0 即可整体隐藏粗线。
+    type: variable-number-slider
+    default: 5
+    min: 1
+    max: 20
+    step: 1
+  -
+    id: ui-background-grid-opacity
+    title: 'Fine line opacity'
+    title.zh: '细线不透明度'
+    description: 0 to 1. Lower values keep the text easier to read.
+    description.zh: 取值范围 0 到 1，数值越小文字越清楚。
+    type: variable-number-slider
+    default: 0.6
+    min: 0
+    max: 1
+    step: 0.05
+  -
+    id: ui-background-grid-major-opacity
+    title: 'Heavy line opacity'
+    title.zh: '粗线不透明度'
+    description: 0 to 1. Set to 0 to remove the heavy lines.
+    description.zh: 取值范围 0 到 1，设为 0 即不画粗线。
+    type: variable-number-slider
+    default: 1
+    min: 0
+    max: 1
+    step: 0.05
+  -
+    id: ui-background-grid-color
+    title: 'Line colour'
+    title.zh: '网格线颜色'
+    description: Leave empty to follow the theme border colour, which adapts to light and dark automatically.
+    description.zh: 留空时跟随主题的常规边框色（自动适配明暗）。
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: hd-c-bg-dots
+    title: 'Dots'
+    title.zh: '点阵'
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: ui-background-dot-shape
+    title: 'Dot shape'
+    title.zh: '点的形状'
+    description: Square and diamond are painted on an opaque base, so they cover a background image. Use circles when you want the image to show through.
+    description.zh: 方形与菱形点阵的底色是不透明的，会盖住背景图片；想让图片透出来就用圆形。
+    type: class-select
+    allowEmpty: false
+    default: ui-dot-circle
+    options:
+      -
+        value: 'ui-dot-circle'
+        label: '圆形 Circle'
+      -
+        value: 'ui-dot-square'
+        label: '方形 Square'
+      -
+        value: 'ui-dot-diamond'
+        label: '菱形 Diamond'
+  -
+    id: ui-background-dot-spacing
+    title: 'Dot spacing'
+    title.zh: '点间距'
+    description: Distance between two neighbouring dots, in pixels.
+    description.zh: 相邻两个点的中心距离（像素）。
+    type: variable-number-slider
+    default: 20
+    min: 4
+    max: 200
+    step: 1
+    format: px
+  -
+    id: ui-background-dot-size
+    title: 'Dot size'
+    title.zh: '点大小'
+    description: Width and height of one dot, in pixels.
+    description.zh: 单个点的宽高（像素）。
+    type: variable-number-slider
+    default: 2
+    min: 1
+    max: 20
+    step: 0.5
+    format: px
+  -
+    id: ui-background-dot-opacity
+    title: 'Dot opacity'
+    title.zh: '点不透明度'
+    description: 0 to 1. Lower values keep the text easier to read.
+    description.zh: 取值范围 0 到 1，数值越小文字越清楚。
+    type: variable-number-slider
+    default: 0.6
+    min: 0
+    max: 1
+    step: 0.05
+  -
+    id: ui-background-dot-color
+    title: 'Dot colour'
+    title.zh: '点颜色'
+    description: Leave empty to follow the theme faint text colour, which adapts to light and dark automatically.
+    description.zh: 留空时跟随主题的极淡文本色（自动适配明暗）。
+    type: variable-themed-color
+    opacity: true
+    format: hex
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: hd-c-bg-image
+    title: 'Background image'
+    title.zh: '背景图片'
+    type: heading
+    level: 3
+    collapsed: true
+  -
+    id: ui-bg-image-info
+    title: 'Note'
+    title.zh: '说明'
+    type: info-text
+    description: 这里填一个 CSS 图片值，例如 url( 以 data 开头的 base64 地址 ) 或 https 网络地址。Obsidian 的主题 CSS 读不到库内文件，想直接选仓库里的图片，请安装社区插件 CSS Resource Variables 或 Style Context，把图片映射到变量名 ui-background-image —— 两者写的是同一个变量，用了插件就别再填这个文本框。
+  -
+    id: ui-background-image
+    title: 'Image'
+    title.zh: '图片地址'
+    description: Any CSS image value. Default none means no image. Example url(https://example.com/paper.png) — a bare path or filename will not work and would take the drawn pattern down with it.
+    description.zh: 任意 CSS 图片值，默认 none 表示不设置。例如 url(https://example.com/paper.png) 或 url( 以 data 开头的 base64 地址 )。只写路径或文件名无效 —— 值非法时整条 background-image 会失效，绘制背景也会一起消失。
+    type: variable-text
+    default: 'none'
+  -
+    id: ui-background-image-fit
+    title: 'Fit'
+    title.zh: '适配方式'
+    description: cover fills the pane and crops, contain shows the whole image, auto keeps the original size, tile repeats it.
+    description.zh: 铺满 = 等比放大到填满并裁掉多余；完整显示 = 等比缩放到完整可见；原始大小 = 不缩放；平铺 = 按原尺寸重复铺满。
+    type: class-select
+    allowEmpty: false
+    default: ui-bg-fit-cover
+    options:
+      -
+        value: 'ui-bg-fit-cover'
+        label: '铺满 Cover'
+      -
+        value: 'ui-bg-fit-contain'
+        label: '完整显示 Contain'
+      -
+        value: 'ui-bg-fit-auto'
+        label: '原始大小 Auto'
+      -
+        value: 'ui-bg-fit-tile'
+        label: '平铺 Tile'
+  -
+    id: ui-background-image-position
+    title: 'Position'
+    title.zh: '图片位置'
+    description: Where the image is anchored inside the pane. Ignored while the fit is tile.
+    description.zh: 图片在窗格中的对齐位置（平铺时无效）。
+    type: class-select
+    allowEmpty: false
+    default: ui-bg-pos-center
+    options:
+      -
+        value: 'ui-bg-pos-center'
+        label: '居中 Center'
+      -
+        value: 'ui-bg-pos-top'
+        label: '顶部 Top'
+      -
+        value: 'ui-bg-pos-bottom'
+        label: '底部 Bottom'
+      -
+        value: 'ui-bg-pos-left'
+        label: '左侧 Left'
+      -
+        value: 'ui-bg-pos-right'
+        label: '右侧 Right'
+  -
+    id: ui-background-image-opacity
+    title: 'Image opacity'
+    title.zh: '图片不透明度'
+    description: 0 to 1. The image is faded towards the page background, so the text stays readable.
+    description.zh: 取值范围 0 到 1。图片会往页面底色上淡，保证正文可读。
+    type: variable-number-slider
+    default: 1
+    min: 0
+    max: 1
+    step: 0.05
+  -
     id: hd-c-components
     title: 'Components'
     title.zh: '组件'
@@ -8670,3 +8969,218 @@ body:not(.blank-line-native) .markdown-source-view.mod-cm6 .cm-line:has(> br:onl
   min-height: var(--blank-line-height) !important;
 }
 /* #endregion 空白行片段 */
+
+/* #region 界面背景（笔记区） */
+/* ==========
+ * 设置入口：「Ethereal 定制 → 界面 → 背景」。
+ *
+ * 分两层画：
+ *   ① 「纸面」层 = .view-content —— 官方正是在 .workspace-split.mod-root .view-content 上
+ *      声明 --background-primary；白板纯色、背景图片与 veil 都画在这里，固定于窗格。
+ *   ② 「图案」层 = 真正滚动的那个元素 —— 编辑视图是 .cm-editor > .cm-scroller，
+ *      阅读视图是 .markdown-reading-view > .markdown-preview-view。它是「纸面」层的后代，
+ *      所以图案天然画在图片之上（网格 / 圆点能叠在照片上），且不受「纸面」层的定位影响。
+ *
+ * 图案为什么不画在 .view-content：那个元素**自己不滚动**（滚动发生在上面那两个后代里），
+ * 想让图案随正文走就必须挂在滚动容器上，再用 background-attachment: local 让它跟着内容滚；
+ * 关掉「随文档滚动」时用默认的 scroll，图案固定在窗格的可见区域上。两态只差这一个属性。
+ *
+ * 滚动容器是查证过的，不是猜的：
+ *   · .cm-scroller —— CM6 baseTheme 只声明 overflow-x: auto，而另一轴为 visible 时会**计算成 auto**，
+ *     所以它纵向也是滚动容器；同时 height: 100%、position: relative、z-index: 0。
+ *     ⚠️ 这一段在 app.js 里，app.css 查不到（取法见 skill 6.5）。
+ *   · .markdown-preview-view —— app.css 里明写 overflow-y: auto。
+ * 两侧的 .cm-editor / .cm-content / .cm-gutters / .markdown-reading-view 都没有背景声明，
+ * 图案能透上来（.cm-gutters 是 background-color: transparent）。
+ *
+ * 阅读视图那层底色必须让出来（见下），否则会盖住「纸面」层；两处底色都是
+ * var(--background-primary)，所以不启用本功能时视觉零变化。
+ *
+ * 三种绘制背景：
+ *   白板 = 纯色底（画在「纸面」层）；网格 = 细线 + 每 N 格一条粗线；点阵 = 点阵平铺。
+ * 点阵的「方形 / 菱形」用「底色 = 点色、再用不透明页面底色挖出形状」实现
+ * （CSS 渐变做不出「任意大小 + 任意间距的方形/菱形」——linear-gradient 的两条带只能交出十字，
+ *   而 conic-gradient 的象限尺寸被 tile 尺寸锁死，二者都无法解耦点大小与间距）。
+ * 代价是这两个形状的底色不透明，会盖住背景图片，面板里已写明。
+ *
+ * 背景图片：Obsidian 的主题 CSS 读不到库内文件（file:// 与 app://local 都被应用层拦掉，
+ * 官方只允许 base64 内嵌），所以这里只暴露一个变量，值由用户填 url(...)，
+ * 或由 CSS Resource Variables / Style Context 这类插件把库内图片映射到同一变量名。
+ *
+ * 「纸面」层的图层顺序（background-image 列表，越靠前越在上）：
+ *   veil → 背景图片
+ * veil 是「页面底色 × (1 - 不透明度)」的整层渐变，只负责把图片往底色上淡；
+ * 它整体在图案层之下，所以调图片不透明度不会连带淡化图案。
+ * ========== */
+
+body {
+  /* 页面底色：图案的「纸面」，与官方在 .view-content 上的底色同源 */
+  --ui-bg-page: var(--background-primary);
+
+  /* —— 网格 —— */
+  --ui-bg-grid-size-current: var(--ui-background-grid-size, 20px);
+  --ui-bg-grid-major-size: calc(var(--ui-bg-grid-size-current) * var(--ui-background-grid-major-every, 5));
+  --ui-bg-grid-line: color-mix(in srgb, var(--ui-background-grid-color, var(--background-modifier-border)) calc(var(--ui-background-grid-opacity, 0.6) * 100%), transparent);
+  --ui-bg-grid-line-major: color-mix(in srgb, var(--ui-background-grid-color, var(--background-modifier-border)) calc(var(--ui-background-grid-major-opacity, 1) * 100%), transparent);
+
+  /* —— 点阵 —— */
+  --ui-bg-dot-size-current: var(--ui-background-dot-size, 2px);
+  --ui-bg-dot-spacing-current: var(--ui-background-dot-spacing, 20px);
+  --ui-bg-dot-half: calc(var(--ui-bg-dot-size-current) / 2);
+  --ui-bg-dot-color-current: color-mix(in srgb, var(--ui-background-dot-color, var(--text-faint)) calc(var(--ui-background-dot-opacity, 0.6) * 100%), var(--ui-bg-page));
+  --ui-bg-dot-gap-a: calc((var(--ui-bg-dot-spacing-current) - var(--ui-bg-dot-size-current)) / 2);
+  --ui-bg-dot-gap-b: calc((var(--ui-bg-dot-spacing-current) + var(--ui-bg-dot-size-current)) / 2);
+  /* 菱形四条斜边的截距：斜边 x+y = 间距 - 半对角线，投影到 45 度梯度线上要再除 √2 */
+  --ui-bg-dot-diamond-d: calc((var(--ui-bg-dot-spacing-current) - var(--ui-bg-dot-half)) / 1.41421356);
+
+  /* —— 图案层：初始偏移 + 是否随文档滚动 —— */
+  /* 偏移就是 background-position，两个滑块给图案做相位微调；间距是周期，所以超出周期的值等价于取模 */
+  --ui-bg-pattern-position: var(--ui-background-offset-x, 0px) var(--ui-background-offset-y, 0px);
+  /* scroll = 背景贴在元素的 padding box 上（图案固定）；local = 背景贴在可滚动溢出区上（跟着内容滚） */
+  --ui-bg-attach: scroll;
+
+  /* —— 背景图片 —— */
+  --ui-bg-image-size: cover;
+  --ui-bg-image-repeat: no-repeat;
+  --ui-bg-image-position: center center;
+  --ui-bg-veil: color-mix(in srgb, var(--ui-bg-page) calc((1 - var(--ui-background-image-opacity, 1)) * 100%), transparent);
+  --ui-bg-tail-image: linear-gradient(var(--ui-bg-veil), var(--ui-bg-veil)), var(--ui-background-image, none);
+  --ui-bg-tail-size: auto, var(--ui-bg-image-size);
+  --ui-bg-tail-repeat: no-repeat, var(--ui-bg-image-repeat);
+  --ui-bg-tail-position: 0 0, var(--ui-bg-image-position);
+}
+
+/* 随文档滚动（class-toggle → body.<设置项 id>，即 ui-background-scroll）
+   ⚠️ class-toggle 加的类名是**设置项 id**；class-select 加的才是 option 的 value。
+   写错类名不会有任何报错，只是「改了没反应」。check-css.cjs 有专门的守卫盯着这条。 */
+body.ui-background-scroll {
+  --ui-bg-attach: local;
+}
+
+/* 适配方式 / 图片位置：class-select 把类挂在 body 上，这里翻译成 background-* 的值。
+   默认值与面板默认类一致（cover / center center），未装 Style Settings 时同样成立。 */
+body.ui-bg-fit-cover {
+  --ui-bg-image-size: cover;
+  --ui-bg-image-repeat: no-repeat;
+}
+body.ui-bg-fit-contain {
+  --ui-bg-image-size: contain;
+  --ui-bg-image-repeat: no-repeat;
+}
+body.ui-bg-fit-auto {
+  --ui-bg-image-size: auto;
+  --ui-bg-image-repeat: no-repeat;
+}
+body.ui-bg-fit-tile {
+  --ui-bg-image-size: auto;
+  --ui-bg-image-repeat: repeat;
+}
+body.ui-bg-pos-center {
+  --ui-bg-image-position: center center;
+}
+body.ui-bg-pos-top {
+  --ui-bg-image-position: center top;
+}
+body.ui-bg-pos-bottom {
+  --ui-bg-image-position: center bottom;
+}
+body.ui-bg-pos-left {
+  --ui-bg-image-position: left center;
+}
+body.ui-bg-pos-right {
+  --ui-bg-image-position: right center;
+}
+
+/* ===== ① 纸面层（.view-content）：无条件铺「veil + 图片」 =====
+   未启用任何模式时 --ui-background-image 不存在，退化成 none，veil 也是全透明，视觉零变化。
+   ⚠️ 这条规则必须**无条件**存在：一旦被收进某个 ui-bg-* 模式类，
+   「绘制背景 = 无」时背景图片就再也出不来，而且不报错。 */
+.workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] > .view-content {
+  background-image: var(--ui-bg-tail-image);
+  background-size: var(--ui-bg-tail-size);
+  background-repeat: var(--ui-bg-tail-repeat);
+  background-position: var(--ui-bg-tail-position);
+}
+
+/* 阅读视图让出底色（否则官方那层 --background-primary 会盖住「纸面」层）。
+   只取「直接挂在 .markdown-reading-view 下」的那一个，避免波及嵌入笔记里的预览视图。 */
+.workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-reading-view > .markdown-preview-view {
+  background-color: transparent;
+}
+
+/* 白板：纯色底（图片层由上面的「纸面」层继续负责） */
+body.ui-bg-solid .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] > .view-content {
+  background-color: var(--ui-background-solid-color, var(--ui-bg-page));
+}
+
+/* ===== ② 图案层：滚动容器（编辑器 .cm-scroller / 阅读视图 .markdown-preview-view） =====
+   四个图案规则共用同一套几何开关：background-position = 初始偏移，background-attachment = 是否随文档滚动。
+   单个值会应用到该规则的全部图层，所以不用写成列表。 */
+
+/* 网格：粗线两条 + 细线两条，同锚点，所以粗线必然落在细线的交点上 */
+body.ui-bg-grid .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
+  background-image:
+    linear-gradient(to right, var(--ui-bg-grid-line-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ui-bg-grid-line-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--ui-bg-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ui-bg-grid-line) 1px, transparent 1px);
+  background-size:
+    var(--ui-bg-grid-major-size) var(--ui-bg-grid-major-size),
+    var(--ui-bg-grid-major-size) var(--ui-bg-grid-major-size),
+    var(--ui-bg-grid-size-current) var(--ui-bg-grid-size-current),
+    var(--ui-bg-grid-size-current) var(--ui-bg-grid-size-current);
+  background-repeat: repeat;
+  background-position: var(--ui-bg-pattern-position);
+  background-attachment: var(--ui-bg-attach);
+}
+
+/* 点阵 · 圆形：透明底 + 圆点，可以叠在背景图片之上 */
+body.ui-bg-dots.ui-dot-circle .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
+  background-image:
+    radial-gradient(circle at center, var(--ui-bg-dot-color-current) 0 var(--ui-bg-dot-half), transparent var(--ui-bg-dot-half));
+  background-size: var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current);
+  background-repeat: repeat;
+  background-position: var(--ui-bg-pattern-position);
+  background-attachment: var(--ui-bg-attach);
+}
+
+/* 点阵 · 方形 / 菱形：底色 = 点色，再用不透明页面底色把点以外的部分盖掉。
+   方形四条带、菱形四条 45 度斜带，各自盖住「点」之外的全部区域，剩下露出的就是点本身。
+   ⚠️ background-color 不受 background-attachment 影响，恒填满整个绘制区，
+   所以「随文档滚动」打开后底色也会铺满整条可滚动区，不会在滚动时露出空白。 */
+body:is(.ui-bg-dots.ui-dot-square, .ui-bg-dots.ui-dot-diamond) .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
+  background-color: var(--ui-bg-dot-color-current);
+}
+
+body.ui-bg-dots.ui-dot-square .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
+  background-image:
+    linear-gradient(to bottom, var(--ui-bg-page) 0 var(--ui-bg-dot-gap-a), transparent var(--ui-bg-dot-gap-a)),
+    linear-gradient(to bottom, transparent 0 var(--ui-bg-dot-gap-b), var(--ui-bg-page) var(--ui-bg-dot-gap-b)),
+    linear-gradient(to right, var(--ui-bg-page) 0 var(--ui-bg-dot-gap-a), transparent var(--ui-bg-dot-gap-a)),
+    linear-gradient(to right, transparent 0 var(--ui-bg-dot-gap-b), var(--ui-bg-page) var(--ui-bg-dot-gap-b));
+  background-size:
+    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
+    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
+    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
+    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current);
+  background-repeat: repeat;
+  background-position: var(--ui-bg-pattern-position);
+  background-attachment: var(--ui-bg-attach);
+}
+
+body.ui-bg-dots.ui-dot-diamond .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
+  background-image:
+    linear-gradient(45deg, var(--ui-bg-page) 0 var(--ui-bg-dot-diamond-d), transparent var(--ui-bg-dot-diamond-d)),
+    linear-gradient(135deg, var(--ui-bg-page) 0 var(--ui-bg-dot-diamond-d), transparent var(--ui-bg-dot-diamond-d)),
+    linear-gradient(225deg, var(--ui-bg-page) 0 var(--ui-bg-dot-diamond-d), transparent var(--ui-bg-dot-diamond-d)),
+    linear-gradient(315deg, var(--ui-bg-page) 0 var(--ui-bg-dot-diamond-d), transparent var(--ui-bg-dot-diamond-d));
+  background-size:
+    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
+    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
+    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
+    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current);
+  background-repeat: repeat;
+  background-position: var(--ui-bg-pattern-position);
+  background-attachment: var(--ui-bg-attach);
+}
+/* #endregion 界面背景（笔记区） */
