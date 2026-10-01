@@ -1251,53 +1251,6 @@ settings:
     level: 1
     collapsed: true
   -
-    id: hd-c-editing
-    title: 'Editing'
-    title.zh: '编辑与光标'
-    type: heading
-    level: 2
-    collapsed: true
-  -
-    id: disable-caret-blink
-    title: 光标常亮
-    description: 开启后，编辑器中的文字输入光标将停止闪烁（注：受限于Electron内核，部分环境可能无效）
-    type: class-toggle
-    default: true
-  -
-    id: activeline-highlight
-    title: Active line highlight
-    title.zh: 当前行高亮
-    description: 为当前行添加背景色
-    type: class-toggle
-    default: true
-  -
-    id: hd-c-tabs
-    title: 'Tabs'
-    title.zh: '标签页与窗口'
-    type: heading
-    level: 2
-    collapsed: true
-  -
-    id: header-titile-shadow
-    title: Header titile shadow
-    title.zh: 标签页标题栏阴影
-    description: 为当前标签页的标题栏下添加阴影
-    type: class-toggle
-    default: true
-  -
-    id: hide-fold-placeholder
-    title: Hide fold placeholder
-    title.zh: 隐藏标题后的省略号
-    description: 隐藏标题被折叠后的…
-    type: class-toggle
-    default: true
-  -
-    id: disable-embedded-backlinks
-    title: 隐藏文末链接栏
-    description: 开启后隐藏文档底部反向链接
-    type: class-toggle
-    default: true
-  -
     id: hd-c-ui-bg
     title: 'Background'
     title.zh: '背景'
@@ -1391,10 +1344,10 @@ settings:
     collapsed: true
   -
     id: ui-background-grid-size
-    title: 'Cell size'
+    title: 'Grid spacing'
     title.zh: '网格间距'
-    description: Side length of one fine grid cell, in pixels.
-    description.zh: 细网格的格子边长（像素）。
+    description: Side length of one grid cell, in pixels.
+    description.zh: 单个格子的边长（像素）。
     type: variable-number-slider
     default: 20
     min: 4
@@ -1402,20 +1355,21 @@ settings:
     step: 1
     format: px
   -
-    id: ui-background-grid-major-every
-    title: 'Heavy line every N cells'
-    title.zh: '每 N 格一条粗线'
-    description: A heavier line is drawn every N fine cells. Set the heavy line opacity to 0 to hide it entirely.
-    description.zh: 每隔 N 个细格画一条粗线。把「粗线不透明度」调到 0 即可整体隐藏粗线。
+    id: ui-background-grid-line-width
+    title: 'Line thickness'
+    title.zh: '线条粗细'
+    description: Thickness of the grid lines, in pixels.
+    description.zh: 网格线的粗细（像素）。
     type: variable-number-slider
-    default: 5
+    default: 1
     min: 1
-    max: 20
-    step: 1
+    max: 5
+    step: 0.25
+    format: px
   -
     id: ui-background-grid-opacity
-    title: 'Fine line opacity'
-    title.zh: '细线不透明度'
+    title: 'Line opacity'
+    title.zh: '线条不透明度'
     description: 0 to 1. Lower values keep the text easier to read.
     description.zh: 取值范围 0 到 1，数值越小文字越清楚。
     type: variable-number-slider
@@ -1424,20 +1378,9 @@ settings:
     max: 1
     step: 0.05
   -
-    id: ui-background-grid-major-opacity
-    title: 'Heavy line opacity'
-    title.zh: '粗线不透明度'
-    description: 0 to 1. Set to 0 to remove the heavy lines.
-    description.zh: 取值范围 0 到 1，设为 0 即不画粗线。
-    type: variable-number-slider
-    default: 1
-    min: 0
-    max: 1
-    step: 0.05
-  -
     id: ui-background-grid-color
     title: 'Line colour'
-    title.zh: '网格线颜色'
+    title.zh: '线条颜色'
     description: Leave empty to follow the theme border colour, which adapts to light and dark automatically.
     description.zh: 留空时跟随主题的常规边框色（自动适配明暗）。
     type: variable-themed-color
@@ -1452,25 +1395,6 @@ settings:
     type: heading
     level: 3
     collapsed: true
-  -
-    id: ui-background-dot-shape
-    title: 'Dot shape'
-    title.zh: '点的形状'
-    description: Square and diamond are painted on an opaque base, so they cover a background image. Use circles when you want the image to show through.
-    description.zh: 方形与菱形点阵的底色是不透明的，会盖住背景图片；想让图片透出来就用圆形。
-    type: class-select
-    allowEmpty: false
-    default: ui-dot-circle
-    options:
-      -
-        value: 'ui-dot-circle'
-        label: '圆形 Circle'
-      -
-        value: 'ui-dot-square'
-        label: '方形 Square'
-      -
-        value: 'ui-dot-diamond'
-        label: '菱形 Diamond'
   -
     id: ui-background-dot-spacing
     title: 'Dot spacing'
@@ -1490,10 +1414,10 @@ settings:
     description: Width and height of one dot, in pixels.
     description.zh: 单个点的宽高（像素）。
     type: variable-number-slider
-    default: 2
+    default: 2.5
     min: 1
-    max: 20
-    step: 0.5
+    max: 5
+    step: 0.1
     format: px
   -
     id: ui-background-dot-opacity
@@ -1596,6 +1520,53 @@ settings:
     min: 0
     max: 1
     step: 0.05
+  -
+    id: hd-c-editing
+    title: 'Editing'
+    title.zh: '编辑与光标'
+    type: heading
+    level: 2
+    collapsed: true
+  -
+    id: disable-caret-blink
+    title: 光标常亮
+    description: 开启后，编辑器中的文字输入光标将停止闪烁（注：受限于Electron内核，部分环境可能无效）
+    type: class-toggle
+    default: true
+  -
+    id: activeline-highlight
+    title: Active line highlight
+    title.zh: 当前行高亮
+    description: 为当前行添加背景色
+    type: class-toggle
+    default: true
+  -
+    id: hd-c-tabs
+    title: 'Tabs'
+    title.zh: '标签页与窗口'
+    type: heading
+    level: 2
+    collapsed: true
+  -
+    id: header-titile-shadow
+    title: Header titile shadow
+    title.zh: 标签页标题栏阴影
+    description: 为当前标签页的标题栏下添加阴影
+    type: class-toggle
+    default: true
+  -
+    id: hide-fold-placeholder
+    title: Hide fold placeholder
+    title.zh: 隐藏标题后的省略号
+    description: 隐藏标题被折叠后的…
+    type: class-toggle
+    default: true
+  -
+    id: disable-embedded-backlinks
+    title: 隐藏文末链接栏
+    description: 开启后隐藏文档底部反向链接
+    type: class-toggle
+    default: true
   -
     id: hd-c-components
     title: 'Components'
@@ -9019,19 +8990,14 @@ body {
 
   /* —— 网格 —— */
   --ui-bg-grid-size-current: var(--ui-background-grid-size, 20px);
-  --ui-bg-grid-major-size: calc(var(--ui-bg-grid-size-current) * var(--ui-background-grid-major-every, 5));
+  --ui-bg-grid-line-width: var(--ui-background-grid-line-width, 1px);
   --ui-bg-grid-line: color-mix(in srgb, var(--ui-background-grid-color, var(--background-modifier-border)) calc(var(--ui-background-grid-opacity, 0.6) * 100%), transparent);
-  --ui-bg-grid-line-major: color-mix(in srgb, var(--ui-background-grid-color, var(--background-modifier-border)) calc(var(--ui-background-grid-major-opacity, 1) * 100%), transparent);
 
   /* —— 点阵 —— */
-  --ui-bg-dot-size-current: var(--ui-background-dot-size, 2px);
+  --ui-bg-dot-size-current: var(--ui-background-dot-size, 2.5px);
   --ui-bg-dot-spacing-current: var(--ui-background-dot-spacing, 20px);
   --ui-bg-dot-half: calc(var(--ui-bg-dot-size-current) / 2);
   --ui-bg-dot-color-current: color-mix(in srgb, var(--ui-background-dot-color, var(--text-faint)) calc(var(--ui-background-dot-opacity, 0.6) * 100%), var(--ui-bg-page));
-  --ui-bg-dot-gap-a: calc((var(--ui-bg-dot-spacing-current) - var(--ui-bg-dot-size-current)) / 2);
-  --ui-bg-dot-gap-b: calc((var(--ui-bg-dot-spacing-current) + var(--ui-bg-dot-size-current)) / 2);
-  /* 菱形四条斜边的截距：斜边 x+y = 间距 - 半对角线，投影到 45 度梯度线上要再除 √2 */
-  --ui-bg-dot-diamond-d: calc((var(--ui-bg-dot-spacing-current) - var(--ui-bg-dot-half)) / 1.41421356);
 
   /* —— 图案层：初始偏移 + 是否随文档滚动 —— */
   /* 偏移就是 background-position，两个滑块给图案做相位微调；间距是周期，所以超出周期的值等价于取模 */
@@ -9117,16 +9083,13 @@ body.ui-bg-solid .workspace-split.mod-root .workspace-leaf-content[data-type="ma
    四个图案规则共用同一套几何开关：background-position = 初始偏移，background-attachment = 是否随文档滚动。
    单个值会应用到该规则的全部图层，所以不用写成列表。 */
 
-/* 网格：粗线两条 + 细线两条，同锚点，所以粗线必然落在细线的交点上 */
+/* 网格：横竖各一条线，交叠成方格。线宽由「线条粗细」控制（四条带同宽，
+   `background-size` 保持等于间距，所以线始终贴在格线上、不会错位）。 */
 body.ui-bg-grid .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
   background-image:
-    linear-gradient(to right, var(--ui-bg-grid-line-major) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--ui-bg-grid-line-major) 1px, transparent 1px),
-    linear-gradient(to right, var(--ui-bg-grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--ui-bg-grid-line) 1px, transparent 1px);
+    linear-gradient(to right, var(--ui-bg-grid-line) var(--ui-bg-grid-line-width), transparent var(--ui-bg-grid-line-width)),
+    linear-gradient(to bottom, var(--ui-bg-grid-line) var(--ui-bg-grid-line-width), transparent var(--ui-bg-grid-line-width));
   background-size:
-    var(--ui-bg-grid-major-size) var(--ui-bg-grid-major-size),
-    var(--ui-bg-grid-major-size) var(--ui-bg-grid-major-size),
     var(--ui-bg-grid-size-current) var(--ui-bg-grid-size-current),
     var(--ui-bg-grid-size-current) var(--ui-bg-grid-size-current);
   background-repeat: repeat;
@@ -9134,8 +9097,12 @@ body.ui-bg-grid .workspace-split.mod-root .workspace-leaf-content[data-type="mar
   background-attachment: var(--ui-bg-attach);
 }
 
-/* 点阵 · 圆形：透明底 + 圆点，可以叠在背景图片之上 */
-body.ui-bg-dots.ui-dot-circle .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
+/* 点阵 · 圆形：透明底 + 圆点，可以叠在背景图片之上。
+   ⚠️ 2026-10-01 修：选择器原先要求 `.ui-dot-circle` 类，而那个类是由「点的形状」
+   设置项（class-select）挂到 body 上的。该设置项随方形 / 菱形一起删除后，类不再被挂上，
+   于是选择器永不匹配、圆形点阵整个消失。既然现在只有圆形一种点形，直接只按
+   `.ui-bg-dots` 选中即可（不再依赖任何「形状」类）。 */
+body.ui-bg-dots .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
   background-image:
     radial-gradient(circle at center, var(--ui-bg-dot-color-current) 0 var(--ui-bg-dot-half), transparent var(--ui-bg-dot-half));
   background-size: var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current);
@@ -9144,43 +9111,14 @@ body.ui-bg-dots.ui-dot-circle .workspace-split.mod-root .workspace-leaf-content[
   background-attachment: var(--ui-bg-attach);
 }
 
-/* 点阵 · 方形 / 菱形：底色 = 点色，再用不透明页面底色把点以外的部分盖掉。
-   方形四条带、菱形四条 45 度斜带，各自盖住「点」之外的全部区域，剩下露出的就是点本身。
-   ⚠️ background-color 不受 background-attachment 影响，恒填满整个绘制区，
-   所以「随文档滚动」打开后底色也会铺满整条可滚动区，不会在滚动时露出空白。 */
-body:is(.ui-bg-dots.ui-dot-square, .ui-bg-dots.ui-dot-diamond) .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
-  background-color: var(--ui-bg-dot-color-current);
-}
-
-body.ui-bg-dots.ui-dot-square .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
-  background-image:
-    linear-gradient(to bottom, var(--ui-bg-page) 0 var(--ui-bg-dot-gap-a), transparent var(--ui-bg-dot-gap-a)),
-    linear-gradient(to bottom, transparent 0 var(--ui-bg-dot-gap-b), var(--ui-bg-page) var(--ui-bg-dot-gap-b)),
-    linear-gradient(to right, var(--ui-bg-page) 0 var(--ui-bg-dot-gap-a), transparent var(--ui-bg-dot-gap-a)),
-    linear-gradient(to right, transparent 0 var(--ui-bg-dot-gap-b), var(--ui-bg-page) var(--ui-bg-dot-gap-b));
-  background-size:
-    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
-    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
-    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
-    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current);
-  background-repeat: repeat;
-  background-position: var(--ui-bg-pattern-position);
-  background-attachment: var(--ui-bg-attach);
-}
-
-body.ui-bg-dots.ui-dot-diamond .workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] :is(.cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
-  background-image:
-    linear-gradient(45deg, var(--ui-bg-page) 0 var(--ui-bg-dot-diamond-d), transparent var(--ui-bg-dot-diamond-d)),
-    linear-gradient(135deg, var(--ui-bg-page) 0 var(--ui-bg-dot-diamond-d), transparent var(--ui-bg-dot-diamond-d)),
-    linear-gradient(225deg, var(--ui-bg-page) 0 var(--ui-bg-dot-diamond-d), transparent var(--ui-bg-dot-diamond-d)),
-    linear-gradient(315deg, var(--ui-bg-page) 0 var(--ui-bg-dot-diamond-d), transparent var(--ui-bg-dot-diamond-d));
-  background-size:
-    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
-    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
-    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current),
-    var(--ui-bg-dot-spacing-current) var(--ui-bg-dot-spacing-current);
-  background-repeat: repeat;
-  background-position: var(--ui-bg-pattern-position);
-  background-attachment: var(--ui-bg-attach);
-}
+/* 点阵只提供**圆形**一种点形（2026-10-01 起）。
+   方形 / 菱形曾用「不透明底色铺满 + 页色带挖形」实现，存在两个固有问题：
+     · 底色靠 `background-color` 承载 → 不受 `background-attachment` 约束，
+       开「随文档滚动」时长文下半屏图案会断掉；
+     · 改用伪元素 + mask 求交可避开底色，但 mask 的 alpha 是抗锯齿柔化的，
+       点尺寸小（如 3.5px）时边缘被插值冲淡、几乎看不见。
+   两者取舍都不理想，且方形 / 菱形本就与「随文档滚动」冲突，故直接移除，
+   只保留圆形点阵（`radial-gradient` 单层渐变直接成形：透明底、无底色、
+   天然兼容 `--ui-bg-attach` 的两种取值，也不会有小尺寸变淡的问题）。
+   若日后想加回，注意上述两条约束。 */
 /* #endregion 界面背景（笔记区） */

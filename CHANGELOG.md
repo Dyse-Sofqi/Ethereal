@@ -5,6 +5,70 @@ All notable changes to this theme are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.5.5] - 2026-10-01
+
+**Overview.** The dot lattice now offers a single shape — the circle — and the
+grid no longer distinguishes heavy from fine lines. Both changes remove features
+whose upkeep cost outweighed their use, and in the grid's case they fold four
+settings into two. Along the way the dot lattice's remaining teardown exposed a
+subtle bug in how the circle was selected, and the background group moved up the
+panel so it sits with the other appearance settings.
+
+**功能构建.**
+
+- **点阵只保留圆形，移除方形 / 菱形两种点形.** 「界面 → 背景 → 点阵」下的
+  「点的形状」设置项一并删除（该设置项原为三选一：圆形 / 方形 / 菱形）。
+  被删的两种点形与「随文档滚动」存在**固有冲突**，三项要求无法同时满足：
+  ① 点要清晰 → 不能用 `mask`（其 alpha 抗锯齿柔化，点尺寸小时边缘被插值冲淡到
+  几乎不可见）；② 覆盖范围要对（含顶部内联标题、不含滚动条、不受「缩减栏宽」影响）
+  → 宿主不能是内容容器；③ 图案要随内容滚动 → `background-attachment: local`
+  要求宿主**自身就是滚动容器**。①排除滚动容器、②排除内容容器，只剩不滚动的外壳，
+  与③直接矛盾。圆形没有这个问题：单层 `radial-gradient` 直接写在滚动容器**自身**上，
+  透明底、无底色、边缘锐利，两种附着模式天然都支持。
+  点阵的间距、大小、颜色、不透明度与偏移滑杆全部保留，观感不变。
+
+- **网格不再区分粗细线，改为单一线宽.** 原先「每 N 格画一条粗线」，粗细两层各带
+  一个不透明度，共 4 个设置项；现在横竖同宽，只由一个新设置项决定。规则同步从
+  4 层渐变（粗线两条 + 细线两条）简化为 **2 层**（横竖各一条）。
+  `background-size` 仍取**间距**、线宽只进渐变的硬停点，两者解耦 ——
+  实测线宽 1 / 3 / 5px 时，竖线实测宽精确为 1 / 3 / 5px，而线间距恒为 20px，
+  即**调粗细不会改变格子尺寸**。
+
+**设置项变更.**
+
+| 操作 | 设置项 | 说明 |
+| --- | --- | --- |
+| 删除 | `ui-background-dot-shape` | 「点的形状」（圆形 / 方形 / 菱形三选一） |
+| 删除 | `ui-background-grid-major-every` | 「每 N 格一条粗线」 |
+| 删除 | `ui-background-grid-major-opacity` | 「粗线不透明度」 |
+| 新增 | `ui-background-grid-line-width` | 「线条粗细」默认 1px、范围 1–5px、步进 0.25px |
+| 改名 | `ui-background-grid-opacity` | 「细线不透明度」→「线条不透明度」（id 不变） |
+| 改名 | `ui-background-grid-color` | 「网格线颜色」→「线条颜色」（id 不变） |
+| 改描述 | `ui-background-grid-size` | 「细网格的格子边长」→「单个格子的边长」 |
+
+被改名的两个设置项 **id 未变**，已存的用户自定义值不受影响；被删的三个 id 会成为
+无用残留（无害）。定制面板计数由 220 项 / 179 设置变为 **218 项 / 177 设置**。
+
+**参数与面板.**
+
+- 点大小滑块的默认值 `2` → **`2.5`**，范围 `1–20` → **`1–5`**，步进 `0.5` → **`0.1`**。
+  原先上限 20px 远超实际可用范围，收窄后拖动能更精细地停在常用尺寸上。
+  CSS 里的兜底默认值 `--ui-bg-dot-size-current` 同步改为 `2.5px`，
+  保证未装 Style Settings 时的观感与面板默认一致。
+- 「界面」下的 L2 分组「**背景**」上移到「**编辑与光标**」之前，与其它外观类设置相邻。
+
+**错误修复.**
+
+- **移除方形 / 菱形后，圆形点阵也一起消失了.** 点阵规则的选择器要求
+  `.ui-dot-circle` 类，而**这个类正是由「点的形状」class-select 设置项挂到 `body` 上的**
+  —— 设置项一删，类不再被挂上，选择器永不匹配，连圆形点阵一并失效（无报错、无提示）。
+  修法是让选择器只按 `.ui-bg-dots` 选中：现在只有圆形一种点形，不再需要任何「形状」类。
+  这条也解释了另一处历史问题：`class-toggle` / `class-select` 设置项挂出的类名与选择器
+  里的类名是**必须成对维护的契约**，删设置项时必须一并检查依赖它的选择器。
+
+- **网格线原先无法控制粗细.** 旧实现的线宽是硬编码的 `1px`（粗线同样是 `1px`，
+  仅靠颜色不透明度区分），所以「粗线」看起来只比细线深、并不更粗。现在线宽成为
+  真正的可调项，且与间距解耦。
 ## [1.5.4] - 2026-09-30
 
 **Overview.** A new 「Ethereal 定制 → 界面 → 背景」 group gives the main-area
