@@ -5,6 +5,60 @@ All notable changes to this theme are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.5.6] - 2026-10-05
+
+**Overview.** Hovering an entry in Obsidian's settings sidebar did nothing at
+all — Obsidian paints a background only for the *active* tab, so the row under
+the cursor stayed completely inert. A new switch under
+「Ethereal 定制 → 界面 → 标签页与窗口」 gives that row the hover background the
+moment the pointer lands on it. It is on by default, and it is deliberately the
+plainest effect possible: background colour only, no transition, no movement.
+The theme therefore still contains **no `transition` at all**.
+
+**功能构建.**
+
+- **设置侧边栏悬停底色（新增开关，默认开启）.** 入口：「Ethereal 定制 → 界面 →
+  标签页与窗口 → 设置侧边栏悬停底色」（id `settings-nav-hover-highlight`）。
+  原生 `.vertical-tab-nav-item` 只有 `.is-active` / `.mobile-tap` 才带底色，
+  桌面端鼠标悬停**没有任何反馈** —— 这正是用户报的原始问题。开启后：指针移入
+  即显示官方 `--background-modifier-hover` 底色。它与 `.is-active` 用的是同一个
+  token，因此「悬停」与「选中」共用一套视觉语言，明暗也由 token 自己适配，
+  不需要额外的明暗分档。
+- **即时响应：只有底色，没有过渡、没有位移.** 反馈必须「指针一到就看得见」——
+  最终规则只有一条 `:hover { background-color }`；底色在指针移入的那一帧就位，
+  没有任何缓动延迟。位移也一并去掉了（见「错误修复」）。
+- **限定在支持悬停的设备上.** 整块规则包在 `@media (hover: hover)` 里：
+  触屏上 `:hover` 会「粘住」，不该有悬停态。
+- **可关.** 关掉开关即回到原生「悬停毫无反应」的状态 —— 与主题其它
+  `class-toggle` 一样，开关只挂一个 body 类（`body.settings-nav-hover-highlight`），
+  关掉后 CSS 完全不匹配。
+
+**设置项变更.**
+
+| 操作 | 设置项 | 说明 |
+| --- | --- | --- |
+| 新增 | `settings-nav-hover-highlight` | 「设置侧边栏悬停底色」（`class-toggle`，默认开启） |
+
+定制面板计数由 218 项 / 177 设置变为 **219 项 / 178 设置**。
+
+**错误修复.**
+
+- **1.5.5 及更早版本没有需要修复的线上问题**，本版也不改变任何既有行为；
+  下面两条是本次开发过程中自查发现、并在发布前就改掉的隐患，记在这里以防回流：
+  - **悬停反馈慢半拍.** 第一版把底色做成 140ms 淡入，指针移入后要等过渡跑完
+    才看得清，与「及时响应」的要求相反 —— 已改为无过渡的即时底色。
+    真机逐帧采样核对：悬停首帧（t≈0）底色就已到终值，此后每一帧不变，
+    `getAnimations()` 为空。
+  - **横向溢出隐患.** 第一版还让图标与标题右移 3px。位移一旦落在条目本身，
+    `.vertical-tab-header` 的 `overflow-y: auto` 会让 `overflow-x` 也计算成
+    `auto`，右侧可能凭空冒出横向滚动条。最终方案**完全不做位移**，隐患随之消失
+    （真机实测日间/夜间两态横向溢出均为 0px）。
+- **两条都进了体检守卫（`check-css.cjs`）**，且这次是**反向守卫**：一旦
+  `settings-nav-hover-highlight` 相关规则里再出现 `transition` / `animation` /
+  `transform`，或出现非 `:hover` 的残留规则，即判定为回归。教训：守卫是需求的快照，
+  需求从「必须有过渡」变成「必须没有过渡」时，守卫本身也得跟着反过来，
+  否则它会开始保护错误的东西。
+
 ## [1.5.5] - 2026-10-01
 
 **Overview.** The dot lattice now offers a single shape — the circle — and the

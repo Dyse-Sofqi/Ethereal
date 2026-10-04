@@ -1568,6 +1568,14 @@ settings:
     type: class-toggle
     default: true
   -
+    id: settings-nav-hover-highlight
+    title: 'Settings sidebar hover highlight'
+    title.zh: '设置侧边栏悬停底色'
+    description: Settings entries get the hover background the moment the pointer enters them — no transition, no movement. Turn off to restore the native inert hover.
+    description.zh: 设置窗口左侧栏的选项在指针移入时立刻显示底色，无过渡、无位移；关闭后恢复 Obsidian 原生的「悬停毫无反应」。
+    type: class-toggle
+    default: true
+  -
     id: hd-c-components
     title: 'Components'
     title.zh: '组件'
@@ -8001,6 +8009,20 @@ body.disable-caret-blink * {
 /* 隐藏文末链接栏 */
 body.disable-embedded-backlinks .embedded-backlinks {
   display: none;
+}
+
+/* 设置窗口左侧栏的悬停反馈（由 Style Settings 开关 settings-nav-hover-highlight 门控，默认开启）。
+   原生 .vertical-tab-nav-item 只有 .is-active / .mobile-tap 才带底色，桌面端鼠标悬停
+   **完全没有任何反馈** —— 这里补上底色。
+   ⚠️ 刻意**只做底色、不加 transition、不做位移**（用户 2026-10-05 明确要求）：
+   过渡与右移会让反馈「慢半拍」，要的只是指针一到就立刻可见的底色变化。
+   `check-css.cjs` 有反向守卫盯着这两点（出现 transition / transform 即判定为回归），别再加回来。
+   底色复用官方 --background-modifier-hover，与 .is-active 同一套视觉语言，明暗自适应。
+   包在 @media (hover: hover) 里：触屏上 :hover 会「粘住」，不该有悬停态。 */
+@media (hover: hover) {
+  body.settings-nav-hover-highlight .vertical-tab-nav-item:hover {
+    background-color: var(--background-modifier-hover);
+  }
 }
 
 /* #region 引用框、块引用 */
