@@ -1307,10 +1307,10 @@ settings:
     id: ui-background-scroll
     title: 'Scroll with document'
     title.zh: '随文档滚动'
-    description: The drawn pattern scrolls together with the note text. Off by default, which pins it to the pane so it stays put while you scroll. Applies to the grid and dot patterns only — solid is a flat colour, and a background image always stays fixed to the pane.
-    description.zh: 绘制图案随正文一起滚动。默认关闭，图案钉在窗格上、滚动正文时不动。只对网格与点阵生效 —— 白板是纯色，背景图片始终固定在窗格上。
+    description: The drawn pattern scrolls together with the note text. On by default; turn it off to pin the pattern to the pane so it stays put while you scroll. Applies to the grid and dot patterns only — solid is a flat colour, and a background image always stays fixed to the pane.
+    description.zh: 绘制图案随正文一起滚动。默认开启；关闭后图案钉在窗格上、滚动正文时不动。只对网格与点阵生效 —— 白板是纯色，背景图片始终固定在窗格上。
     type: class-toggle
-    default: false
+    default: true
   -
     id: ui-background-offset-x
     title: 'Horizontal offset'
@@ -1402,7 +1402,7 @@ settings:
     description: Distance between two neighbouring dots, in pixels.
     description.zh: 相邻两个点的中心距离（像素）。
     type: variable-number-slider
-    default: 20
+    default: 40
     min: 4
     max: 200
     step: 1
@@ -3754,13 +3754,13 @@ settings:
         id: ribbon-width
         title: '◉ 功能区宽度'
         type: variable-text
-        default: '42px'
+        default: '38px'
 
     -
         id: ribbon-padding
         title: '◉ 功能区内边距'
         type: variable-text
-        default: '10px 2px 10px 2px'
+        default: '10px 0px 6px 0px'
 
     -
         id: hd-g-58
@@ -7645,8 +7645,8 @@ body.theme-dark.css-settings-manager.theme-dark {
   --h5-weight: 500;
   --h6-weight: 500;
   --checkbox-radius: var(--radius-xl);
-  --ribbon-padding: 10px 2px 10px 2px;
-  --ribbon-width: 42px;
+  --ribbon-padding: 10px 0px 6px 0px;
+  --ribbon-width: 38px;
   --nav-item-margin-bottom: 1px;
   --nav-item-weight-active: bold;
   --h1-font: 得意黑, Segoe UI;
@@ -7697,8 +7697,8 @@ body {
   --h5-weight: 500;
   --h6-weight: 500;
   --checkbox-radius: var(--radius-xl);
-  --ribbon-padding: 10px 2px 10px 2px;
-  --ribbon-width: 42px;
+  --ribbon-padding: 10px 0px 6px 0px;
+  --ribbon-width: 38px;
   --nav-item-margin-bottom: 1px;
   --nav-item-weight-active: bold;
   --h1-font: 得意黑, Segoe UI;
@@ -7758,7 +7758,7 @@ body {
 
 /* #region VS Code布局-开始 */
 /* 隐藏功能区边界 */
-.workspace-ribbon.side-dock-ribbon.mod-left {
+.workspace-ribbon {
   border-right: 0px;
 }
 /* 文件列表顶部圆角、仓库底部圆角、中间分界线、背景颜色 */
@@ -9017,7 +9017,7 @@ body {
 
   /* —— 点阵 —— */
   --ui-bg-dot-size-current: var(--ui-background-dot-size, 2.5px);
-  --ui-bg-dot-spacing-current: var(--ui-background-dot-spacing, 20px);
+  --ui-bg-dot-spacing-current: var(--ui-background-dot-spacing, 40px);
   --ui-bg-dot-half: calc(var(--ui-bg-dot-size-current) / 2);
   --ui-bg-dot-color-current: color-mix(in srgb, var(--ui-background-dot-color, var(--text-faint)) calc(var(--ui-background-dot-opacity, 0.6) * 100%), var(--ui-bg-page));
 

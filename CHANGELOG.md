@@ -5,6 +5,69 @@ All notable changes to this theme are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.5.7] - 2026-10-06
+
+**Overview.** A small release that folds four values the author had been
+carrying as personal overrides into the theme's own defaults — the dot
+lattice's spacing, the note-area background's scroll-with-document behaviour,
+and the ribbon's width and padding — so a fresh install starts from the look
+the theme is actually designed around instead of from the generic values. It
+also fixes a rule that had quietly stopped matching: Obsidian renamed the
+ribbon's side modifier, so the theme's "hide the ribbon border" rule had become
+dead code and the divider was showing again.
+
+**功能构建.** 四项默认值固化：点间距 20 → **40**、「随文档滚动」默认**开启**、
+功能区宽度 42px → **38px**、功能区内边距 → **`10px 0px 6px 0px`**。
+**错误修复.** 功能区右侧分隔线未被隐藏 —— Obsidian 已把 ribbon 的修饰类从
+`mod-left` 改为 `mod-primary`，原选择器不再匹配任何元素。
+
+**默认值变更.**
+
+| 设置项 | 面板 | 旧默认值 | 新默认值 |
+| --- | --- | --- | --- |
+| `ui-background-dot-spacing` | Ethereal 定制 | `20` | **`40`** |
+| `ui-background-scroll` | Ethereal 定制 | 关 | **开** |
+| `ribbon-width` | Ethereal 官方变量 | `42px` | **`38px`** |
+| `ribbon-padding` | Ethereal 官方变量 | `10px 2px 10px 2px` | **`10px 0px 6px 0px`** |
+
+**功能构建.**
+
+- **点间距默认值 20 → 40.** 「Ethereal 定制 → 界面 → 背景 → 点阵」的「点间距」
+  默认值翻倍。**两处必须同时改**：面板条目的 `default:`（只影响「重置」按钮回填值）
+  与 CSS 里的回退值 `--ui-bg-dot-spacing-current: var(--ui-background-dot-spacing,
+  40px)`（**真正生效**的那一处）。Style Settings 从不注入默认值，所以只改面板
+  等于没改；只改 CSS 则「重置」按钮会把值填回 20。
+- **「随文档滚动」默认关闭 → 默认开启.** 该开关是 `class-toggle`，它的「默认值」
+  不在 CSS 里，而在面板条目的 `default:` —— 插件据此把设置项 id 作为类挂到 `body`
+  （`body.ui-background-scroll`），CSS 再把 `--ui-bg-attach` 从基线的 `scroll`
+  翻成 `local`。因此这里**只动面板 `default: false` → `true`**；基线 CSS 保持
+  `scroll` 不动，否则开关一旦关掉就没有可回退的状态。条目的中英文说明也同步改写
+  （原文写着「默认关闭」，不改就是在撒谎）。
+- **功能区几何：宽度 42px → 38px，内边距 `10px 2px 10px 2px` → `10px 0px 6px 0px`.**
+  这两项是**官方变量**，按既有规矩三处同步：`scripts/defaults.json`（数据源）、
+  `theme.css` 的「主题默认值（官方变量层）」`:root` + `body`（**真正生效**）、
+  官方面板对应条目的 `default:`（只影响重置按钮）。改完用生成器对账，
+  「主题默认值」区域的 `--*` 声明集合与 `theme.css` **零漂移**。
+
+**错误修复.**
+
+- **功能区右侧分隔线重新露出来了。** 「VS Code 布局」区块里那条「隐藏功能区边界」
+  的规则写的是 `.workspace-ribbon.side-dock-ribbon.mod-left` —— 而 Obsidian
+  已经不再给功能区挂 `mod-left`：官方 `app.css` 里功能区的修饰类只剩
+  `.mod-primary`（可见的那个）与 `.mod-secondary`，`mod-left` 在该元素上
+  彻底消失（`mod-left` 这个名字在别处仍存在，比如 `.sidebar-toggle-button.mod-left`，
+  所以肉眼 grep 很容易误判成「类还在」）。选择器因此永不匹配，官方
+  `.workspace-ribbon { border-inline-end: … }` 的分隔线照常显示，
+  而**这条规则失效不会有任何报错** —— 与「类名契约」那类事故同源：
+  设置项 / 元素的类名一旦改名，写死类名的选择器就静默变死代码。
+  修法是退回到只依赖 `.workspace-ribbon` 本身。
+- **同类隐患的排查结论：主题里其余 `mod-left` / `mod-right` 用法不受影响** ——
+  它们选中的是 `.workspace-split`、`.sidebar-toggle-button`、`.titlebar-button-container`
+  这些仍然带该修饰类的元素，本次不动。
+
+定制面板计数不变（**219 项 / 178 设置**），官方面板亦不变（**896 项 / 809 设置**）——
+本次只改默认值，未增删任何设置项。
+
 ## [1.5.6] - 2026-10-05
 
 **Overview.** Hovering an entry in Obsidian's settings sidebar did nothing at
