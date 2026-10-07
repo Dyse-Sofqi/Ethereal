@@ -46,6 +46,7 @@
   "list-indent-editing": "0.5em",
   "code-border-width": "1px",
   "code-radius": "6px",
+  "text-highlight-bg": "rgba(255, 208, 0, 0.4)",
   "callout-padding": "0px",
   "callout-radius": "6px",
   "callout-title-color": "var(--text-normal)",

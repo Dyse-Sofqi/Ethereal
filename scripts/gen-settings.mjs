@@ -1,4 +1,4 @@
-// Generate Ethereal theme.css @settings block from Obsidian 1.13.7 app.css
+// Generate Ethereal theme.css @settings block from Obsidian 1.14.4 app.css
 // Runs: node gen-settings.mjs <appcss path> <output css path>
 // Theme default overrides: scripts/defaults.json (var name → default value)
 import fs from "node:fs";
@@ -24,19 +24,31 @@ const lines = css.split("\n");
 const records = []; // {name, value, scope, group, line}
 let scope = "out";
 let group = "";
-for (let i = 1997; i < 3130 && i < lines.length; i++) {
+let inMedia = false; // @media 块内不采集：如 @media print 里的 .theme-dark 覆盖（highlight-mix-blend-mode）
+                      // 只是打印态特例、不是屏幕默认值 —— 1.13.7 时它在扫描边界之外，1.14.4 把它挪进了界内，
+                      // 不跳过会把 dark 默认值污染成打印值（lighten → darken）
+// 扫描范围 = Obsidian 1.14.4 app.css 的「Obsidian theme variables」变量区：
+//   `/* Obsidian theme variables */` 在 1998 行，:root 2001 / body 2020；
+//   字体兜底 body 块 3186–3204，3205 行起是打印样式（无变量）。
+// （1.13.7 时代为 1997–3130；升级 Obsidian 后须按新 app.css 重新对位）
+for (let i = 1998; i < 3205 && i < lines.length; i++) {
   const l = lines[i];
   let m;
   if ((m = l.match(/^\s*\/\* (.+?) \*\//))) group = m[1];
+  if (/^\s*@media\b/.test(l)) { inMedia = true; continue; }
   if (/^\s*:root\s*\{/.test(l)) { scope = "root"; group = "Headings (weights)"; }
-  else if (/^\s*body\s*\{/.test(l)) { scope = "body"; if (i > 3100) group = "Fonts"; }
+  // Fonts 启发式：字体 body 块在 3186 行（0 基 3185），其后至扫描终点无其它 body 变量
+  else if (/^\s*body\s*\{/.test(l)) { scope = "body"; if (i >= 3185) group = "Fonts"; }
   else if (/^\s*\.theme-light\s*\{/.test(l)) scope = "theme-light";
   else if (/^\s*\.theme-dark\s*\{/.test(l)) scope = "theme-dark";
   else if (/^\s*\.mod-macos\s*\{/.test(l)) scope = "mod-macos";
-  else if (/^\s*\}\s*$/.test(l)) scope = "out";
+  else if (/^\s*\}\s*$/.test(l)) {
+    if (inMedia && scope === "out") inMedia = false; // @media 块自身的收尾括号
+    scope = "out";
+  }
   if ((m = l.match(/^\s*--([a-zA-Z0-9-]+):\s*(.*?);?\s*$/))) {
-    if (scope === "mod-macos") continue;
-    // disambiguate second "Inputs" group (color mapping inputs at line ~2882)
+    if (scope === "mod-macos" || inMedia) continue;
+    // disambiguate second "Inputs" group (color mapping inputs at line ~2957)
     const g = (group === "Inputs" && i > 2800) ? "Color mapping inputs" : group;
     records.push({ name: m[1], value: m[2].trim(), scope, group: g, line: i + 1 });
   }
@@ -66,6 +78,7 @@ const GROUP_MAP = {
   "Borders": ["layout", "边框 Borders"],
   "Buttons": ["components", "按钮 Buttons"],
   "Blurs": ["effects", "模糊 Blurs"],
+  "Blocks": ["components", "块 Blocks"],
   "Callouts": ["components", "标注 Callouts"],
   "Canvas": ["views", "画布 Canvas"],
   "Caret (text entry cursor)": ["typography", "插入光标 Caret"],
@@ -86,6 +99,8 @@ const GROUP_MAP = {
   "Footnotes": ["typography", "脚注 Footnotes"],
   "Graphs": ["views", "关系图谱 Graphs"],
   "Headings": ["typography", "标题 Headings"],
+  "Highlights": ["typography", "高亮 Highlights"],
+  "Hotkeys": ["components", "快捷键 Hotkeys"],
   "Horizontal rules": ["typography", "水平线 HR"],
   "Icons": ["components", "图标 Icons"],
   "Images": ["components", "图片 Images"],
@@ -104,6 +119,7 @@ const GROUP_MAP = {
   "Metadata": ["components", "元数据 Metadata"],
   "Modals": ["components", "模态框 Modals"],
   "Multi-select pills": ["components", "多选胶囊 Pills"],
+  "Notices": ["components", "通知 Notices"],
   "Paragraphs": ["typography", "段落 Paragraphs"],
   "PDF view": ["views", "PDF 视图"],
   "Popovers - file previews": ["components", "弹出预览 Popovers"],
@@ -129,6 +145,7 @@ const GROUP_MAP = {
   "Window frame": ["components", "窗口框架 Window frame"],
   "Toggles": ["components", "开关 Toggles"],
   "Touch sizes": ["layout", "触控尺寸 Touch sizes"],
+  "Tooltips": ["components", "工具提示 Tooltips"],
   "Vault profile": ["components", "库档案 Vault profile"],
   "Workspace": ["effects", "工作区 Workspace"],
   "Accent HSL values": ["colors", "强调色 HSL Accent"],
@@ -290,7 +307,7 @@ const ovCount = Object.keys(overrides).length;
 out.push(`/*
  * Ethereal — Obsidian 官方 CSS 变量面板
  * 说明：本主题完全基于 Obsidian 原生主题（零覆盖），仅通过 Style Settings 暴露
- * Obsidian 官方 CSS 变量（基于 Obsidian 1.13.7 app.css 提取，共 ${vars.length} 个变量；
+ * Obsidian 官方 CSS 变量（基于 Obsidian 1.14.4 app.css 提取，共 ${vars.length} 个变量；
  * 其中常用 ${MOVED_TO_CUSTOM.size} 项已移至「Ethereal 定制」面板（带 ◉ 标识，生成时跳过）。
  * 使用方式：
  *  1. 安装并启用 Style Settings 插件（社区插件）
@@ -337,7 +354,7 @@ settings:
         title: Usage
         title.zh: 使用说明
         type: info-text
-        description: "本面板暴露 Obsidian 官方 CSS 变量（基于 1.13.7 提取，共 ${vars.length} 项），主题本体零覆盖、完全依赖原生。修改即覆盖，恢复默认请点击行右侧重置按钮。颜色类变量多为「明/暗双模式」类型，明暗可分别设置（强调色 HSL 亦分亮/暗两组）；其余为文本框，默认值=官方默认。"
+        description: "本面板暴露 Obsidian 官方 CSS 变量（基于 1.14.4 提取，共 ${vars.length} 项），主题本体零覆盖、完全依赖原生。修改即覆盖，恢复默认请点击行右侧重置按钮。颜色类变量多为「明/暗双模式」类型，明暗可分别设置（强调色 HSL 亦分亮/暗两组）；其余为文本框，默认值=官方默认。"
     -
         id: ethereal-presets-info
         title: 💾 Presets management (Select / Save / Export / Import)
@@ -385,6 +402,13 @@ for (const cat of CAT_ORDER) {
 `);
     for (const it of sorted) {
       const { v, type, defaultVal } = it;
+      // collect light fallback for dual text vars —— 必须在 MOVED 跳过之前：
+      // 已移至定制面板的明暗差异化 text 型变量（如 text-selection，亮 20% / 暗 33%），
+      // 其面板条目会把单一 default 注入明暗两种模式，同样需要这里的亮色锁定来保住原生亮色值
+      const lightV = v.light ?? v.body;
+      if (type === "text" && lightV !== null && lightV !== (v.dark ?? v.body)) {
+        lightFallbacks.push({ name: v.name, lightValue: lightV });
+      }
       // 常用官方变量已移至「Ethereal 定制」面板（唯一入口），此处跳过，避免重复
       if (MOVED_TO_CUSTOM.has(v.name)) continue;
       const d = descOf(v, type);
@@ -392,11 +416,6 @@ for (const cat of CAT_ORDER) {
       // 与自动生成的说明合并，手工的那条放前面（用户最需要先看到）。
       const extra = EXTRA_DESC[v.name];
       const desc = extra ? (d ? `${extra} ${d}` : extra) : d;
-      // collect light fallback for dual text vars
-      const lightV = v.light ?? v.body;
-      if (type === "text" && lightV !== null && lightV !== (v.dark ?? v.body)) {
-        lightFallbacks.push({ name: v.name, lightValue: lightV });
-      }
       // 强调色 HSL：官方不分明暗（仅 :root 一份），拆成亮/暗两组设置 + 底部模式映射规则
       if (v.name === "accent-h" || v.name === "accent-s" || v.name === "accent-l") {
         const zh = zhName(v.name);

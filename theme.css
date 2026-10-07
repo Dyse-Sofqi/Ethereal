@@ -67,9 +67,12 @@ settings:
 
   -
     id: text-highlight-bg
-    title: '◉ 文本高亮背景色'
+    title: 'Highlight background'
+    title.zh: '◉ 文本高亮背景色'
     type: variable-text
     default: 'rgba(255, 208, 0, 0.4)'
+    description: Background of a plain (colour-less) ==highlight==. 1.14.4 no longer declares this variable officially, so the theme ships the default itself (「主题默认值」层). The six emoji-prefixed highlight colours (==🔴…== 🟠 🟡 🟢 🔵 🟣) use the official palette instead — tune them in 「Ethereal 官方变量 → Typography → Highlights」 (highlight-background-* / highlight-opacity).
+    description.zh: 默认（不带颜色表情）高亮的底色。1.14.4 起官方不再声明此变量，主题默认值改由主题自己提供（「主题默认值」层）。六个颜色表情高亮（==🔴…== 🟠 🟡 🟢 🔵 🟣）使用官方独立配色 —— 在「Ethereal 官方变量 → 排版 → 高亮」中调 highlight-background-* 与 highlight-opacity。
 
   -
     id: hd-c-backgrounds
@@ -225,6 +228,27 @@ settings:
     description.zh: 开启后停用上述压缩，空白行回到原生行高。默认关闭、保持吞并片段的外观。
     type: class-toggle
     default: false
+  -
+    id: paragraph-text-align
+    title: 'Text alignment'
+    title.zh: '文本对齐方式'
+    description: Horizontal alignment of body text, in both the editing and the reading view. 'Justify' is the merged Custom snippet's behaviour and stays the default (with automatic hyphenation for Latin text); headings, code blocks and tables always stay left-aligned.
+    description.zh: 编辑与阅读视图中正文的水平对齐方式，四选一。「两端对齐」为吞并的 Custom 片段原行为，保持默认（拉丁文本自动断字）；标题、代码块与表格不参与，保持左对齐。
+    type: variable-select
+    default: 'justify'
+    options:
+      -
+        value: 'justify'
+        label: '两端对齐 Justify'
+      -
+        value: 'left'
+        label: '左对齐 Left'
+      -
+        value: 'center'
+        label: '居中 Center'
+      -
+        value: 'right'
+        label: '右对齐 Right'
   -
     id: hd-c-headings
     title: 'Headings'
@@ -1864,17 +1888,36 @@ settings:
 /* #endregion Ethereal 定制 */
 
 /* #region Ethereal 官方变量*/
-
+/*
+ * Ethereal — Obsidian 官方 CSS 变量面板
+ * 说明：本主题完全基于 Obsidian 原生主题（零覆盖），仅通过 Style Settings 暴露
+ * Obsidian 官方 CSS 变量（基于 Obsidian 1.14.4 app.css 提取，共 949 个变量；
+ * 其中常用 69 项已移至「Ethereal 定制」面板（带 ◉ 标识，生成时跳过）。
+ * 使用方式：
+ *  1. 安装并启用 Style Settings 插件（社区插件）
+ *  2. 在 外观 → 主题 中选择 Ethereal 后，打开 设置 → 外观 → 样式设置
+ *  3. 分组默认折叠，按需展开；每项默认值 = 官方默认值，修改即覆盖，重置按钮可恢复
+ * 注意：所有设置项 id 与官方 CSS 变量同名（不含 -- 前缀），
+ *       变量被修改后会注入 body.css-settings-manager，优先级高于官方默认。
+ * 注：其中 53 个变量的主题默认值已自定义（见「主题默认值（官方变量层）」区域，数据源 scripts/defaults.json）。
+ */
 /* @settings
-name: Ethereal 官方变量
+name: Ethereal — 官方变量面板
 id: ethereal-official-vars
 settings:
     -
-        id: ethereal-official-info
-        title: 'Note'
-        title.zh: '说明'
+        id: ethereal-info
+        title: Usage
+        title.zh: 使用说明
         type: info-text
-        description: "本面板收录 Obsidian 官方 CSS 变量的完整进阶版；其中常用基础变量（文本/背景/字体/圆角/标题颜色/链接等）已移至上方「Ethereal 定制」面板（带 ◉ 标识），此处不再重复。修改即覆盖，恢复默认请点击行右侧重置按钮。"
+        description: "本面板暴露 Obsidian 官方 CSS 变量（基于 1.14.4 提取，共 949 项），主题本体零覆盖、完全依赖原生。修改即覆盖，恢复默认请点击行右侧重置按钮。颜色类变量多为「明/暗双模式」类型，明暗可分别设置（强调色 HSL 亦分亮/暗两组）；其余为文本框，默认值=官方默认。"
+    -
+        id: ethereal-presets-info
+        title: 💾 Presets management (Select / Save / Export / Import)
+        title.zh: 💾 方案管理（选择 / 保存 / 导入导出）
+        type: info-text
+        description: "想要把整套自定义值保存为方案、随时切换、导出分享？请安装配套插件「Ethereal 方案管理」（silence-presets）：启用后本面板顶部会直接出现方案栏（选择→应用、保存当前、恢复官方默认），完整管理在 设置 → Silence 方案管理 标签页（含逐方案导出/删除与 JSON 导入）。方案＝本面板全部变量的快照，明/暗双模式一并保存。"
+
     -
         id: hd-colors
         title: 'Colors'
@@ -1884,48 +1927,54 @@ settings:
         collapsed: true
 
     -
-        id: hd-g-4
-        title: 'Text'
-        title.zh: '文本'
+        id: hd-g-1
+        title: 'HSL Accent'
+        title.zh: '强调色'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: text-on-accent
-        title: '◉ 强调色上的文本色'
+        id: accent-h-light
+        title: '◉ 强调色相（Hue）（亮色）'
         type: variable-text
-        default: 'white'
+        default: '258'
+        description: '明/暗模式分别设置（默认=官方 258）'
 
     -
-        id: text-on-accent-inverted
-        title: '◉ 反色强调上的文本色'
+        id: accent-h-dark
+        title: '◉ 强调色相（Hue）（暗色）'
         type: variable-text
-        default: 'black'
+        default: '258'
+        description: '明/暗模式分别设置（默认=官方 258）'
 
     -
-        id: text-error
-        title: '◉ 错误文本色'
+        id: accent-s-light
+        title: '◉ 强调饱和度（Saturation）（亮色）'
         type: variable-text
-        default: 'var(--color-red)'
+        default: '88%'
+        description: '明/暗模式分别设置（默认=官方 88%）'
 
     -
-        id: text-warning
-        title: '◉ 警告文本色'
+        id: accent-s-dark
+        title: '◉ 强调饱和度（Saturation）（暗色）'
         type: variable-text
-        default: 'var(--color-orange)'
+        default: '88%'
+        description: '明/暗模式分别设置（默认=官方 88%）'
 
     -
-        id: text-success
-        title: '◉ 成功文本色'
+        id: accent-l-light
+        title: '◉ 强调亮度（Lightness）（亮色）'
         type: variable-text
-        default: 'var(--color-green)'
+        default: '66%'
+        description: '明/暗模式分别设置（默认=官方 66%）'
 
     -
-        id: text-accent-hover
-        title: '◉ 悬停强调文本色'
+        id: accent-l-dark
+        title: '◉ 强调亮度（Lightness）（暗色）'
         type: variable-text
-        default: 'var(--color-accent-2)'
+        default: '66%'
+        description: '明/暗模式分别设置（默认=官方 66%）'
 
     -
         id: hd-g-2
@@ -1988,6 +2037,64 @@ settings:
         title: '◉ 消息背景修饰色'
         type: variable-text
         default: 'color-mix(in oklch, black 90%, transparent)'
+
+    -
+        id: hd-g-3
+        title: 'Inputs'
+        title.zh: '颜色映射·输入框'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: background-modifier-form-field-hover
+        title: '◉ 悬停表单字段背景修饰色'
+        type: variable-text
+        default: 'var(--background-modifier-form-field)'
+
+    -
+        id: hd-g-4
+        title: 'Text'
+        title.zh: '文本'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: text-on-accent
+        title: '◉ 强调色上的文本色'
+        type: variable-text
+        default: 'white'
+
+    -
+        id: text-on-accent-inverted
+        title: '◉ 反色强调上的文本色'
+        type: variable-text
+        default: 'black'
+
+    -
+        id: text-error
+        title: '◉ 错误文本色'
+        type: variable-text
+        default: 'var(--color-red)'
+
+    -
+        id: text-warning
+        title: '◉ 警告文本色'
+        type: variable-text
+        default: 'var(--color-orange)'
+
+    -
+        id: text-success
+        title: '◉ 成功文本色'
+        type: variable-text
+        default: 'var(--color-green)'
+
+    -
+        id: text-accent-hover
+        title: '◉ 悬停强调文本色'
+        type: variable-text
+        default: 'var(--color-accent-2)'
 
     -
         id: hd-g-5
@@ -2201,70 +2308,6 @@ settings:
         description: '暗色默认 hsl(calc(var(--accent-h) - 5), calc(var(--accent-s) * 1.05), calc(var(--accent-l) * 1.29))；亮色默认 hsl(calc(var(--accent-h) - 3), calc(var(--accent-s) * 1.02), calc(var(--accent-l) * 1.15))；注：原生与另一模式不同；暗色模式下本值独立生效，亮色由底部兜底规则保持原生'
 
     -
-        id: hd-g-1
-        title: 'Accent (HSL)'
-        title.zh: '强调色（亮暗分离）'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: accent-h-light
-        title: '◉ 强调色相（Hue）·亮色'
-        type: variable-text
-        default: '258'
-        description: '明/暗模式分别设置（默认=官方 258）；亮色模式生效'
-
-    -
-        id: accent-h-dark
-        title: '◉ 强调色相（Hue）·暗色'
-        type: variable-text
-        default: '258'
-        description: '明/暗模式分别设置（默认=官方 258）；暗色模式生效'
-
-    -
-        id: accent-s-light
-        title: '◉ 强调饱和度（Saturation）·亮色'
-        type: variable-text
-        default: '88%'
-        description: '明/暗模式分别设置（默认=官方 88%）；亮色模式生效'
-
-    -
-        id: accent-s-dark
-        title: '◉ 强调饱和度（Saturation）·暗色'
-        type: variable-text
-        default: '88%'
-        description: '明/暗模式分别设置（默认=官方 88%）；暗色模式生效'
-
-    -
-        id: accent-l-light
-        title: '◉ 强调亮度（Lightness）·亮色'
-        type: variable-text
-        default: '66%'
-        description: '明/暗模式分别设置（默认=官方 66%）；亮色模式生效'
-
-    -
-        id: accent-l-dark
-        title: '◉ 强调亮度（Lightness）·暗色'
-        type: variable-text
-        default: '66%'
-        description: '明/暗模式分别设置（默认=官方 66%）；暗色模式生效'
-
-    -
-        id: hd-g-3
-        title: 'Inputs'
-        title.zh: '颜色映射·输入框'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: background-modifier-form-field-hover
-        title: '◉ 悬停表单字段背景修饰色'
-        type: variable-text
-        default: 'var(--background-modifier-form-field)'
-
-    -
         id: hd-g-6
         title: 'Dual-mode'
         title.zh: '模式差异化变量'
@@ -2282,392 +2325,39 @@ settings:
         description: '明/暗模式分别设置（默认=官方值）'
 
     -
-        id: hd-layout
-        title: 'Layout'
-        title.zh: '布局'
-        type: heading
-        level: 1
-        collapsed: true
-
-    -
-        id: hd-g-30
-        title: 'File layout'
-        title.zh: '文件布局'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: file-folding-offset
-        title: '◉ 文件折叠偏移'
+        id: color-secondary-2
+        title: '◉ 次级色 2'
         type: variable-text
-        default: '24px'
+        default: 'color-mix(in srgb, var(--background-secondary) 96%, white 4%)'
+        description: '注：原生与另一模式不同；暗色模式下本值独立生效，亮色由底部兜底规则保持原生'
 
     -
-        id: file-margins
-        title: '◉ 文件边距'
+        id: color-secondary-3
+        title: '◉ 次级色 3'
         type: variable-text
-        default: 'var(--file-margins-y) var(--file-margins-x)'
+        default: 'color-mix(in srgb, var(--background-secondary) 92%, white 8%)'
+        description: '注：原生与另一模式不同；暗色模式下本值独立生效，亮色由底部兜底规则保持原生'
 
     -
-        id: file-margins-x
-        title: '◉ 文件水平边距'
+        id: color-secondary-4
+        title: '◉ 次级色 4'
         type: variable-text
-        default: 'var(--size-4-8)'
+        default: 'color-mix(in srgb, var(--background-secondary) 90%, white 10%)'
+        description: '注：原生与另一模式不同；暗色模式下本值独立生效，亮色由底部兜底规则保持原生'
 
     -
-        id: file-margins-y
-        title: '◉ 文件垂直边距'
+        id: color-secondary-5
+        title: '◉ 次级色 5'
         type: variable-text
-        default: 'var(--size-4-8)'
+        default: 'color-mix(in srgb, var(--background-secondary) 84%, white 16%)'
+        description: '注：原生与另一模式不同；暗色模式下本值独立生效，亮色由底部兜底规则保持原生'
 
     -
-        id: file-header-font
-        title: '◉ 文件页眉字体'
+        id: color-secondary-6
+        title: '◉ 次级色 6'
         type: variable-text
-        default: 'var(--font-interface)'
-
-    -
-        id: file-header-font-size
-        title: '◉ 文件页眉字号'
-        type: variable-text
-        default: 'var(--font-ui-small)'
-
-    -
-        id: file-header-font-weight
-        title: '◉ 文件页眉字重'
-        type: variable-text
-        default: '400'
-
-    -
-        id: file-header-background
-        title: '◉ 文件页眉背景色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: file-header-background-focused
-        title: '◉ 聚焦文件页眉背景色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: file-header-border
-        title: '◉ 文件页眉边框'
-        type: variable-text
-        default: 'var(--border-width) solid transparent'
-
-    -
-        id: file-header-justify
-        title: '◉ 文件页眉对齐'
-        type: variable-text
-        default: 'center'
-
-    -
-        id: header-height
-        title: '◉ 页眉高度'
-        type: variable-text
-        default: '38px'
-
-    -
-        id: hd-g-32
-        title: 'Scrollbars'
-        title.zh: '滚动条'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: scrollbar-width
-        title: '◉ 滚动条宽度'
-        type: variable-text
-        default: '12px'
-
-    -
-        id: scrollbar-height
-        title: '◉ 滚动条高度'
-        type: variable-text
-        default: '12px'
-
-    -
-        id: scrollbar-border-width
-        title: '◉ 滚动条边框宽度'
-        type: variable-text
-        default: '3px 3px 3px 2px'
-
-    -
-        id: scrollbar-radius
-        title: '◉ 滚动条圆角'
-        type: variable-text
-        default: 'var(--radius-l)'
-
-    -
-        id: scrollbar-active-thumb-bg
-        title: '◉ 激活滚动条滑块背景'
-        type: variable-text
-        default: 'color-mix(in oklch, var(--mono-100) 20%, transparent)'
-
-    -
-        id: scrollbar-bg
-        title: '◉ 滚动条背景'
-        type: variable-text
-        default: 'transparent'
-
-    -
-        id: scrollbar-thumb-bg
-        title: '◉ 滚动条滑块背景'
-        type: variable-text
-        default: 'color-mix(in oklch, var(--mono-100) 10%, transparent)'
-
-    -
-        id: scrollbar-native-width
-        title: '◉ 滚动条原生宽度'
-        type: variable-text
-        default: 'auto'
-
-    -
-        id: hd-g-28
-        title: 'Borders'
-        title.zh: '边框'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: border-width
-        title: '◉ 边框宽度'
-        type: variable-text
-        default: '1px'
-
-    -
-        id: hd-g-31
-        title: 'Radiuses'
-        title.zh: '圆角'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: corner-shape
-        title: '◉ 角形'
-        type: variable-text
-        default: 'round'
-
-    -
-        id: hd-g-29
-        title: 'Dividers'
-        title.zh: '分隔线'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: divider-color
-        title: '◉ 分隔线颜色'
-        type: variable-text
-        default: 'var(--background-modifier-border)'
-
-    -
-        id: divider-color-hover
-        title: '◉ 悬停分隔线颜色'
-        type: variable-text
-        default: 'var(--interactive-accent)'
-
-    -
-        id: divider-width
-        title: '◉ 分隔线宽度'
-        type: variable-text
-        default: '1px'
-
-    -
-        id: divider-width-hover
-        title: '◉ 悬停分隔线宽度'
-        type: variable-text
-        default: '3px'
-
-    -
-        id: divider-vertical-height
-        title: '◉ 垂直分隔线高度'
-        type: variable-text
-        default: 'calc(100% - var(--header-height))'
-
-    -
-        id: hd-g-33
-        title: 'Sizing'
-        title.zh: '间距尺寸'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: size-2-1
-        title: '◉ 间距规格（2×1）'
-        type: variable-text
-        default: '2px'
-
-    -
-        id: size-2-2
-        title: '◉ 间距规格（2×2）'
-        type: variable-text
-        default: '4px'
-
-    -
-        id: size-2-3
-        title: '◉ 间距规格（2×3）'
-        type: variable-text
-        default: '6px'
-
-    -
-        id: size-4-1
-        title: '◉ 间距规格（4×1）'
-        type: variable-text
-        default: '4px'
-
-    -
-        id: size-4-2
-        title: '◉ 间距规格（4×2）'
-        type: variable-text
-        default: '8px'
-
-    -
-        id: size-4-3
-        title: '◉ 间距规格（4×3）'
-        type: variable-text
-        default: '12px'
-
-    -
-        id: size-4-4
-        title: '◉ 间距规格（4×4）'
-        type: variable-text
-        default: '16px'
-
-    -
-        id: size-4-5
-        title: '◉ 间距规格（4×5）'
-        type: variable-text
-        default: '20px'
-
-    -
-        id: size-4-6
-        title: '◉ 间距规格（4×6）'
-        type: variable-text
-        default: '24px'
-
-    -
-        id: size-4-8
-        title: '◉ 间距规格（4×8）'
-        type: variable-text
-        default: '32px'
-
-    -
-        id: size-4-9
-        title: '◉ 间距规格（4×9）'
-        type: variable-text
-        default: '36px'
-
-    -
-        id: size-4-10
-        title: '◉ 间距规格（4×10）'
-        type: variable-text
-        default: '40px'
-
-    -
-        id: size-4-12
-        title: '◉ 间距规格（4×12）'
-        type: variable-text
-        default: '48px'
-
-    -
-        id: size-4-16
-        title: '◉ 间距规格（4×16）'
-        type: variable-text
-        default: '64px'
-
-    -
-        id: size-4-18
-        title: '◉ 间距规格（4×18）'
-        type: variable-text
-        default: '72px'
-
-    -
-        id: hd-g-34
-        title: 'Touch sizes'
-        title.zh: '触控尺寸'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: touch-size-xxs
-        title: '◉ 触控大小（特特小 xxs）'
-        type: variable-text
-        default: '24px'
-
-    -
-        id: touch-size-xs
-        title: '◉ 触控大小（特小 xs）'
-        type: variable-text
-        default: '30px'
-
-    -
-        id: touch-size-s
-        title: '◉ 触控大小（小 s）'
-        type: variable-text
-        default: '40px'
-
-    -
-        id: touch-size-m
-        title: '◉ 触控大小（中 m）'
-        type: variable-text
-        default: '44px'
-
-    -
-        id: touch-size-l
-        title: '◉ 触控大小（大 l）'
-        type: variable-text
-        default: '52px'
-
-    -
-        id: touch-size-xl
-        title: '◉ 触控大小（特大 xl）'
-        type: variable-text
-        default: '60px'
-
-    -
-        id: touch-radius-xxs
-        title: '◉ 触控圆角（特特小 xxs）'
-        type: variable-text
-        default: 'var(--touch-size-xxs)'
-
-    -
-        id: touch-radius-xs
-        title: '◉ 触控圆角（特小 xs）'
-        type: variable-text
-        default: 'var(--touch-size-xs)'
-
-    -
-        id: touch-radius-s
-        title: '◉ 触控圆角（小 s）'
-        type: variable-text
-        default: 'var(--touch-size-s)'
-
-    -
-        id: touch-radius-m
-        title: '◉ 触控圆角（中 m）'
-        type: variable-text
-        default: 'var(--touch-size-m)'
-
-    -
-        id: touch-radius-l
-        title: '◉ 触控圆角（大 l）'
-        type: variable-text
-        default: 'var(--touch-size-l)'
-
-    -
-        id: touch-radius-xl
-        title: '◉ 触控圆角（特大 xl）'
-        type: variable-text
-        default: 'var(--touch-size-xl)'
+        default: 'color-mix(in srgb, var(--background-secondary) 76%, white 24%)'
+        description: '注：原生与另一模式不同；暗色模式下本值独立生效，亮色由底部兜底规则保持原生'
 
     -
         id: hd-typography
@@ -2678,78 +2368,264 @@ settings:
         collapsed: true
 
     -
-        id: hd-g-27
-        title: 'Fonts'
-        title.zh: '字体'
+        id: hd-g-8
+        title: 'Blockquotes'
+        title.zh: '引用块'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: font-default
-        title: '◉ 默认字体'
+        id: blockquote-border-thickness
+        title: '◉ 引用块边框粗细'
         type: variable-text
-        default: 'ui-sans-serif, -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", "Google Sans Flex", Roboto, "Inter Variable", "Inter", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif'
+        default: '2px'
 
     -
-        id: font-monospace-default
-        title: '◉ 默认等宽字体'
+        id: blockquote-border-color
+        title: '◉ 引用块边框色'
         type: variable-text
-        default: 'ui-monospace, SFMono-Regular, "Cascadia Mono", "Roboto Mono", "DejaVu Sans Mono", "Liberation Mono", Menlo, Monaco, "Consolas", "Source Code Pro", monospace'
+        default: 'var(--interactive-accent)'
 
     -
-        id: font-interface-override
-        title: '◉ 界面字体覆盖'
+        id: blockquote-font-style
+        title: '◉ 引用块字体样式'
         type: variable-text
-        default: "'??'"
+        default: 'normal'
 
     -
-        id: font-interface-theme
-        title: '◉ 主题界面字体'
+        id: blockquote-color
+        title: '◉ 引用块文字色'
         type: variable-text
-        default: "'??'"
+        default: 'inherit'
 
     -
-        id: font-text-override
-        title: '◉ 正文字体覆盖'
+        id: blockquote-background-color
+        title: '◉ 引用块背景色'
         type: variable-text
-        default: "'??'"
+        default: 'transparent'
 
     -
-        id: font-text-theme
-        title: '◉ 主题正文字体'
-        type: variable-text
-        default: "'??'"
+        id: hd-g-9
+        title: 'Bold'
+        title.zh: '粗体'
+        type: heading
+        level: 2
+        collapsed: true
 
     -
-        id: font-print-override
-        title: '◉ 打印字体覆盖'
+        id: bold-modifier
+        title: '◉ 粗体修饰符'
         type: variable-text
-        default: "'??'"
+        default: '200'
 
     -
-        id: font-print
-        title: '◉ 打印字体'
-        type: variable-text
-        default: "var(--font-print-override), var(--font-text-override), var(--font-text-theme), 'Arial'"
+        id: hd-g-10
+        title: 'Caret'
+        title.zh: '插入光标'
+        type: heading
+        level: 2
+        collapsed: true
 
     -
-        id: font-monospace-override
-        title: '◉ 等宽字体覆盖'
+        id: caret-color
+        title: '◉ 光标颜色'
         type: variable-text
-        default: "'??'"
+        default: 'var(--text-accent)'
 
     -
-        id: font-monospace-theme
-        title: '◉ 主题等宽字体'
-        type: variable-text
-        default: "'??'"
+        id: hd-g-11
+        title: 'Code'
+        title.zh: '代码'
+        type: heading
+        level: 2
+        collapsed: true
 
     -
-        id: font-mermaid
-        title: '◉ Mermaid 字体'
+        id: code-white-space
+        title: '◉ 代码空白符处理'
         type: variable-text
-        default: 'var(--font-text)'
+        default: 'pre-wrap'
+
+    -
+        id: code-border-width
+        title: '◉ 代码边框宽度'
+        type: variable-text
+        default: '1px'
+
+    -
+        id: code-border-color
+        title: '◉ 代码边框色'
+        type: variable-text
+        default: 'var(--background-modifier-border)'
+
+    -
+        id: code-bracket-background
+        title: '◉ 括号高亮背景色'
+        type: variable-text
+        default: 'var(--background-modifier-hover)'
+
+    -
+        id: code-radius
+        title: '◉ 代码圆角'
+        type: variable-text
+        default: '6px'
+
+    -
+        id: code-size
+        title: '◉ 代码字号'
+        type: variable-text
+        default: 'var(--font-smaller)'
+
+    -
+        id: code-background
+        title: '◉ 代码背景色'
+        type: variable-text
+        default: 'var(--background-primary-alt)'
+
+    -
+        id: code-normal
+        title: '◉ 代码-常规色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: code-comment
+        title: '◉ 代码-注释色'
+        type: variable-text
+        default: 'var(--text-faint)'
+
+    -
+        id: code-function
+        title: '◉ 代码-函数色'
+        type: variable-text
+        default: 'var(--color-yellow)'
+
+    -
+        id: code-important
+        title: '◉ 代码-重要色'
+        type: variable-text
+        default: 'var(--color-orange)'
+
+    -
+        id: code-keyword
+        title: '◉ 代码-关键字色'
+        type: variable-text
+        default: 'var(--color-pink)'
+
+    -
+        id: code-operator
+        title: '◉ 代码-运算符色'
+        type: variable-text
+        default: 'var(--color-red)'
+
+    -
+        id: code-property
+        title: '◉ 代码-属性色'
+        type: variable-text
+        default: 'var(--color-cyan)'
+
+    -
+        id: code-punctuation
+        title: '◉ 代码-标点色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: code-string
+        title: '◉ 代码-字符串色'
+        type: variable-text
+        default: 'var(--color-green)'
+
+    -
+        id: code-tag
+        title: '◉ 代码-标签色'
+        type: variable-text
+        default: 'var(--color-red)'
+
+    -
+        id: code-value
+        title: '◉ 代码-值色'
+        type: variable-text
+        default: 'var(--color-purple)'
+
+    -
+        id: hd-g-12
+        title: 'Font sizes (relative)'
+        title.zh: '相对字号'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: font-smallest
+        title: '◉ 字重-Smallest'
+        type: variable-text
+        default: '0.8em'
+
+    -
+        id: font-smaller
+        title: '◉ 字重-Smaller'
+        type: variable-text
+        default: '0.875em'
+
+    -
+        id: font-small
+        title: '◉ 字重-Small'
+        type: variable-text
+        default: '0.933em'
+
+    -
+        id: hd-g-13
+        title: 'Flair'
+        title.zh: '标记'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: flair-background
+        title: '◉ 标记背景色'
+        type: variable-text
+        default: 'var(--interactive-normal)'
+
+    -
+        id: flair-color
+        title: '◉ 标记颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: hd-g-14
+        title: 'Font sizes (UI)'
+        title.zh: 'UI 字号'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: font-ui-smaller
+        title: '◉ UI 字体-更小'
+        type: variable-text
+        default: '12px'
+
+    -
+        id: font-ui-small
+        title: '◉ UI 字体-小号'
+        type: variable-text
+        default: '13px'
+
+    -
+        id: font-ui-medium
+        title: '◉ UI 字体-中号'
+        type: variable-text
+        default: '15px'
+
+    -
+        id: font-ui-large
+        title: '◉ UI 字体-大号'
+        type: variable-text
+        default: '20px'
 
     -
         id: hd-g-15
@@ -2820,24 +2696,96 @@ settings:
         default: '900'
 
     -
-        id: hd-g-26
-        title: 'Paragraphs'
-        title.zh: '段落'
+        id: hd-g-16
+        title: 'Footnotes'
+        title.zh: '脚注'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: p-spacing
-        title: '◉ 段落间距'
+        id: footnote-divider-color-active
+        title: '◉ 激活脚注分隔线颜色'
         type: variable-text
-        default: '1rem'
+        default: 'var(--metadata-divider-color-focus)'
 
     -
-        id: p-spacing-empty
-        title: '◉ 空段落间距'
+        id: footnote-divider-color
+        title: '◉ 脚注分隔线颜色'
         type: variable-text
-        default: '0rem'
+        default: 'var(--metadata-divider-color)'
+
+    -
+        id: footnote-divider-width
+        title: '◉ 脚注分隔线宽度'
+        type: variable-text
+        default: 'var(--border-width)'
+
+    -
+        id: footnote-gap
+        title: '◉ 脚注间距'
+        type: variable-text
+        default: 'var(--size-4-1)'
+
+    -
+        id: footnote-id-color-no-occurrences
+        title: '◉ 无重复脚注编号颜色'
+        type: variable-text
+        default: 'var(--text-faint)'
+
+    -
+        id: footnote-id-color
+        title: '◉ 脚注编号颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: footnote-id-delimiter
+        title: '◉ 脚注编号分隔符'
+        type: variable-text
+        default: '"."'
+
+    -
+        id: footnote-input-background-active
+        title: '◉ 激活脚注输入框背景色'
+        type: variable-text
+        default: 'var(--metadata-input-background-active)'
+
+    -
+        id: footnote-input-background
+        title: '◉ 脚注输入框背景色'
+        type: variable-text
+        default: 'var(--metadata-input-background)'
+
+    -
+        id: footnote-line-height
+        title: '◉ 脚注行高'
+        type: variable-text
+        default: 'var(--line-height-normal)'
+
+    -
+        id: footnote-padding-block
+        title: '◉ 脚注块向内边距'
+        type: variable-text
+        default: 'var(--size-2-3)'
+
+    -
+        id: footnote-padding-inline
+        title: '◉ 脚注行向内边距'
+        type: variable-text
+        default: 'var(--size-2-3)'
+
+    -
+        id: footnote-radius
+        title: '◉ 脚注圆角'
+        type: variable-text
+        default: 'var(--radius-s)'
+
+    -
+        id: footnote-size
+        title: '◉ 脚注字号'
+        type: variable-text
+        default: 'var(--font-smaller)'
 
     -
         id: hd-g-17
@@ -3004,7 +2952,153 @@ settings:
         default: 'normal'
 
     -
+        id: hd-g-18
+        title: 'HR'
+        title.zh: '水平线'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: hr-color
+        title: '◉ 分隔线颜色'
+        type: variable-text
+        default: 'var(--background-modifier-border)'
+
+    -
+        id: hr-thickness
+        title: '◉ 分隔线粗细'
+        type: variable-text
+        default: '2px'
+
+    -
+        id: hd-g-19
+        title: 'Highlights'
+        title.zh: '高亮'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: highlight-opacity
+        title: '◉ 高亮不透明度'
+        type: variable-text
+        default: '30%'
+
+    -
+        id: highlight-background
+        title: '◉ 高亮背景'
+        type: variable-text
+        default: 'var(--text-highlight-bg, var(--highlight-background-yellow))'
+
+    -
+        id: highlight-background-red
+        title: '◉ 高亮背景红'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--color-red) var(--highlight-opacity), transparent)'
+
+    -
+        id: highlight-background-orange
+        title: '◉ 高亮背景橙'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--color-orange) var(--highlight-opacity), transparent)'
+
+    -
+        id: highlight-background-yellow
+        title: '◉ 高亮背景黄'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--color-yellow) var(--highlight-opacity), transparent)'
+
+    -
+        id: highlight-background-green
+        title: '◉ 高亮背景绿'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--color-green) var(--highlight-opacity), transparent)'
+
+    -
+        id: highlight-background-blue
+        title: '◉ 高亮背景蓝'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--color-blue) var(--highlight-opacity), transparent)'
+
+    -
+        id: highlight-background-purple
+        title: '◉ 高亮背景紫'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--color-purple) var(--highlight-opacity), transparent)'
+
+    -
+        id: hd-g-20
+        title: 'Indent size'
+        title.zh: '列表缩进'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: indent-size
+        title: '◉ 缩进大小'
+        type: variable-text
+        default: '2'
+
+    -
+        id: indent-unit
+        title: '◉ 缩进单位'
+        type: variable-text
+        default: '0.25em'
+
+    -
         id: hd-g-21
+        title: 'Indentation guide'
+        title.zh: '缩进参考线'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: indentation-guide-width
+        title: '◉ 缩进参考线宽度'
+        type: variable-text
+        default: 'var(--border-width)'
+
+    -
+        id: indentation-guide-width-active
+        title: '◉ 激活缩进参考线宽度'
+        type: variable-text
+        default: 'var(--border-width)'
+
+    -
+        id: indentation-guide-color
+        title: '◉ 缩进参考线颜色'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--mono-100) 12%, transparent)'
+
+    -
+        id: indentation-guide-color-active
+        title: '◉ 激活缩进参考线颜色'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--mono-100) 30%, transparent)'
+
+    -
+        id: indentation-guide-editing-indent
+        title: '◉ 编辑模式缩进参考线缩进'
+        type: variable-text
+        default: '0.6em'
+
+    -
+        id: indentation-guide-reading-indent
+        title: '◉ 阅读模式缩进参考线缩进'
+        type: variable-text
+        default: '-0.85em'
+
+    -
+        id: indentation-guide-source-indent
+        title: '◉ 源码模式缩进参考线缩进'
+        type: variable-text
+        default: '0.25em'
+
+    -
+        id: hd-g-22
         title: 'Inline title'
         title.zh: '内联标题'
         type: heading
@@ -3060,204 +3154,47 @@ settings:
         default: '0.5em'
 
     -
-        id: hd-g-20
-        title: 'Indentation guide'
-        title.zh: '缩进参考线'
+        id: hd-g-23
+        title: 'Italic'
+        title.zh: '斜体'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: indentation-guide-width
-        title: '◉ 缩进参考线宽度'
-        type: variable-text
-        default: 'var(--border-width)'
-
-    -
-        id: indentation-guide-width-active
-        title: '◉ 激活缩进参考线宽度'
-        type: variable-text
-        default: 'var(--border-width)'
-
-    -
-        id: indentation-guide-color
-        title: '◉ 缩进参考线颜色'
-        type: variable-text
-        default: 'color-mix(in oklch, var(--mono-100) 12%, transparent)'
-
-    -
-        id: indentation-guide-color-active
-        title: '◉ 激活缩进参考线颜色'
-        type: variable-text
-        default: 'color-mix(in oklch, var(--mono-100) 30%, transparent)'
-
-    -
-        id: indentation-guide-editing-indent
-        title: '◉ 编辑模式缩进参考线缩进'
-        type: variable-text
-        default: '0.6em'
-
-    -
-        id: indentation-guide-reading-indent
-        title: '◉ 阅读模式缩进参考线缩进'
-        type: variable-text
-        default: '-0.85em'
-
-    -
-        id: indentation-guide-source-indent
-        title: '◉ 源码模式缩进参考线缩进'
-        type: variable-text
-        default: '0.25em'
-
-    -
-        id: hd-g-19
-        title: 'Indent size'
-        title.zh: '列表缩进'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: indent-size
-        title: '◉ 缩进大小'
-        type: variable-text
-        default: '2'
-
-    -
-        id: indent-unit
-        title: '◉ 缩进单位'
-        type: variable-text
-        default: '0.25em'
-
-    -
-        id: hd-g-25
-        title: 'Lists'
-        title.zh: '列表'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: list-indent
-        title: '◉ 列表缩进'
-        type: variable-text
-        default: 'calc(var(--indent-unit) * var(--indent-size))'
-
-    -
-        id: list-indent-editing
-        title: '◉ 编辑模式列表缩进'
-        type: variable-text
-        default: '0.5em'
-
-    -
-        id: list-indent-source
-        title: '◉ 源码模式列表缩进'
-        type: variable-text
-        default: '0'
-
-    -
-        id: list-spacing
-        title: '◉ 列表间距'
-        type: variable-text
-        default: '0.075em'
-
-    -
-        id: list-marker-color
-        title: '◉ 列表标记颜色'
-        type: variable-text
-        default: 'var(--text-faint)'
-        description: '⚠️ 本主题的正文列表标记颜色（无序列表符号、有序列表序号）已改由「Ethereal 定制 → 正文排版 → 无序列表 / 有序列表」的逐层「符号颜色 / 数字颜色」接管，此项对正文列表无效。仍对 Bases 表格的行号生效。'
-
-    -
-        id: list-marker-color-hover
-        title: '◉ 悬停列表标记颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-        description: '⚠️ 本主题的无序列表符号与虚影由「Ethereal 定制」接管，此项对列表无效。'
-
-    -
-        id: list-marker-color-collapsed
-        title: '◉ 折叠列表标记颜色'
-        type: variable-text
-        default: 'var(--text-accent)'
-        description: '⚠️ 本主题的无序列表符号与虚影由「Ethereal 定制」接管，此项对列表无效。'
-
-    -
-        id: list-bullet-border
-        title: '◉ 列表圆点边框'
-        type: variable-text
-        default: 'none'
-
-    -
-        id: list-bullet-radius
-        title: '◉ 列表圆点圆角'
-        type: variable-text
-        default: '50%'
-
-    -
-        id: list-bullet-size
-        title: '◉ 列表圆点大小'
-        type: variable-text
-        default: '0.3em'
-
-    -
-        id: list-bullet-transform
-        title: '◉ 列表圆点变换'
-        type: variable-text
-        default: 'none'
-
-    -
-        id: list-numbered-style
-        title: '◉ 有序列表样式'
-        type: variable-text
-        default: 'decimal'
-
-    -
-        id: list-bullet-end-padding
-        title: '◉ 列表圆点末端内边距'
-        type: variable-text
-        default: '1.3rem'
-
-    -
-        id: hd-g-8
-        title: 'Blockquotes'
-        title.zh: '引用块'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: blockquote-border-thickness
-        title: '◉ 引用块边框粗细'
-        type: variable-text
-        default: '2px'
-
-    -
-        id: blockquote-border-color
-        title: '◉ 引用块边框色'
-        type: variable-text
-        default: 'var(--interactive-accent)'
-
-    -
-        id: blockquote-font-style
-        title: '◉ 引用块字体样式'
-        type: variable-text
-        default: 'normal'
-
-    -
-        id: blockquote-color
-        title: '◉ 引用块文字色'
+        id: italic-color
+        title: '◉ 斜体文字色'
         type: variable-text
         default: 'inherit'
 
     -
-        id: blockquote-background-color
-        title: '◉ 引用块背景色'
+        id: italic-weight
+        title: '◉ 斜体字重'
         type: variable-text
-        default: 'transparent'
+        default: 'inherit'
 
     -
         id: hd-g-24
+        title: 'Line heights'
+        title.zh: '行高'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: line-height-normal
+        title: '◉ 常规行高'
+        type: variable-text
+        default: '1.5'
+
+    -
+        id: line-height-tight
+        title: '◉ 紧凑行高'
+        type: variable-text
+        default: '1.3'
+
+    -
+        id: hd-g-25
         title: 'Links'
         title.zh: '链接'
         type: heading
@@ -3349,378 +3286,587 @@ settings:
         default: 'color-mix(in oklch, var(--interactive-accent) 30%, transparent)'
 
     -
-        id: hd-g-16
-        title: 'Footnotes'
-        title.zh: '脚注'
+        id: hd-g-26
+        title: 'Lists'
+        title.zh: '列表'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: footnote-divider-color-active
-        title: '◉ 激活脚注分隔线颜色'
+        id: list-indent
+        title: '◉ 列表缩进'
         type: variable-text
-        default: 'var(--metadata-divider-color-focus)'
+        default: 'calc(var(--indent-unit) * var(--indent-size))'
 
     -
-        id: footnote-divider-color
-        title: '◉ 脚注分隔线颜色'
+        id: list-indent-editing
+        title: '◉ 编辑模式列表缩进'
         type: variable-text
-        default: 'var(--metadata-divider-color)'
+        default: '0.5em'
 
     -
-        id: footnote-divider-width
-        title: '◉ 脚注分隔线宽度'
+        id: list-indent-source
+        title: '◉ 源码模式列表缩进'
         type: variable-text
-        default: 'var(--border-width)'
+        default: '0'
 
     -
-        id: footnote-gap
-        title: '◉ 脚注间距'
+        id: list-spacing
+        title: '◉ 列表间距'
         type: variable-text
-        default: 'var(--size-4-1)'
+        default: '0.075em'
 
     -
-        id: footnote-id-color-no-occurrences
-        title: '◉ 无重复脚注编号颜色'
+        id: list-marker-color
+        title: '◉ 列表标记颜色'
         type: variable-text
         default: 'var(--text-faint)'
+        description: '⚠️ 本主题的正文列表标记颜色（无序列表符号、有序列表序号）已改由「Ethereal 定制 → 正文排版 → 无序列表 / 有序列表」的逐层「符号颜色 / 数字颜色」接管，此项对正文列表无效。仍对 Bases 表格的行号生效。'
 
     -
-        id: footnote-id-color
-        title: '◉ 脚注编号颜色'
+        id: list-marker-color-hover
+        title: '◉ 悬停列表标记颜色'
         type: variable-text
         default: 'var(--text-muted)'
+        description: '⚠️ 本主题的无序列表符号与虚影由「Ethereal 定制」接管，此项对列表无效。'
 
     -
-        id: footnote-id-delimiter
-        title: '◉ 脚注编号分隔符'
+        id: list-marker-color-collapsed
+        title: '◉ 折叠列表标记颜色'
         type: variable-text
-        default: '"."'
+        default: 'var(--text-accent)'
+        description: '⚠️ 本主题的无序列表符号与虚影由「Ethereal 定制」接管，此项对列表无效。'
 
     -
-        id: footnote-input-background-active
-        title: '◉ 激活脚注输入框背景色'
+        id: list-bullet-border
+        title: '◉ 列表圆点边框'
         type: variable-text
-        default: 'var(--metadata-input-background-active)'
+        default: 'none'
 
     -
-        id: footnote-input-background
-        title: '◉ 脚注输入框背景色'
+        id: list-bullet-radius
+        title: '◉ 列表圆点圆角'
         type: variable-text
-        default: 'var(--metadata-input-background)'
+        default: '50%'
 
     -
-        id: footnote-line-height
-        title: '◉ 脚注行高'
+        id: list-bullet-size
+        title: '◉ 列表圆点大小'
         type: variable-text
-        default: 'var(--line-height-normal)'
+        default: '0.3em'
 
     -
-        id: footnote-padding-block
-        title: '◉ 脚注块向内边距'
+        id: list-bullet-transform
+        title: '◉ 列表圆点变换'
         type: variable-text
-        default: 'var(--size-2-3)'
+        default: 'none'
 
     -
-        id: footnote-padding-inline
-        title: '◉ 脚注行向内边距'
+        id: list-numbered-style
+        title: '◉ 有序列表样式'
         type: variable-text
-        default: 'var(--size-2-3)'
+        default: 'decimal'
 
     -
-        id: footnote-radius
-        title: '◉ 脚注圆角'
+        id: list-bullet-end-padding
+        title: '◉ 列表圆点末端内边距'
         type: variable-text
-        default: 'var(--radius-s)'
+        default: '1.3rem'
 
     -
-        id: footnote-size
-        title: '◉ 脚注字号'
-        type: variable-text
-        default: 'var(--font-smaller)'
-
-    -
-        id: hd-g-11
-        title: 'Code'
-        title.zh: '代码'
+        id: hd-g-27
+        title: 'Paragraphs'
+        title.zh: '段落'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: code-white-space
-        title: '◉ 代码空白符处理'
+        id: p-spacing
+        title: '◉ 段落间距'
         type: variable-text
-        default: 'pre-wrap'
+        default: '1rem'
 
     -
-        id: code-border-width
-        title: '◉ 代码边框宽度'
+        id: p-spacing-empty
+        title: '◉ 空段落间距'
+        type: variable-text
+        default: '0rem'
+
+    -
+        id: hd-g-28
+        title: 'Fonts'
+        title.zh: '字体'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: font-default
+        title: '◉ 默认字体'
+        type: variable-text
+        default: 'ui-sans-serif, -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", "Google Sans Flex", Roboto, "Inter Variable", "Inter", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif'
+
+    -
+        id: font-monospace-default
+        title: '◉ 默认等宽字体'
+        type: variable-text
+        default: 'ui-monospace, SFMono-Regular, "Cascadia Mono", "Roboto Mono", "DejaVu Sans Mono", "Liberation Mono", Menlo, Monaco, "Consolas", "Source Code Pro", monospace'
+
+    -
+        id: font-interface-override
+        title: '◉ 界面字体覆盖'
+        type: variable-text
+        default: "'??'"
+
+    -
+        id: font-interface-theme
+        title: '◉ 主题界面字体'
+        type: variable-text
+        default: "'??'"
+
+    -
+        id: font-text-override
+        title: '◉ 正文字体覆盖'
+        type: variable-text
+        default: "'??'"
+
+    -
+        id: font-text-theme
+        title: '◉ 主题正文字体'
+        type: variable-text
+        default: "'??'"
+
+    -
+        id: font-print-override
+        title: '◉ 打印字体覆盖'
+        type: variable-text
+        default: "'??'"
+
+    -
+        id: font-print
+        title: '◉ 打印字体'
+        type: variable-text
+        default: "var(--font-print-override), var(--font-text-override), var(--font-text-theme), 'Arial'"
+
+    -
+        id: font-monospace-override
+        title: '◉ 等宽字体覆盖'
+        type: variable-text
+        default: "'??'"
+
+    -
+        id: font-monospace-theme
+        title: '◉ 主题等宽字体'
+        type: variable-text
+        default: "'??'"
+
+    -
+        id: font-preferred-size
+        title: '◉ 首选字号'
+        type: variable-text
+        default: 'var(--font-text-size)'
+
+    -
+        id: font-mermaid
+        title: '◉ Mermaid 字体'
+        type: variable-text
+        default: 'var(--font-text)'
+
+    -
+        id: hd-layout
+        title: 'Layout'
+        title.zh: '布局'
+        type: heading
+        level: 1
+        collapsed: true
+
+    -
+        id: hd-g-29
+        title: 'Borders'
+        title.zh: '边框'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: border-width
+        title: '◉ 边框宽度'
         type: variable-text
         default: '1px'
 
     -
-        id: code-border-color
-        title: '◉ 代码边框色'
-        type: variable-text
-        default: 'var(--background-modifier-border)'
-
-    -
-        id: code-bracket-background
-        title: '◉ 括号高亮背景色'
-        type: variable-text
-        default: 'var(--background-modifier-hover)'
-
-    -
-        id: code-radius
-        title: '◉ 代码圆角'
-        type: variable-text
-        default: '6px'
-
-    -
-        id: code-size
-        title: '◉ 代码字号'
-        type: variable-text
-        default: 'var(--font-smaller)'
-
-    -
-        id: code-background
-        title: '◉ 代码背景色'
-        type: variable-text
-        default: 'var(--background-primary-alt)'
-
-    -
-        id: code-normal
-        title: '◉ 代码-常规色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: code-comment
-        title: '◉ 代码-注释色'
-        type: variable-text
-        default: 'var(--text-faint)'
-
-    -
-        id: code-function
-        title: '◉ 代码-函数色'
-        type: variable-text
-        default: 'var(--color-yellow)'
-
-    -
-        id: code-important
-        title: '◉ 代码-重要色'
-        type: variable-text
-        default: 'var(--color-orange)'
-
-    -
-        id: code-keyword
-        title: '◉ 代码-关键字色'
-        type: variable-text
-        default: 'var(--color-pink)'
-
-    -
-        id: code-operator
-        title: '◉ 代码-运算符色'
-        type: variable-text
-        default: 'var(--color-red)'
-
-    -
-        id: code-property
-        title: '◉ 代码-属性色'
-        type: variable-text
-        default: 'var(--color-cyan)'
-
-    -
-        id: code-punctuation
-        title: '◉ 代码-标点色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: code-string
-        title: '◉ 代码-字符串色'
-        type: variable-text
-        default: 'var(--color-green)'
-
-    -
-        id: code-tag
-        title: '◉ 代码-标签色'
-        type: variable-text
-        default: 'var(--color-red)'
-
-    -
-        id: code-value
-        title: '◉ 代码-值色'
-        type: variable-text
-        default: 'var(--color-purple)'
-
-    -
-        id: hd-g-10
-        title: 'Caret'
-        title.zh: '插入光标'
+        id: hd-g-30
+        title: 'Dividers'
+        title.zh: '分隔线'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: caret-color
-        title: '◉ 光标颜色'
-        type: variable-text
-        default: 'var(--text-accent)'
-
-    -
-        id: hd-g-9
-        title: 'Bold'
-        title.zh: '粗体'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: bold-modifier
-        title: '◉ 粗体修饰符'
-        type: variable-text
-        default: '200'
-
-    -
-        id: hd-g-22
-        title: 'Italic'
-        title.zh: '斜体'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: italic-color
-        title: '◉ 斜体文字色'
-        type: variable-text
-        default: 'inherit'
-
-    -
-        id: italic-weight
-        title: '◉ 斜体字重'
-        type: variable-text
-        default: 'inherit'
-
-    -
-        id: hd-g-18
-        title: 'HR'
-        title.zh: '水平线'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: hr-color
+        id: divider-color
         title: '◉ 分隔线颜色'
         type: variable-text
         default: 'var(--background-modifier-border)'
 
     -
-        id: hr-thickness
-        title: '◉ 分隔线粗细'
+        id: divider-color-hover
+        title: '◉ 悬停分隔线颜色'
         type: variable-text
-        default: '2px'
+        default: 'var(--interactive-accent)'
 
     -
-        id: hd-g-23
-        title: 'Line heights'
-        title.zh: '行高'
+        id: divider-width
+        title: '◉ 分隔线宽度'
+        type: variable-text
+        default: '1px'
+
+    -
+        id: divider-width-hover
+        title: '◉ 悬停分隔线宽度'
+        type: variable-text
+        default: '3px'
+
+    -
+        id: divider-vertical-height
+        title: '◉ 垂直分隔线高度'
+        type: variable-text
+        default: 'calc(100% - var(--header-height))'
+
+    -
+        id: hd-g-31
+        title: 'File layout'
+        title.zh: '文件布局'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: line-height-normal
-        title: '◉ 常规行高'
+        id: file-folding-offset
+        title: '◉ 文件折叠偏移'
         type: variable-text
-        default: '1.5'
+        default: '24px'
 
     -
-        id: line-height-tight
-        title: '◉ 紧凑行高'
+        id: file-margins
+        title: '◉ 文件边距'
         type: variable-text
-        default: '1.3'
+        default: 'var(--file-margins-y) var(--file-margins-x)'
 
     -
-        id: hd-g-13
-        title: 'Flair'
-        title.zh: '标记'
+        id: file-margins-x
+        title: '◉ 文件水平边距'
+        type: variable-text
+        default: 'var(--size-4-8)'
+
+    -
+        id: file-margins-y
+        title: '◉ 文件垂直边距'
+        type: variable-text
+        default: 'var(--size-4-8)'
+
+    -
+        id: file-header-font
+        title: '◉ 文件页眉字体'
+        type: variable-text
+        default: 'var(--font-interface)'
+
+    -
+        id: file-header-font-size
+        title: '◉ 文件页眉字号'
+        type: variable-text
+        default: 'var(--font-ui-small)'
+
+    -
+        id: file-header-font-weight
+        title: '◉ 文件页眉字重'
+        type: variable-text
+        default: '400'
+
+    -
+        id: file-header-background
+        title: '◉ 文件页眉背景色'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: file-header-background-focused
+        title: '◉ 聚焦文件页眉背景色'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: file-header-border
+        title: '◉ 文件页眉边框'
+        type: variable-text
+        default: 'var(--border-width) solid transparent'
+
+    -
+        id: file-header-justify
+        title: '◉ 文件页眉对齐'
+        type: variable-text
+        default: 'start'
+
+    -
+        id: header-height
+        title: '◉ 页眉高度'
+        type: variable-text
+        default: '38px'
+
+    -
+        id: hd-g-32
+        title: 'Radiuses'
+        title.zh: '圆角'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: flair-background
-        title: '◉ 标记背景色'
+        id: corner-shape
+        title: '◉ 角形'
         type: variable-text
-        default: 'var(--interactive-normal)'
+        default: 'round'
 
     -
-        id: flair-color
-        title: '◉ 标记颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: hd-g-12
-        title: 'Font sizes (relative)'
-        title.zh: '相对字号'
+        id: hd-g-33
+        title: 'Scrollbars'
+        title.zh: '滚动条'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: font-smallest
-        title: '◉ 字重-Smallest'
-        type: variable-text
-        default: '0.8em'
-
-    -
-        id: font-smaller
-        title: '◉ 字重-Smaller'
-        type: variable-text
-        default: '0.875em'
-
-    -
-        id: font-small
-        title: '◉ 字重-Small'
-        type: variable-text
-        default: '0.933em'
-
-    -
-        id: hd-g-14
-        title: 'Font sizes (UI)'
-        title.zh: 'UI 字号'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: font-ui-smaller
-        title: '◉ UI 字体-更小'
+        id: scrollbar-width
+        title: '◉ 滚动条宽度'
         type: variable-text
         default: '12px'
 
     -
-        id: font-ui-small
-        title: '◉ UI 字体-小号'
+        id: scrollbar-height
+        title: '◉ 滚动条高度'
         type: variable-text
-        default: '13px'
+        default: '12px'
 
     -
-        id: font-ui-medium
-        title: '◉ UI 字体-中号'
+        id: scrollbar-border-width
+        title: '◉ 滚动条边框宽度'
         type: variable-text
-        default: '15px'
+        default: '3px 3px 3px 2px'
 
     -
-        id: font-ui-large
-        title: '◉ UI 字体-大号'
+        id: scrollbar-radius
+        title: '◉ 滚动条圆角'
+        type: variable-text
+        default: 'var(--radius-l)'
+
+    -
+        id: scrollbar-active-thumb-bg
+        title: '◉ 激活滚动条滑块背景'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--mono-100) 20%, transparent)'
+
+    -
+        id: scrollbar-bg
+        title: '◉ 滚动条背景'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: scrollbar-thumb-bg
+        title: '◉ 滚动条滑块背景'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--mono-100) 10%, transparent)'
+
+    -
+        id: scrollbar-native-width
+        title: '◉ 滚动条原生宽度'
+        type: variable-text
+        default: 'auto'
+
+    -
+        id: scroll-mask-small
+        title: '◉ 小滚动遮罩'
+        type: variable-text
+        default: 'linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000000 24px)'
+
+    -
+        id: hd-g-34
+        title: 'Sizing'
+        title.zh: '间距尺寸'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: size-2-1
+        title: '◉ 间距规格（2×1）'
+        type: variable-text
+        default: '2px'
+
+    -
+        id: size-2-2
+        title: '◉ 间距规格（2×2）'
+        type: variable-text
+        default: '4px'
+
+    -
+        id: size-2-3
+        title: '◉ 间距规格（2×3）'
+        type: variable-text
+        default: '6px'
+
+    -
+        id: size-4-1
+        title: '◉ 间距规格（4×1）'
+        type: variable-text
+        default: '4px'
+
+    -
+        id: size-4-2
+        title: '◉ 间距规格（4×2）'
+        type: variable-text
+        default: '8px'
+
+    -
+        id: size-4-3
+        title: '◉ 间距规格（4×3）'
+        type: variable-text
+        default: '12px'
+
+    -
+        id: size-4-4
+        title: '◉ 间距规格（4×4）'
+        type: variable-text
+        default: '16px'
+
+    -
+        id: size-4-5
+        title: '◉ 间距规格（4×5）'
         type: variable-text
         default: '20px'
+
+    -
+        id: size-4-6
+        title: '◉ 间距规格（4×6）'
+        type: variable-text
+        default: '24px'
+
+    -
+        id: size-4-8
+        title: '◉ 间距规格（4×8）'
+        type: variable-text
+        default: '32px'
+
+    -
+        id: size-4-9
+        title: '◉ 间距规格（4×9）'
+        type: variable-text
+        default: '36px'
+
+    -
+        id: size-4-10
+        title: '◉ 间距规格（4×10）'
+        type: variable-text
+        default: '40px'
+
+    -
+        id: size-4-12
+        title: '◉ 间距规格（4×12）'
+        type: variable-text
+        default: '48px'
+
+    -
+        id: size-4-16
+        title: '◉ 间距规格（4×16）'
+        type: variable-text
+        default: '64px'
+
+    -
+        id: size-4-18
+        title: '◉ 间距规格（4×18）'
+        type: variable-text
+        default: '72px'
+
+    -
+        id: hd-g-35
+        title: 'Touch sizes'
+        title.zh: '触控尺寸'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: touch-size-xxs
+        title: '◉ 触控大小（特特小 xxs）'
+        type: variable-text
+        default: '24px'
+
+    -
+        id: touch-size-xs
+        title: '◉ 触控大小（特小 xs）'
+        type: variable-text
+        default: '30px'
+
+    -
+        id: touch-size-s
+        title: '◉ 触控大小（小 s）'
+        type: variable-text
+        default: '40px'
+
+    -
+        id: touch-size-m
+        title: '◉ 触控大小（中 m）'
+        type: variable-text
+        default: '44px'
+
+    -
+        id: touch-size-l
+        title: '◉ 触控大小（大 l）'
+        type: variable-text
+        default: '52px'
+
+    -
+        id: touch-size-xl
+        title: '◉ 触控大小（特大 xl）'
+        type: variable-text
+        default: '60px'
+
+    -
+        id: touch-radius-xxs
+        title: '◉ 触控圆角（特特小 xxs）'
+        type: variable-text
+        default: 'var(--touch-size-xxs)'
+
+    -
+        id: touch-radius-xs
+        title: '◉ 触控圆角（特小 xs）'
+        type: variable-text
+        default: 'var(--touch-size-xs)'
+
+    -
+        id: touch-radius-s
+        title: '◉ 触控圆角（小 s）'
+        type: variable-text
+        default: 'var(--touch-size-s)'
+
+    -
+        id: touch-radius-m
+        title: '◉ 触控圆角（中 m）'
+        type: variable-text
+        default: 'var(--touch-size-m)'
+
+    -
+        id: touch-radius-l
+        title: '◉ 触控圆角（大 l）'
+        type: variable-text
+        default: 'var(--touch-size-l)'
+
+    -
+        id: touch-radius-xl
+        title: '◉ 触控圆角（特大 xl）'
+        type: variable-text
+        default: 'var(--touch-size-xl)'
 
     -
         id: hd-components
@@ -3731,1281 +3877,7 @@ settings:
         collapsed: true
 
     -
-        id: hd-g-55
-        title: 'Ribbon'
-        title.zh: '功能区'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: ribbon-background
-        title: '◉ 功能区背景色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: ribbon-background-collapsed
-        title: '◉ 折叠功能区背景色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: ribbon-width
-        title: '◉ 功能区宽度'
-        type: variable-text
-        default: '38px'
-
-    -
-        id: ribbon-padding
-        title: '◉ 功能区内边距'
-        type: variable-text
-        default: '10px 0px 6px 0px'
-
-    -
-        id: hd-g-58
-        title: 'Sidebar'
-        title.zh: '侧边栏'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: sidebar-markdown-font-size
-        title: '◉ 侧边栏 Markdown 字号'
-        type: variable-text
-        default: 'calc(var(--font-text-size) * 0.9)'
-
-    -
-        id: sidebar-tab-text-display
-        title: '◉ 侧边栏标签文本显示'
-        type: variable-text
-        default: 'none'
-
-    -
-        id: sidebar-left-toggle-inner-width
-        title: '◉ 左侧栏开关内宽度'
-        type: variable-text
-        default: '8.33%'
-
-    -
-        id: sidebar-right-toggle-inner-width
-        title: '◉ 右侧栏开关内宽度'
-        type: variable-text
-        default: '8.33%'
-
-    -
-        id: sidebar-left-toggle-inner-width-open
-        title: '◉ 展开左侧栏开关内宽度'
-        type: variable-text
-        default: '24%'
-
-    -
-        id: sidebar-right-toggle-inner-width-open
-        title: '◉ 展开右侧栏开关内宽度'
-        type: variable-text
-        default: '24%'
-
-    -
-        id: hd-g-48
-        title: 'File navigator'
-        title.zh: '文件导航'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: nav-item-size
-        title: '◉ 导航项大小'
-        type: variable-text
-        default: 'var(--font-ui-small)'
-
-    -
-        id: nav-item-radius
-        title: '◉ 导航项圆角'
-        type: variable-text
-        default: 'var(--radius-s)'
-
-    -
-        id: nav-item-color
-        title: '◉ 导航项颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: nav-item-color-hover
-        title: '◉ 悬停导航项颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: nav-item-color-active
-        title: '◉ 激活导航项颜色'
-        type: variable-text
-        default: 'var(--text-accent)'
-
-    -
-        id: nav-item-color-selected
-        title: '◉ 选中导航项颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: nav-item-color-highlighted
-        title: '◉ 高亮导航项颜色'
-        type: variable-text
-        default: 'var(--text-accent)'
-
-    -
-        id: nav-item-background-hover
-        title: '◉ 悬停导航项背景色'
-        type: variable-text
-        default: 'var(--background-modifier-hover)'
-
-    -
-        id: nav-item-background-active
-        title: '◉ 激活导航项背景色'
-        type: variable-text
-        default: 'var(--background-modifier-hover)'
-
-    -
-        id: nav-item-background-selected
-        title: '◉ 选中导航项背景色'
-        type: variable-text
-        default: 'color-mix(in oklch, var(--color-accent) 15%, transparent)'
-
-    -
-        id: nav-item-padding
-        title: '◉ 导航项内边距'
-        type: variable-text
-        default: '4px 0px 4px 24px'
-
-    -
-        id: nav-item-parent-padding
-        title: '◉ 导航父项内边距'
-        type: variable-text
-        default: 'var(--nav-item-padding)'
-
-    -
-        id: nav-item-margin-bottom
-        title: '◉ 导航项下边距'
-        type: variable-text
-        default: '1px'
-
-    -
-        id: nav-item-children-padding-start
-        title: '◉ 导航子项起始内边距'
-        type: variable-text
-        default: 'var(--size-2-2)'
-
-    -
-        id: nav-item-children-margin-start
-        title: '◉ 导航子项起始边距'
-        type: variable-text
-        default: 'var(--size-4-3)'
-
-    -
-        id: nav-item-weight
-        title: '◉ 导航项字重'
-        type: variable-text
-        default: 'inherit'
-
-    -
-        id: nav-item-weight-hover
-        title: '◉ 悬停导航项字重'
-        type: variable-text
-        default: 'bold'
-
-    -
-        id: nav-item-weight-active
-        title: '◉ 激活导航项字重'
-        type: variable-text
-        default: 'bold'
-
-    -
-        id: nav-item-white-space
-        title: '◉ 导航项空白处理'
-        type: variable-text
-        default: 'pre'
-
-    -
-        id: nav-indentation-guide-width
-        title: '◉ 导航缩进参考线宽度'
-        type: variable-text
-        default: 'var(--indentation-guide-width)'
-
-    -
-        id: nav-indentation-guide-color
-        title: '◉ 导航缩进参考线颜色'
-        type: variable-text
-        default: 'var(--indentation-guide-color)'
-
-    -
-        id: nav-collapse-icon-color
-        title: '◉ 导航折叠图标颜色'
-        type: variable-text
-        default: 'var(--text-accent)'
-
-    -
-        id: nav-collapse-icon-color-collapsed
-        title: '◉ 已折叠导航折叠图标颜色'
-        type: variable-text
-        default: 'var(--text-faint)'
-
-    -
-        id: nav-heading-color
-        title: '◉ 导航标题颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: nav-heading-color-hover
-        title: '◉ 悬停导航标题颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: nav-heading-color-collapsed
-        title: '◉ 折叠导航标题颜色'
-        type: variable-text
-        default: 'var(--text-faint)'
-
-    -
-        id: nav-heading-color-collapsed-hover
-        title: '◉ 悬停折叠导航标题颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: nav-heading-weight
-        title: '◉ 导航标题字重'
-        type: variable-text
-        default: 'var(--font-medium)'
-
-    -
-        id: nav-heading-weight-hover
-        title: '◉ 悬停导航标题字重'
-        type: variable-text
-        default: 'var(--font-medium)'
-
-    -
-        id: nav-tag-background
-        title: '◉ 导航标签背景色'
-        type: variable-text
-        default: 'transparent'
-
-    -
-        id: nav-tag-radius
-        title: '◉ 导航标签圆角'
-        type: variable-text
-        default: 'var(--radius-s)'
-
-    -
-        id: nav-tag-color
-        title: '◉ 导航标签颜色'
-        type: variable-text
-        default: 'var(--text-faint)'
-
-    -
-        id: nav-tag-color-hover
-        title: '◉ 悬停导航标签颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: nav-tag-color-active
-        title: '◉ 激活导航标签颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: nav-tag-weight
-        title: '◉ 导航标签字重'
-        type: variable-text
-        default: 'var(--font-semibold)'
-
-    -
-        id: hd-g-60
-        title: 'Status bar'
-        title.zh: '状态栏'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: status-bar-background
-        title: '◉ 状态栏背景色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: status-bar-border-color
-        title: '◉ 状态栏边框色'
-        type: variable-text
-        default: 'transparent'
-
-    -
-        id: status-bar-border-width
-        title: '◉ 状态栏边框宽度'
-        type: variable-text
-        default: '0px'
-
-    -
-        id: status-bar-font-size
-        title: '◉ 状态栏字号'
-        type: variable-text
-        default: 'var(--font-ui-smaller)'
-
-    -
-        id: status-bar-text-color
-        title: '◉ 状态栏文字色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: status-bar-position
-        title: '◉ 状态栏位置'
-        type: variable-text
-        default: 'relative'
-
-    -
-        id: status-bar-radius
-        title: '◉ 状态栏圆角'
-        type: variable-text
-        default: '0'
-
-    -
-        id: hd-g-70
-        title: 'Vault profile'
-        title.zh: '库档案'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: vault-profile-display
-        title: '◉ 仓库档案显示'
-        type: variable-text
-        default: 'flex'
-
-    -
-        id: vault-profile-order
-        title: '◉ 仓库档案顺序'
-        type: variable-text
-        default: '2'
-
-    -
-        id: vault-profile-actions-display
-        title: '◉ 仓库档案操作显示'
-        type: variable-text
-        default: 'flex'
-
-    -
-        id: vault-profile-font-size
-        title: '◉ 仓库档案字号'
-        type: variable-text
-        default: 'var(--font-ui-small)'
-
-    -
-        id: vault-profile-font-weight
-        title: '◉ 仓库档案字重'
-        type: variable-text
-        default: 'var(--font-medium)'
-
-    -
-        id: vault-profile-color
-        title: '◉ 仓库档案颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: vault-profile-color-hover
-        title: '◉ 悬停仓库档案颜色'
-        type: variable-text
-        default: 'var(--vault-profile-color)'
-
-    -
-        id: vault-profile-radius
-        title: '◉ 仓库档案圆角'
-        type: variable-text
-        default: 'var(--radius-s)'
-
-    -
-        id: hd-g-63
-        title: 'Tabs'
-        title.zh: '标签页'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: tab-background-active
-        title: '◉ 激活标签页背景色'
-        type: variable-text
-        default: 'var(--background-secondary)'
-
-    -
-        id: tab-text-color
-        title: '◉ 标签页文本颜色'
-        type: variable-text
-        default: 'var(--text-faint)'
-
-    -
-        id: tab-text-color-active
-        title: '◉ 激活标签页文本颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: tab-text-color-focused
-        title: '◉ 聚焦标签页文本颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: tab-text-color-focused-active
-        title: '◉ 聚焦激活标签页文本颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: tab-text-color-focused-highlighted
-        title: '◉ 聚焦高亮标签页文本颜色'
-        type: variable-text
-        default: 'var(--text-accent)'
-
-    -
-        id: tab-text-color-focused-active-current
-        title: '◉ 当前聚焦激活标签页文本颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: tab-font-size
-        title: '◉ 标签页字号'
-        type: variable-text
-        default: 'var(--font-ui-small)'
-
-    -
-        id: tab-font-weight
-        title: '◉ 标签页字重'
-        type: variable-text
-        default: 'inherit'
-
-    -
-        id: tab-container-background
-        title: '◉ 标签页容器背景色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: tab-divider-color
-        title: '◉ 标签页分隔线颜色'
-        type: variable-text
-        default: 'transparent'
-
-    -
-        id: tab-outline-color
-        title: '◉ 标签页轮廓颜色'
-        type: variable-text
-        default: 'var(--divider-color)'
-
-    -
-        id: tab-outline-width
-        title: '◉ 标签页轮廓宽度'
-        type: variable-text
-        default: '-2px'
-
-    -
-        id: tab-curve
-        title: '◉ 标签页曲线'
-        type: variable-text
-        default: '6px'
-
-    -
-        id: tab-radius
-        title: '◉ 标签页圆角'
-        type: variable-text
-        default: 'var(--radius-s)'
-
-    -
-        id: tab-radius-active
-        title: '◉ 激活标签页圆角'
-        type: variable-text
-        default: '6px 6px 0 0'
-
-    -
-        id: tab-width
-        title: '◉ 标签页宽度'
-        type: variable-text
-        default: '200px'
-
-    -
-        id: tab-max-width
-        title: '◉ 标签页最大宽度'
-        type: variable-text
-        default: '320px'
-
-    -
-        id: hd-g-64
-        title: 'Tab switcher (mobile)'
-        title.zh: '移动端标签切换'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: tab-switcher-menubar-background
-        title: '◉ 标签页切换器菜单栏背景色'
-        type: variable-text
-        default: 'linear-gradient(to top, var(--background-secondary), transparent)'
-
-    -
-        id: tab-switcher-background
-        title: '◉ 标签页切换器背景色'
-        type: variable-text
-        default: 'var(--background-secondary)'
-
-    -
-        id: tab-switcher-preview-radius
-        title: '◉ 标签页切换器预览圆角'
-        type: variable-text
-        default: 'var(--radius-xl)'
-
-    -
-        id: tab-switcher-preview-corner-shape
-        title: '◉ 标签页切换器预览角形'
-        type: variable-text
-        default: 'var(--corner-shape)'
-
-    -
-        id: tab-switcher-preview-background-shadow
-        title: '◉ 标签页切换器预览背景阴影'
-        type: variable-text
-        default: '0 4px 30px 2px rgba(0, 0, 0, 0.2)'
-
-    -
-        id: tab-switcher-preview-shadow
-        title: '◉ 标签页切换器预览阴影'
-        type: variable-text
-        default: '0 0 0 1px color-mix(in oklch, var(--mono-100) 5%, transparent)'
-
-    -
-        id: tab-switcher-preview-shadow-active
-        title: '◉ 激活标签页切换器预览阴影'
-        type: variable-text
-        default: '0 0 0 2px var(--color-accent)'
-
-    -
-        id: hd-g-68
-        title: 'Window frame'
-        title.zh: '窗口框架'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: traffic-lights-offset-x
-        title: '◉ 交通灯横向偏移'
-        type: variable-text
-        default: 'var(--header-height)'
-
-    -
-        id: traffic-lights-offset-y
-        title: '◉ 交通灯纵向偏移'
-        type: variable-text
-        default: 'var(--header-height)'
-
-    -
-        id: titlebar-background
-        title: '◉ 标题栏背景色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: titlebar-background-focused
-        title: '◉ 聚焦标题栏背景色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: titlebar-border-width
-        title: '◉ 标题栏边框宽度'
-        type: variable-text
-        default: '0px'
-
-    -
-        id: titlebar-border-color
-        title: '◉ 标题栏边框色'
-        type: variable-text
-        default: 'var(--background-modifier-border)'
-
-    -
-        id: titlebar-text-color
-        title: '◉ 标题栏文本色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: titlebar-text-color-focused
-        title: '◉ 聚焦标题栏文本色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: titlebar-text-weight
-        title: '◉ 标题栏文本字重'
-        type: variable-text
-        default: 'var(--font-bold)'
-
-    -
-        id: hd-g-57
-        title: 'Settings'
-        title.zh: '设置面板'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: settings-background
-        title: '◉ 设置面板背景色'
-        type: variable-text
-        default: 'var(--modal-background)'
-
-    -
-        id: setting-group-heading-color
-        title: '◉ 设置分组标题颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: setting-group-heading-size
-        title: '◉ 设置分组标题大小'
-        type: variable-text
-        default: 'var(--font-ui-medium)'
-
-    -
-        id: setting-group-heading-weight
-        title: '◉ 设置分组标题字重'
-        type: variable-text
-        default: 'var(--font-semibold)'
-
-    -
-        id: setting-group-max-width
-        title: '◉ 设置分组最大宽度'
-        type: variable-text
-        default: '700px'
-
-    -
-        id: setting-items-background
-        title: '◉ 设置项背景色'
-        type: variable-text
-        default: 'var(--background-primary-alt)'
-
-    -
-        id: setting-items-padding-x
-        title: '◉ 设置项水平内边距'
-        type: variable-text
-        default: 'var(--size-4-5)'
-
-    -
-        id: setting-items-padding-y
-        title: '◉ 设置项垂直内边距'
-        type: variable-text
-        default: 'var(--size-4-5)'
-
-    -
-        id: setting-items-radius
-        title: '◉ 设置项圆角'
-        type: variable-text
-        default: 'var(--radius-l)'
-
-    -
-        id: setting-items-border-width
-        title: '◉ 设置项边框宽度'
-        type: variable-text
-        default: '0'
-
-    -
-        id: setting-items-border-color
-        title: '◉ 设置项边框色'
-        type: variable-text
-        default: 'var(--background-modifier-border)'
-
-    -
-        id: setting-items-divider-width
-        title: '◉ 设置项分隔线宽度'
-        type: variable-text
-        default: '1px'
-
-    -
-        id: hd-g-49
-        title: 'Menus'
-        title.zh: '菜单'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: menu-padding
-        title: '◉ 菜单内边距'
-        type: variable-text
-        default: 'var(--size-2-3)'
-
-    -
-        id: menu-shadow
-        title: '◉ 菜单阴影'
-        type: variable-text
-        default: 'var(--shadow-s)'
-
-    -
-        id: menu-radius
-        title: '◉ 菜单圆角'
-        type: variable-text
-        default: 'var(--radius-m)'
-
-    -
-        id: menu-corner-shape
-        title: '◉ 菜单角形'
-        type: variable-text
-        default: 'var(--corner-shape)'
-
-    -
-        id: menu-background
-        title: '◉ 菜单背景色'
-        type: variable-text
-        default: 'var(--background-secondary)'
-
-    -
-        id: menu-border-color
-        title: '◉ 菜单边框色'
-        type: variable-text
-        default: 'var(--background-modifier-border-hover)'
-
-    -
-        id: menu-border-width
-        title: '◉ 菜单边框宽度'
-        type: variable-text
-        default: 'var(--border-width)'
-
-    -
-        id: menu-backdrop-filter
-        title: '◉ 菜单背景滤镜'
-        type: variable-text
-        default: 'none'
-
-    -
-        id: menu-scroll-mask
-        title: '◉ 菜单滚动遮罩'
-        type: variable-text
-        default: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.1) 48px)'
-
-    -
-        id: hd-g-56
-        title: 'Search'
-        title.zh: '搜索'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: search-clear-button-color
-        title: '◉ 搜索清除按钮颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: search-clear-button-size
-        title: '◉ 搜索清除按钮大小'
-        type: variable-text
-        default: '13px'
-
-    -
-        id: search-icon-color
-        title: '◉ 搜索图标颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: search-icon-size
-        title: '◉ 搜索图标大小'
-        type: variable-text
-        default: '16px'
-
-    -
-        id: search-input-corner-shape
-        title: '◉ 搜索输入框角形'
-        type: variable-text
-        default: 'var(--input-corner-shape)'
-
-    -
-        id: search-input-radius
-        title: '◉ 搜索输入框圆角'
-        type: variable-text
-        default: 'var(--input-radius)'
-
-    -
-        id: search-result-background
-        title: '◉ 搜索结果背景色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: hd-g-37
-        title: 'Callouts'
-        title.zh: '标注'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: callout-bug
-        title: '◉ 标注-Bug 色'
-        type: variable-text
-        default: 'var(--color-red)'
-
-    -
-        id: callout-default
-        title: '◉ 标注-默认色'
-        type: variable-text
-        default: 'var(--color-blue)'
-
-    -
-        id: callout-error
-        title: '◉ 标注-错误色'
-        type: variable-text
-        default: 'var(--color-red)'
-
-    -
-        id: callout-example
-        title: '◉ 标注-示例色'
-        type: variable-text
-        default: 'var(--color-purple)'
-
-    -
-        id: callout-fail
-        title: '◉ 标注-失败色'
-        type: variable-text
-        default: 'var(--color-red)'
-
-    -
-        id: callout-important
-        title: '◉ 标注-重要色'
-        type: variable-text
-        default: 'var(--color-cyan)'
-
-    -
-        id: callout-info
-        title: '◉ 标注-信息色'
-        type: variable-text
-        default: 'var(--color-blue)'
-
-    -
-        id: callout-question
-        title: '◉ 标注-疑问色'
-        type: variable-text
-        default: 'var(--color-orange)'
-
-    -
-        id: callout-success
-        title: '◉ 标注-成功色'
-        type: variable-text
-        default: 'var(--color-green)'
-
-    -
-        id: callout-summary
-        title: '◉ 标注-摘要色'
-        type: variable-text
-        default: 'var(--color-cyan)'
-
-    -
-        id: callout-tip
-        title: '◉ 标注-提示色'
-        type: variable-text
-        default: 'var(--color-cyan)'
-
-    -
-        id: callout-todo
-        title: '◉ 标注-待办色'
-        type: variable-text
-        default: 'var(--color-blue)'
-
-    -
-        id: callout-warning
-        title: '◉ 标注-警告色'
-        type: variable-text
-        default: 'var(--color-orange)'
-
-    -
-        id: callout-quote
-        title: '◉ 标注-引用色'
-        type: variable-text
-        default: '#9e9e9e'
-
-    -
-        id: hd-g-59
-        title: 'Sliders'
-        title.zh: '滑块'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: slider-thumb-border-width
-        title: '◉ 滑块边框宽度'
-        type: variable-text
-        default: '0.5px'
-
-    -
-        id: slider-thumb-border-color
-        title: '◉ 滑块边框颜色'
-        type: variable-text
-        default: 'var(--background-modifier-border-hover)'
-
-    -
-        id: slider-thumb-background
-        title: '◉ 滑块背景色'
-        type: variable-text
-        default: 'white'
-
-    -
-        id: slider-thumb-background-hover
-        title: '◉ 悬停滑块背景色'
-        type: variable-text
-        default: 'white'
-
-    -
-        id: slider-thumb-height
-        title: '◉ 滑块高度'
-        type: variable-text
-        default: '18px'
-
-    -
-        id: slider-thumb-width
-        title: '◉ 滑块宽度'
-        type: variable-text
-        default: '18px'
-
-    -
-        id: slider-thumb-height-active
-        title: '◉ 激活滑块高度'
-        type: variable-text
-        default: 'var(--slider-thumb-height)'
-
-    -
-        id: slider-thumb-width-active
-        title: '◉ 激活滑块宽度'
-        type: variable-text
-        default: 'var(--slider-thumb-width)'
-
-    -
-        id: slider-thumb-y
-        title: '◉ 滑块纵向位置'
-        type: variable-text
-        default: '-6px'
-
-    -
-        id: slider-thumb-y-active
-        title: '◉ 激活滑块纵向位置'
-        type: variable-text
-        default: 'var(--slider-thumb-y)'
-
-    -
-        id: slider-thumb-radius
-        title: '◉ 滑块圆角'
-        type: variable-text
-        default: 'var(--slider-thumb-height)'
-
-    -
-        id: slider-thumb-shadow
-        title: '◉ 滑块阴影'
-        type: variable-text
-        default: '0 0px 2px 0px rgba(0, 0, 0, 0.1), 0 2px 6px 0px rgba(0, 0, 0, 0.1)'
-
-    -
-        id: slider-thumb-shadow-hover
-        title: '◉ 悬停滑块阴影'
-        type: variable-text
-        default: 'var(--slider-thumb-shadow)'
-
-    -
-        id: slider-thumb-shadow-active
-        title: '◉ 激活滑块阴影'
-        type: variable-text
-        default: 'var(--slider-thumb-shadow)'
-
-    -
-        id: slider-thumb-shadow-focus
-        title: '◉ 聚焦滑块阴影'
-        type: variable-text
-        default: 'var(--slider-thumb-shadow-active), 0 0px 0px 2px var(--background-modifier-border-focus)'
-
-    -
-        id: slider-s-thumb-size
-        title: '◉ 小滑块大小'
-        type: variable-text
-        default: '15px'
-
-    -
-        id: slider-s-thumb-position
-        title: '◉ 小滑块位置'
-        type: variable-text
-        default: '-5px'
-
-    -
-        id: slider-fill-background
-        title: '◉ 滑块填充背景色'
-        type: variable-text
-        default: 'var(--interactive-accent)'
-
-    -
-        id: slider-track-background
-        title: '◉ 滑块轨道背景色'
-        type: variable-text
-        default: 'var(--background-modifier-border-hover)'
-
-    -
-        id: slider-track-height
-        title: '◉ 滑块轨道高度'
-        type: variable-text
-        default: '4px'
-
-    -
-        id: slider-value-font-size
-        title: '◉ 滑块数值字号'
-        type: variable-text
-        default: 'var(--font-ui-small)'
-
-    -
-        id: slider-value-font-weight
-        title: '◉ 滑块数值字重'
-        type: variable-text
-        default: 'var(--input-font-weight)'
-
-    -
-        id: hd-g-69
-        title: 'Toggles'
-        title.zh: '开关'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: toggle-border-width
-        title: '◉ 开关边框宽度'
-        type: variable-text
-        default: '2px'
-
-    -
-        id: toggle-width
-        title: '◉ 开关宽度'
-        type: variable-text
-        default: '40px'
-
-    -
-        id: toggle-radius
-        title: '◉ 开关圆角'
-        type: variable-text
-        default: '18px'
-
-    -
-        id: toggle-thumb-color
-        title: '◉ 开关滑块颜色'
-        type: variable-text
-        default: 'white'
-
-    -
-        id: toggle-thumb-radius
-        title: '◉ 开关滑块圆角'
-        type: variable-text
-        default: '18px'
-
-    -
-        id: toggle-thumb-height
-        title: '◉ 开关滑块高度'
-        type: variable-text
-        default: '18px'
-
-    -
-        id: toggle-thumb-width
-        title: '◉ 开关滑块宽度'
-        type: variable-text
-        default: '18px'
-
-    -
-        id: toggle-thumb-opacity-active
-        title: '◉ 激活开关滑块不透明度'
-        type: variable-text
-        default: '1'
-
-    -
-        id: toggle-s-border-width
-        title: '◉ 小开关边框宽度'
-        type: variable-text
-        default: '2px'
-
-    -
-        id: toggle-s-width
-        title: '◉ 小开关宽度'
-        type: variable-text
-        default: '34px'
-
-    -
-        id: toggle-s-thumb-height
-        title: '◉ 小开关滑块高度'
-        type: variable-text
-        default: '15px'
-
-    -
-        id: toggle-s-thumb-width
-        title: '◉ 小开关滑块宽度'
-        type: variable-text
-        default: '15px'
-
-    -
-        id: hd-g-45
-        title: 'Images'
-        title.zh: '图片'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: image-radius
-        title: '◉ 图片圆角'
-        type: variable-text
-        default: '4px'
-
-    -
-        id: hd-g-44
-        title: 'Icons'
-        title.zh: '图标'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: icon-size
-        title: '◉ 图标尺寸'
-        type: variable-text
-        default: 'var(--icon-m)'
-
-    -
-        id: icon-stroke
-        title: '◉ 图标描边'
-        type: variable-text
-        default: 'var(--icon-m-stroke-width)'
-
-    -
-        id: icon-xs
-        title: '◉ 特小图标尺寸'
-        type: variable-text
-        default: '14px'
-
-    -
-        id: icon-s
-        title: '◉ 小图标尺寸'
-        type: variable-text
-        default: '16px'
-
-    -
-        id: icon-m
-        title: '◉ 中图标尺寸'
-        type: variable-text
-        default: '18px'
-
-    -
-        id: icon-l
-        title: '◉ 大图标尺寸'
-        type: variable-text
-        default: '18px'
-
-    -
-        id: icon-xl
-        title: '◉ 特大图标尺寸'
-        type: variable-text
-        default: '32px'
-
-    -
-        id: icon-xs-stroke-width
-        title: '◉ 特小图标描边宽度'
-        type: variable-text
-        default: '2px'
-
-    -
-        id: icon-s-stroke-width
-        title: '◉ 小图标描边宽度'
-        type: variable-text
-        default: '2px'
-
-    -
-        id: icon-m-stroke-width
-        title: '◉ 中图标描边宽度'
-        type: variable-text
-        default: '1.75px'
-
-    -
-        id: icon-l-stroke-width
-        title: '◉ 大图标描边宽度'
-        type: variable-text
-        default: '1.75px'
-
-    -
-        id: icon-xl-stroke-width
-        title: '◉ 特大图标描边宽度'
-        type: variable-text
-        default: '1.25px'
-
-    -
-        id: icon-color
-        title: '◉ 图标颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: icon-color-hover
-        title: '◉ 悬停图标颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: icon-color-active
-        title: '◉ 激活图标颜色'
-        type: variable-text
-        default: 'var(--text-accent)'
-
-    -
-        id: icon-color-focused
-        title: '◉ 聚焦图标颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: icon-opacity
-        title: '◉ 图标不透明度'
-        type: variable-text
-        default: '0.85'
-
-    -
-        id: icon-opacity-hover
-        title: '◉ 悬停图标不透明度'
-        type: variable-text
-        default: '1'
-
-    -
-        id: icon-opacity-active
-        title: '◉ 激活图标不透明度'
-        type: variable-text
-        default: '1'
-
-    -
-        id: clickable-icon-radius
-        title: '◉ 可点击图标圆角'
-        type: variable-text
-        default: 'var(--radius-s)'
-
-    -
-        id: hd-g-35
+        id: hd-g-36
         title: 'Bases'
         title.zh: '数据库'
         type: heading
@@ -5343,341 +4215,215 @@ settings:
         default: '0 0 0 1px var(--background-modifier-border)'
 
     -
-        id: hd-g-66
-        title: 'Tables'
-        title.zh: '表格'
+        id: bases-kanban-container-background
+        title: '◉ 数据库看板容器背景'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: bases-kanban-container-gap
+        title: '◉ 数据库看板容器间距'
+        type: variable-text
+        default: 'var(--size-4-2)'
+
+    -
+        id: bases-kanban-container-padding
+        title: '◉ 数据库看板容器内边距'
+        type: variable-text
+        default: 'var(--size-4-3)'
+
+    -
+        id: bases-kanban-column-background
+        title: '◉ 数据库看板列背景'
+        type: variable-text
+        default: 'var(--background-primary-alt)'
+
+    -
+        id: bases-kanban-column-radius
+        title: '◉ 数据库看板列圆角'
+        type: variable-text
+        default: 'var(--radius-m)'
+
+    -
+        id: bases-kanban-column-box-shadow
+        title: '◉ 数据库看板列框阴影'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: bases-kanban-column-header-background
+        title: '◉ 数据库看板列页眉背景'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: bases-kanban-card-background
+        title: '◉ 数据库看板卡片背景'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: bases-kanban-card-radius
+        title: '◉ 数据库看板卡片圆角'
+        type: variable-text
+        default: 'var(--radius-m)'
+
+    -
+        id: bases-kanban-card-corner-shape
+        title: '◉ 数据库看板卡片角形状'
+        type: variable-text
+        default: 'var(--corner-shape)'
+
+    -
+        id: bases-kanban-card-shadow
+        title: '◉ 数据库看板卡片阴影'
+        type: variable-text
+        default: '0 0 0 1px var(--background-modifier-border), 0 1px 2px 0 rgba(0, 0, 0, 0.2)'
+
+    -
+        id: bases-kanban-card-shadow-hover
+        title: '◉ 数据库看板卡片阴影（悬停）'
+        type: variable-text
+        default: '0 0 0 1px var(--background-modifier-border-hover), 0 1.5px 3px 0 rgba(0, 0, 0, 0.2)'
+
+    -
+        id: bases-kanban-card-shadow-focus
+        title: '◉ 数据库看板卡片阴影（聚焦）'
+        type: variable-text
+        default: '0 0 0 2px var(--background-modifier-border-focus)'
+
+    -
+        id: bases-kanban-cover-background
+        title: '◉ 数据库看板封面背景'
+        type: variable-text
+        default: 'var(--background-secondary)'
+
+    -
+        id: bases-kanban-line-height
+        title: '◉ 数据库看板行高度'
+        type: variable-text
+        default: '24px'
+
+    -
+        id: hd-g-37
+        title: 'Buttons'
+        title.zh: '按钮'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: table-background
-        title: '◉ 表格背景色'
+        id: button-radius
+        title: '◉ 按钮圆角'
         type: variable-text
-        default: 'transparent'
+        default: 'var(--input-radius)'
 
     -
-        id: table-border-width
-        title: '◉ 表格边框宽度'
+        id: button-corner-shape
+        title: '◉ 按钮角形'
         type: variable-text
-        default: '1px'
+        default: 'var(--corner-shape)'
 
     -
-        id: table-border-color
-        title: '◉ 表格边框色'
-        type: variable-text
-        default: 'var(--background-modifier-border)'
-
-    -
-        id: table-white-space
-        title: '◉ 表格空白处理'
-        type: variable-text
-        default: 'break-spaces'
-
-    -
-        id: table-header-background
-        title: '◉ 表格页眉背景色'
-        type: variable-text
-        default: 'var(--table-background)'
-
-    -
-        id: table-header-background-hover
-        title: '◉ 悬停表格页眉背景色'
-        type: variable-text
-        default: 'inherit'
-
-    -
-        id: table-header-border-width
-        title: '◉ 表格页眉边框宽度'
-        type: variable-text
-        default: 'var(--table-border-width)'
-
-    -
-        id: table-header-border-color
-        title: '◉ 表格页眉边框色'
-        type: variable-text
-        default: 'var(--table-border-color)'
-
-    -
-        id: table-header-font
-        title: '◉ 表格页眉字体'
-        type: variable-text
-        default: 'inherit'
-
-    -
-        id: table-header-size
-        title: '◉ 表格页眉大小'
-        type: variable-text
-        default: 'var(--table-text-size)'
-
-    -
-        id: table-header-weight
-        title: '◉ 表格页眉字重'
-        type: variable-text
-        default: 'calc(var(--font-weight) + var(--bold-modifier))'
-
-    -
-        id: table-header-color
-        title: '◉ 表格页眉颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: table-line-height
-        title: '◉ 表格行高'
-        type: variable-text
-        default: 'var(--line-height-tight)'
-
-    -
-        id: table-text-size
-        title: '◉ 表格文本大小'
-        type: variable-text
-        default: 'var(--font-text-size)'
-
-    -
-        id: table-text-color
-        title: '◉ 表格文本颜色'
-        type: variable-text
-        default: 'inherit'
-
-    -
-        id: table-column-min-width
-        title: '◉ 表格列最小宽度'
-        type: variable-text
-        default: '6ch'
-
-    -
-        id: table-column-max-width
-        title: '◉ 表格列最大宽度'
+        id: button-transition
+        title: '◉ 按钮过渡'
         type: variable-text
         default: 'none'
 
     -
-        id: table-column-alt-background
-        title: '◉ 表格奇偶列背景色'
-        type: variable-text
-        default: 'var(--table-background)'
-
-    -
-        id: table-column-first-border-width
-        title: '◉ 表格首列边框宽度'
-        type: variable-text
-        default: 'var(--table-border-width)'
-
-    -
-        id: table-column-last-border-width
-        title: '◉ 表格末列边框宽度'
-        type: variable-text
-        default: 'var(--table-border-width)'
-
-    -
-        id: table-row-background-hover
-        title: '◉ 悬停表格行背景色'
-        type: variable-text
-        default: 'var(--table-background)'
-
-    -
-        id: table-row-alt-background
-        title: '◉ 表格奇偶行背景色'
-        type: variable-text
-        default: 'var(--table-background)'
-
-    -
-        id: table-row-alt-background-hover
-        title: '◉ 悬停表格奇偶行背景色'
-        type: variable-text
-        default: 'var(--table-background)'
-
-    -
-        id: table-row-last-border-width
-        title: '◉ 表格末行边框宽度'
-        type: variable-text
-        default: 'var(--table-border-width)'
-
-    -
-        id: table-selection
-        title: '◉ 表格选区颜色'
-        type: variable-text
-        default: 'color-mix(in oklch, var(--color-accent) 10%, transparent)'
-
-    -
-        id: table-selection-blend-mode
-        title: '◉ 表格选区混合模式'
-        type: variable-text
-        default: 'var(--highlight-mix-blend-mode)'
-
-    -
-        id: table-selection-border-color
-        title: '◉ 表格选区边框色'
-        type: variable-text
-        default: 'var(--interactive-accent)'
-
-    -
-        id: table-selection-border-width
-        title: '◉ 表格选区边框宽度'
-        type: variable-text
-        default: '2px'
-
-    -
-        id: table-selection-border-radius
-        title: '◉ 表格选区边框圆角'
-        type: variable-text
-        default: '4px'
-
-    -
-        id: table-cell-vertical-alignment
-        title: '◉ 表格单元格垂直对齐'
-        type: variable-text
-        default: 'top'
-
-    -
-        id: table-drag-handle-background
-        title: '◉ 表格拖拽手柄背景色'
-        type: variable-text
-        default: 'transparent'
-
-    -
-        id: table-drag-handle-background-active
-        title: '◉ 激活表格拖拽手柄背景色'
-        type: variable-text
-        default: 'var(--table-selection-border-color)'
-
-    -
-        id: table-drag-handle-color
-        title: '◉ 表格拖拽手柄颜色'
-        type: variable-text
-        default: 'var(--text-faint)'
-
-    -
-        id: table-drag-handle-color-active
-        title: '◉ 激活表格拖拽手柄颜色'
-        type: variable-text
-        default: 'var(--text-on-accent)'
-
-    -
-        id: table-drop-indicator-half-width
-        title: '◉ 表格放置指示器半宽'
-        type: variable-text
-        default: '2px'
-
-    -
-        id: table-add-button-background
-        title: '◉ 表格添加按钮背景色'
-        type: variable-text
-        default: 'transparent'
-
-    -
-        id: table-add-button-border-width
-        title: '◉ 表格添加按钮边框宽度'
-        type: variable-text
-        default: 'var(--table-border-width)'
-
-    -
-        id: table-add-button-border-color
-        title: '◉ 表格添加按钮边框色'
-        type: variable-text
-        default: 'var(--background-modifier-border)'
-
-    -
-        id: hd-g-67
-        title: 'Tags'
-        title.zh: '标签'
+        id: hd-g-38
+        title: 'Callouts'
+        title.zh: '标注'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: tag-size
-        title: '◉ 标签大小'
+        id: callout-bug
+        title: '◉ 标注-Bug 色'
         type: variable-text
-        default: 'var(--font-smaller)'
+        default: 'var(--color-red)'
 
     -
-        id: tag-color
-        title: '◉ 标签颜色'
+        id: callout-default
+        title: '◉ 标注-默认色'
         type: variable-text
-        default: 'var(--text-accent)'
+        default: 'var(--color-blue)'
 
     -
-        id: tag-color-hover
-        title: '◉ 悬停标签颜色'
+        id: callout-error
+        title: '◉ 标注-错误色'
         type: variable-text
-        default: 'var(--text-accent)'
+        default: 'var(--color-red)'
 
     -
-        id: tag-decoration
-        title: '◉ 标签装饰'
+        id: callout-example
+        title: '◉ 标注-示例色'
         type: variable-text
-        default: 'none'
+        default: 'var(--color-purple)'
 
     -
-        id: tag-decoration-hover
-        title: '◉ 悬停标签装饰'
+        id: callout-fail
+        title: '◉ 标注-失败色'
         type: variable-text
-        default: 'none'
+        default: 'var(--color-red)'
 
     -
-        id: tag-background
-        title: '◉ 标签背景色'
+        id: callout-important
+        title: '◉ 标注-重要色'
         type: variable-text
-        default: 'color-mix(in oklch, var(--interactive-accent) 10%, transparent)'
+        default: 'var(--color-cyan)'
 
     -
-        id: tag-background-hover
-        title: '◉ 悬停标签背景色'
+        id: callout-info
+        title: '◉ 标注-信息色'
         type: variable-text
-        default: 'color-mix(in oklch, var(--interactive-accent) 20%, transparent)'
+        default: 'var(--color-blue)'
 
     -
-        id: tag-border-color
-        title: '◉ 标签边框色'
+        id: callout-question
+        title: '◉ 标注-疑问色'
         type: variable-text
-        default: 'color-mix(in oklch, var(--interactive-accent) 15%, transparent)'
+        default: 'var(--color-orange)'
 
     -
-        id: tag-border-color-hover
-        title: '◉ 悬停标签边框色'
+        id: callout-success
+        title: '◉ 标注-成功色'
         type: variable-text
-        default: 'color-mix(in oklch, var(--interactive-accent) 15%, transparent)'
+        default: 'var(--color-green)'
 
     -
-        id: tag-border-width
-        title: '◉ 标签边框宽度'
+        id: callout-summary
+        title: '◉ 标注-摘要色'
         type: variable-text
-        default: '0px'
+        default: 'var(--color-cyan)'
 
     -
-        id: tag-padding-x
-        title: '◉ 标签水平内边距'
+        id: callout-tip
+        title: '◉ 标注-提示色'
         type: variable-text
-        default: '0.65em'
+        default: 'var(--color-cyan)'
 
     -
-        id: tag-padding-y
-        title: '◉ 标签垂直内边距'
+        id: callout-todo
+        title: '◉ 标注-待办色'
         type: variable-text
-        default: '0.25em'
+        default: 'var(--color-blue)'
 
     -
-        id: tag-radius
-        title: '◉ 标签圆角'
+        id: callout-warning
+        title: '◉ 标注-警告色'
         type: variable-text
-        default: '2em'
+        default: 'var(--color-orange)'
 
     -
-        id: tag-corner-shape
-        title: '◉ 标签角形'
+        id: callout-quote
+        title: '◉ 标注-引用色'
         type: variable-text
-        default: 'round'
+        default: '#9e9e9e'
 
     -
-        id: tag-weight
-        title: '◉ 标签字重'
-        type: variable-text
-        default: 'inherit'
-
-    -
-        id: hd-g-39
+        id: hd-g-40
         title: 'Collapse icons'
         title.zh: '折叠图标'
         type: heading
@@ -5697,7 +4443,7 @@ settings:
         default: 'var(--text-accent)'
 
     -
-        id: hd-g-40
+        id: hd-g-41
         title: 'Dialogs'
         title.zh: '对话框'
         type: heading
@@ -5723,75 +4469,7 @@ settings:
         default: '85vh'
 
     -
-        id: hd-g-46
-        title: 'Inputs'
-        title.zh: '输入框'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: input-height
-        title: '◉ 输入框高度'
-        type: variable-text
-        default: '30px'
-
-    -
-        id: input-padding
-        title: '◉ 输入框内边距'
-        type: variable-text
-        default: 'var(--size-4-1) var(--size-4-2)'
-
-    -
-        id: input-radius
-        title: '◉ 输入框圆角'
-        type: variable-text
-        default: '5px'
-
-    -
-        id: input-corner-shape
-        title: '◉ 输入框角形'
-        type: variable-text
-        default: 'var(--corner-shape)'
-
-    -
-        id: input-font-weight
-        title: '◉ 输入框字重'
-        type: variable-text
-        default: 'var(--font-normal)'
-
-    -
-        id: input-border-width
-        title: '◉ 输入框边框宽度'
-        type: variable-text
-        default: 'var(--border-width)'
-
-    -
-        id: input-border-width-focus
-        title: '◉ 聚焦输入框边框宽度'
-        type: variable-text
-        default: '2px'
-
-    -
-        id: input-placeholder-color
-        title: '◉ 输入框占位符颜色'
-        type: variable-text
-        default: 'var(--text-faint)'
-
-    -
-        id: input-date-separator
-        title: '◉ 日期输入分隔符'
-        type: variable-text
-        default: 'var(--text-faint)'
-
-    -
-        id: input-icon-inset
-        title: '◉ 输入框图标内偏移'
-        type: variable-text
-        default: 'var(--size-4-1)'
-
-    -
-        id: hd-g-41
+        id: hd-g-42
         title: 'Dropdowns'
         title.zh: '下拉框'
         type: heading
@@ -5871,323 +4549,771 @@ settings:
         default: 'start'
 
     -
-        id: hd-g-51
-        title: 'Modals'
-        title.zh: '模态框'
+        id: dropdown-transition
+        title: '◉ 下拉框过渡'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: hd-g-43
+        title: 'Embeds'
+        title.zh: '嵌入'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: modal-background
-        title: '◉ 模态框背景色'
+        id: embed-max-height
+        title: '◉ 嵌入最大高度'
         type: variable-text
-        default: 'var(--background-primary)'
+        default: '4000px'
 
     -
-        id: modal-sidebar-background
-        title: '◉ 模态框侧栏背景色'
+        id: embed-canvas-max-height
+        title: '◉ 嵌入画布最大高度'
         type: variable-text
-        default: 'var(--modal-background)'
+        default: '400px'
 
     -
-        id: modal-width
-        title: '◉ 模态框宽度'
-        type: variable-text
-        default: '90vw'
-
-    -
-        id: modal-header-height
-        title: '◉ 模态框页眉高度'
-        type: variable-text
-        default: 'auto'
-
-    -
-        id: modal-height
-        title: '◉ 模态框高度'
-        type: variable-text
-        default: '85vh'
-
-    -
-        id: modal-max-width
-        title: '◉ 模态框最大宽度'
-        type: variable-text
-        default: '1100px'
-
-    -
-        id: modal-max-height
-        title: '◉ 模态框最大高度'
-        type: variable-text
-        default: '1000px'
-
-    -
-        id: modal-max-width-narrow
-        title: '◉ 模态框最大宽度（窄）'
-        type: variable-text
-        default: '800px'
-
-    -
-        id: modal-shadow
-        title: '◉ 模态框阴影'
-        type: variable-text
-        default: 'none'
-
-    -
-        id: modal-border-width
-        title: '◉ 模态框边框宽度'
-        type: variable-text
-        default: 'var(--border-width)'
-
-    -
-        id: modal-border-color
-        title: '◉ 模态框边框色'
-        type: variable-text
-        default: 'var(--color-base-40, var(--background-modifier-border-focus))'
-
-    -
-        id: modal-radius
-        title: '◉ 模态框圆角'
-        type: variable-text
-        default: 'var(--radius-l)'
-
-    -
-        id: modal-community-sidebar-width
-        title: '◉ 模态框社区侧栏宽度'
-        type: variable-text
-        default: '280px'
-
-    -
-        id: hd-g-52
-        title: 'Pills'
-        title.zh: '多选胶囊'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: pill-color
-        title: '◉ 胶囊颜色'
-        type: variable-text
-        default: 'var(--text-muted)'
-
-    -
-        id: pill-color-hover
-        title: '◉ 悬停胶囊颜色'
-        type: variable-text
-        default: 'var(--text-normal)'
-
-    -
-        id: pill-color-remove
-        title: '◉ 胶囊移除色'
-        type: variable-text
-        default: 'var(--text-faint)'
-
-    -
-        id: pill-color-remove-hover
-        title: '◉ 悬停胶囊移除色'
-        type: variable-text
-        default: 'var(--text-accent)'
-
-    -
-        id: pill-decoration
-        title: '◉ 胶囊装饰'
-        type: variable-text
-        default: 'none'
-
-    -
-        id: pill-decoration-hover
-        title: '◉ 悬停胶囊装饰'
-        type: variable-text
-        default: 'none'
-
-    -
-        id: pill-background
-        title: '◉ 胶囊背景色'
-        type: variable-text
-        default: 'transparent'
-
-    -
-        id: pill-background-hover
-        title: '◉ 悬停胶囊背景色'
-        type: variable-text
-        default: 'transparent'
-
-    -
-        id: pill-border-color
-        title: '◉ 胶囊边框色'
-        type: variable-text
-        default: 'var(--background-modifier-border)'
-
-    -
-        id: pill-border-color-hover
-        title: '◉ 悬停胶囊边框色'
-        type: variable-text
-        default: 'var(--background-modifier-border-hover)'
-
-    -
-        id: pill-border-width
-        title: '◉ 胶囊边框宽度'
-        type: variable-text
-        default: 'var(--border-width)'
-
-    -
-        id: pill-padding-x
-        title: '◉ 胶囊水平内边距'
-        type: variable-text
-        default: '0.65em'
-
-    -
-        id: pill-padding-y
-        title: '◉ 胶囊垂直内边距'
-        type: variable-text
-        default: '0.25em'
-
-    -
-        id: pill-radius
-        title: '◉ 胶囊圆角'
-        type: variable-text
-        default: '2em'
-
-    -
-        id: pill-weight
-        title: '◉ 胶囊字重'
+        id: embed-background
+        title: '◉ 嵌入背景色'
         type: variable-text
         default: 'inherit'
 
     -
-        id: hd-g-53
-        title: 'Popovers'
-        title.zh: '弹出预览'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: popover-width
-        title: '◉ 弹出层宽度'
+        id: embed-border-start
+        title: '◉ 嵌入起始边框'
         type: variable-text
-        default: '450px'
+        default: '2px solid var(--interactive-accent)'
 
     -
-        id: popover-height
-        title: '◉ 弹出层高度'
-        type: variable-text
-        default: '400px'
-
-    -
-        id: popover-max-height
-        title: '◉ 弹出层最大高度'
-        type: variable-text
-        default: '95vh'
-
-    -
-        id: popover-pdf-width
-        title: '◉ 弹出层 PDF 宽度'
-        type: variable-text
-        default: '450px'
-
-    -
-        id: popover-pdf-height
-        title: '◉ 弹出层 PDF 高度'
-        type: variable-text
-        default: '400px'
-
-    -
-        id: popover-font-size
-        title: '◉ 弹出层字号'
-        type: variable-text
-        default: 'var(--font-text-size)'
-
-    -
-        id: hd-g-54
-        title: 'Prompts'
-        title.zh: '命令面板'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: prompt-background
-        title: '◉ 命令面板背景色'
-        type: variable-text
-        default: 'var(--background-primary)'
-
-    -
-        id: prompt-backdrop-filter
-        title: '◉ 命令面板背景滤镜'
+        id: embed-border-end
+        title: '◉ 嵌入末端边框'
         type: variable-text
         default: 'none'
 
     -
-        id: prompt-input-height
-        title: '◉ 命令面板输入框高度'
+        id: embed-border-top
+        title: '◉ 嵌入上边框'
         type: variable-text
-        default: '40px'
+        default: 'none'
 
     -
-        id: prompt-width
-        title: '◉ 命令面板宽度'
+        id: embed-border-bottom
+        title: '◉ 嵌入下边框'
         type: variable-text
-        default: '700px'
+        default: 'none'
 
     -
-        id: prompt-max-width
-        title: '◉ 命令面板最大宽度'
+        id: embed-padding
+        title: '◉ 嵌入内边距'
         type: variable-text
-        default: '80vw'
+        default: '0 0 0 var(--size-4-6)'
 
     -
-        id: prompt-max-height
-        title: '◉ 命令面板最大高度'
+        id: embed-font-style
+        title: '◉ 嵌入字体样式'
         type: variable-text
-        default: '70vh'
+        default: 'inherit'
 
     -
-        id: prompt-border-width
-        title: '◉ 命令面板边框宽度'
+        id: embed-actions-background
+        title: '◉ 嵌入操作区背景色'
         type: variable-text
-        default: 'var(--border-width)'
+        default: 'color-mix(in srgb, var(--background-primary) 80%, transparent)'
 
     -
-        id: prompt-border-color
-        title: '◉ 命令面板边框色'
+        id: embed-actions-blur
+        title: '◉ 嵌入操作区模糊'
         type: variable-text
-        default: 'var(--color-base-40, var(--background-modifier-border-focus))'
+        default: 'var(--blur-s)'
 
     -
-        id: hd-g-62
-        title: 'Swatch'
-        title.zh: '色板'
+        id: embed-actions-corner-shape
+        title: '◉ 嵌入操作区角形'
+        type: variable-text
+        default: 'var(--corner-shape)'
+
+    -
+        id: embed-actions-padding
+        title: '◉ 嵌入操作区内边距'
+        type: variable-text
+        default: 'var(--size-2-1)'
+
+    -
+        id: embed-actions-radius
+        title: '◉ 嵌入操作区圆角'
+        type: variable-text
+        default: 'calc(var(--embed-action-radius) + var(--embed-actions-padding))'
+
+    -
+        id: embed-actions-shadow
+        title: '◉ 嵌入操作区阴影'
+        type: variable-text
+        default: '0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 0 6px 0 rgba(0, 0, 0, 0.05)'
+
+    -
+        id: embed-action-color
+        title: '◉ 嵌入操作色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: embed-action-radius
+        title: '◉ 嵌入操作圆角'
+        type: variable-text
+        default: 'var(--clickable-icon-radius)'
+
+    -
+        id: hd-g-44
+        title: 'Blocks'
+        title.zh: '块'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: swatch-radius
-        title: '◉ 色板圆角'
+        id: embed-block-shadow-hover
+        title: '◉ 悬停嵌入块阴影'
+        type: variable-text
+        default: '0 0 0 1px var(--background-modifier-border), inset 0 0 0 1px var(--background-modifier-border)'
+
+    -
+        id: hd-g-45
+        title: 'Hotkeys'
+        title.zh: '快捷键'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: hotkey-radius
+        title: '◉ 快捷键圆角'
+        type: variable-text
+        default: '2em'
+
+    -
+        id: hotkey-corner-shape
+        title: '◉ 快捷键角形状'
+        type: variable-text
+        default: 'round'
+
+    -
+        id: hotkey-font-size
+        title: '◉ 快捷键字体大小'
+        type: variable-text
+        default: 'var(--font-ui-smaller)'
+
+    -
+        id: hotkey-font
+        title: '◉ 快捷键字体'
+        type: variable-text
+        default: 'var(--font-interface)'
+
+    -
+        id: hotkey-background
+        title: '◉ 快捷键背景'
+        type: variable-text
+        default: 'var(--background-modifier-hover)'
+
+    -
+        id: hd-g-46
+        title: 'Icons'
+        title.zh: '图标'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: icon-size
+        title: '◉ 图标尺寸'
+        type: variable-text
+        default: 'var(--icon-m)'
+
+    -
+        id: icon-stroke
+        title: '◉ 图标描边'
+        type: variable-text
+        default: 'var(--icon-m-stroke-width)'
+
+    -
+        id: icon-xs
+        title: '◉ 特小图标尺寸'
         type: variable-text
         default: '14px'
 
     -
-        id: swatch-height
-        title: '◉ 色板高度'
+        id: icon-s
+        title: '◉ 小图标尺寸'
         type: variable-text
-        default: '22px'
+        default: '16px'
 
     -
-        id: swatch-width
-        title: '◉ 色板宽度'
+        id: icon-m
+        title: '◉ 中图标尺寸'
         type: variable-text
-        default: '22px'
+        default: '16px'
 
     -
-        id: swatch-shadow
-        title: '◉ 色板阴影'
+        id: icon-l
+        title: '◉ 大图标尺寸'
         type: variable-text
-        default: 'inset 0 0 0 1px color-mix(in oklch, var(--mono-100) 15%, transparent)'
+        default: '18px'
+
+    -
+        id: icon-xl
+        title: '◉ 特大图标尺寸'
+        type: variable-text
+        default: '32px'
+
+    -
+        id: icon-xs-stroke-width
+        title: '◉ 特小图标描边宽度'
+        type: variable-text
+        default: '2px'
+
+    -
+        id: icon-s-stroke-width
+        title: '◉ 小图标描边宽度'
+        type: variable-text
+        default: '2px'
+
+    -
+        id: icon-m-stroke-width
+        title: '◉ 中图标描边宽度'
+        type: variable-text
+        default: '2px'
+
+    -
+        id: icon-l-stroke-width
+        title: '◉ 大图标描边宽度'
+        type: variable-text
+        default: '1.75px'
+
+    -
+        id: icon-xl-stroke-width
+        title: '◉ 特大图标描边宽度'
+        type: variable-text
+        default: '1.25px'
+
+    -
+        id: icon-color
+        title: '◉ 图标颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: icon-color-hover
+        title: '◉ 悬停图标颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: icon-color-active
+        title: '◉ 激活图标颜色'
+        type: variable-text
+        default: 'var(--text-accent)'
+
+    -
+        id: icon-color-focused
+        title: '◉ 聚焦图标颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: icon-opacity
+        title: '◉ 图标不透明度'
+        type: variable-text
+        default: '0.85'
+
+    -
+        id: icon-opacity-hover
+        title: '◉ 悬停图标不透明度'
+        type: variable-text
+        default: '1'
+
+    -
+        id: icon-opacity-active
+        title: '◉ 激活图标不透明度'
+        type: variable-text
+        default: '1'
+
+    -
+        id: clickable-icon-radius
+        title: '◉ 可点击图标圆角'
+        type: variable-text
+        default: 'var(--radius-s)'
+
+    -
+        id: hd-g-47
+        title: 'Images'
+        title.zh: '图片'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: image-radius
+        title: '◉ 图片圆角'
+        type: variable-text
+        default: '4px'
+
+    -
+        id: hd-g-48
+        title: 'Inputs'
+        title.zh: '输入框'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: input-height
+        title: '◉ 输入框高度'
+        type: variable-text
+        default: '30px'
+
+    -
+        id: input-padding
+        title: '◉ 输入框内边距'
+        type: variable-text
+        default: 'var(--size-4-1) var(--size-4-2)'
+
+    -
+        id: input-radius
+        title: '◉ 输入框圆角'
+        type: variable-text
+        default: '5px'
+
+    -
+        id: input-corner-shape
+        title: '◉ 输入框角形'
+        type: variable-text
+        default: 'var(--corner-shape)'
+
+    -
+        id: input-font-weight
+        title: '◉ 输入框字重'
+        type: variable-text
+        default: 'var(--font-normal)'
+
+    -
+        id: input-border-width
+        title: '◉ 输入框边框宽度'
+        type: variable-text
+        default: 'var(--border-width)'
+
+    -
+        id: input-border-width-focus
+        title: '◉ 聚焦输入框边框宽度'
+        type: variable-text
+        default: '2px'
+
+    -
+        id: input-placeholder-color
+        title: '◉ 输入框占位符颜色'
+        type: variable-text
+        default: 'var(--text-faint)'
+
+    -
+        id: input-date-separator
+        title: '◉ 日期输入分隔符'
+        type: variable-text
+        default: 'var(--text-faint)'
+
+    -
+        id: input-icon-inset
+        title: '◉ 输入框图标内偏移'
+        type: variable-text
+        default: 'var(--size-4-1)'
+
+    -
+        id: input-transition
+        title: '◉ 输入框过渡'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: hd-g-49
+        title: 'Lightbox'
+        title.zh: '灯箱'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: lightbox-background
+        title: '◉ 灯箱背景色'
+        type: variable-text
+        default: 'black'
+
+    -
+        id: lightbox-titlebar-color
+        title: '◉ 灯箱标题栏颜色'
+        type: variable-text
+        default: 'white'
+
+    -
+        id: lightbox-titlebar-display
+        title: '◉ 灯箱标题栏显示'
+        type: variable-text
+        default: 'flex'
 
     -
         id: hd-g-50
+        title: 'File navigator'
+        title.zh: '文件导航'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: nav-item-size
+        title: '◉ 导航项大小'
+        type: variable-text
+        default: 'var(--font-ui-small)'
+
+    -
+        id: nav-item-radius
+        title: '◉ 导航项圆角'
+        type: variable-text
+        default: 'var(--radius-m)'
+
+    -
+        id: nav-item-color
+        title: '◉ 导航项颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: nav-item-color-hover
+        title: '◉ 悬停导航项颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: nav-item-color-active
+        title: '◉ 激活导航项颜色'
+        type: variable-text
+        default: 'var(--text-accent)'
+
+    -
+        id: nav-item-color-selected
+        title: '◉ 选中导航项颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: nav-item-color-highlighted
+        title: '◉ 高亮导航项颜色'
+        type: variable-text
+        default: 'var(--text-accent)'
+
+    -
+        id: nav-item-background-hover
+        title: '◉ 悬停导航项背景色'
+        type: variable-text
+        default: 'var(--background-modifier-hover)'
+
+    -
+        id: nav-item-background-active
+        title: '◉ 激活导航项背景色'
+        type: variable-text
+        default: 'var(--background-modifier-hover)'
+
+    -
+        id: nav-item-background-selected
+        title: '◉ 选中导航项背景色'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--color-accent) 15%, transparent)'
+
+    -
+        id: nav-item-padding
+        title: '◉ 导航项内边距'
+        type: variable-text
+        default: '4px 0px 4px 24px'
+
+    -
+        id: nav-item-parent-padding
+        title: '◉ 导航父项内边距'
+        type: variable-text
+        default: 'var(--nav-item-padding)'
+
+    -
+        id: nav-item-margin-bottom
+        title: '◉ 导航项下边距'
+        type: variable-text
+        default: '1px'
+
+    -
+        id: nav-item-children-padding-start
+        title: '◉ 导航子项起始内边距'
+        type: variable-text
+        default: 'var(--size-2-2)'
+
+    -
+        id: nav-item-children-margin-start
+        title: '◉ 导航子项起始边距'
+        type: variable-text
+        default: 'var(--size-4-3)'
+
+    -
+        id: nav-item-weight
+        title: '◉ 导航项字重'
+        type: variable-text
+        default: 'inherit'
+
+    -
+        id: nav-item-weight-hover
+        title: '◉ 悬停导航项字重'
+        type: variable-text
+        default: 'bold'
+
+    -
+        id: nav-item-weight-active
+        title: '◉ 激活导航项字重'
+        type: variable-text
+        default: 'bold'
+
+    -
+        id: nav-item-white-space
+        title: '◉ 导航项空白处理'
+        type: variable-text
+        default: 'pre'
+
+    -
+        id: nav-indentation-guide-width
+        title: '◉ 导航缩进参考线宽度'
+        type: variable-text
+        default: 'var(--indentation-guide-width)'
+
+    -
+        id: nav-indentation-guide-color
+        title: '◉ 导航缩进参考线颜色'
+        type: variable-text
+        default: 'var(--indentation-guide-color)'
+
+    -
+        id: nav-collapse-icon-color
+        title: '◉ 导航折叠图标颜色'
+        type: variable-text
+        default: 'var(--text-accent)'
+
+    -
+        id: nav-collapse-icon-color-collapsed
+        title: '◉ 已折叠导航折叠图标颜色'
+        type: variable-text
+        default: 'var(--text-faint)'
+
+    -
+        id: nav-heading-color
+        title: '◉ 导航标题颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: nav-heading-color-hover
+        title: '◉ 悬停导航标题颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: nav-heading-color-collapsed
+        title: '◉ 折叠导航标题颜色'
+        type: variable-text
+        default: 'var(--text-faint)'
+
+    -
+        id: nav-heading-color-collapsed-hover
+        title: '◉ 悬停折叠导航标题颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: nav-heading-weight
+        title: '◉ 导航标题字重'
+        type: variable-text
+        default: 'var(--font-medium)'
+
+    -
+        id: nav-heading-weight-hover
+        title: '◉ 悬停导航标题字重'
+        type: variable-text
+        default: 'var(--font-medium)'
+
+    -
+        id: nav-tag-background
+        title: '◉ 导航标签背景色'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: nav-tag-radius
+        title: '◉ 导航标签圆角'
+        type: variable-text
+        default: 'var(--radius-s)'
+
+    -
+        id: nav-tag-color
+        title: '◉ 导航标签颜色'
+        type: variable-text
+        default: 'var(--text-faint)'
+
+    -
+        id: nav-tag-color-hover
+        title: '◉ 悬停导航标签颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: nav-tag-color-active
+        title: '◉ 激活导航标签颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: nav-tag-weight
+        title: '◉ 导航标签字重'
+        type: variable-text
+        default: 'var(--font-semibold)'
+
+    -
+        id: hd-g-51
+        title: 'Notices'
+        title.zh: '通知'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: notice-corner-shape
+        title: '◉ 通知角形状'
+        type: variable-text
+        default: 'var(--corner-shape)'
+
+    -
+        id: notice-background
+        title: '◉ 通知背景'
+        type: variable-text
+        default: 'var(--background-modifier-message)'
+
+    -
+        id: notice-color
+        title: '◉ 通知颜色'
+        type: variable-text
+        default: '#FAFAFA'
+
+    -
+        id: notice-font-size
+        title: '◉ 通知字体大小'
+        type: variable-text
+        default: 'var(--font-ui-small)'
+
+    -
+        id: notice-font-weight
+        title: '◉ 通知字体字重'
+        type: variable-text
+        default: 'var(--font-normal)'
+
+    -
+        id: notice-line-height
+        title: '◉ 通知行高度'
+        type: variable-text
+        default: 'var(--line-height-tight)'
+
+    -
+        id: notice-padding
+        title: '◉ 通知内边距'
+        type: variable-text
+        default: 'var(--size-4-2) var(--size-4-3)'
+
+    -
+        id: notice-max-width
+        title: '◉ 通知最大宽度'
+        type: variable-text
+        default: '300px'
+
+    -
+        id: notice-radius
+        title: '◉ 通知圆角'
+        type: variable-text
+        default: 'var(--radius-m)'
+
+    -
+        id: notice-shadow
+        title: '◉ 通知阴影'
+        type: variable-text
+        default: 'var(--shadow-s)'
+
+    -
+        id: notice-border
+        title: '◉ 通知边框'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: hd-g-52
+        title: 'Menus'
+        title.zh: '菜单'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: menu-padding
+        title: '◉ 菜单内边距'
+        type: variable-text
+        default: 'var(--size-2-3)'
+
+    -
+        id: menu-shadow
+        title: '◉ 菜单阴影'
+        type: variable-text
+        default: 'var(--shadow-s)'
+
+    -
+        id: menu-radius
+        title: '◉ 菜单圆角'
+        type: variable-text
+        default: 'var(--radius-m)'
+
+    -
+        id: menu-corner-shape
+        title: '◉ 菜单角形'
+        type: variable-text
+        default: 'var(--corner-shape)'
+
+    -
+        id: menu-background
+        title: '◉ 菜单背景色'
+        type: variable-text
+        default: 'var(--background-secondary)'
+
+    -
+        id: menu-border-color
+        title: '◉ 菜单边框色'
+        type: variable-text
+        default: 'var(--background-modifier-border-hover)'
+
+    -
+        id: menu-border-width
+        title: '◉ 菜单边框宽度'
+        type: variable-text
+        default: 'var(--border-width)'
+
+    -
+        id: menu-backdrop-filter
+        title: '◉ 菜单背景滤镜'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: menu-scroll-mask
+        title: '◉ 菜单滚动遮罩'
+        type: variable-text
+        default: 'var(--scroll-mask-small)'
+
+    -
+        id: hd-g-53
         title: 'Metadata'
         title.zh: '元数据'
         type: heading
@@ -6402,7 +5528,7 @@ settings:
         id: metadata-input-height
         title: '◉ 元数据输入高度'
         type: variable-text
-        default: 'calc(var(--font-text-size) * 1.75)'
+        default: 'calc(var(--font-preferred-size) * 1.75)'
 
     -
         id: metadata-input-text-color
@@ -6465,33 +5591,785 @@ settings:
         default: 'var(--font-ui-small)'
 
     -
-        id: hd-g-47
-        title: 'Lightbox'
-        title.zh: '灯箱'
+        id: hd-g-54
+        title: 'Modals'
+        title.zh: '模态框'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: lightbox-background
-        title: '◉ 灯箱背景色'
+        id: modal-background
+        title: '◉ 模态框背景色'
         type: variable-text
-        default: 'black'
+        default: 'var(--background-primary)'
 
     -
-        id: lightbox-titlebar-color
-        title: '◉ 灯箱标题栏颜色'
+        id: modal-sidebar-background
+        title: '◉ 模态框侧栏背景色'
+        type: variable-text
+        default: 'var(--modal-background)'
+
+    -
+        id: modal-width
+        title: '◉ 模态框宽度'
+        type: variable-text
+        default: '90vw'
+
+    -
+        id: modal-header-height
+        title: '◉ 模态框页眉高度'
+        type: variable-text
+        default: 'auto'
+
+    -
+        id: modal-height
+        title: '◉ 模态框高度'
+        type: variable-text
+        default: '85vh'
+
+    -
+        id: modal-max-width
+        title: '◉ 模态框最大宽度'
+        type: variable-text
+        default: '1100px'
+
+    -
+        id: modal-max-height
+        title: '◉ 模态框最大高度'
+        type: variable-text
+        default: '1000px'
+
+    -
+        id: modal-max-width-narrow
+        title: '◉ 模态框最大宽度（窄）'
+        type: variable-text
+        default: '800px'
+
+    -
+        id: modal-shadow
+        title: '◉ 模态框阴影'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: modal-border-width
+        title: '◉ 模态框边框宽度'
+        type: variable-text
+        default: 'var(--border-width)'
+
+    -
+        id: modal-border-color
+        title: '◉ 模态框边框色'
+        type: variable-text
+        default: 'var(--background-modifier-border-hover)'
+
+    -
+        id: modal-radius
+        title: '◉ 模态框圆角'
+        type: variable-text
+        default: 'var(--radius-l)'
+
+    -
+        id: modal-community-sidebar-width
+        title: '◉ 模态框社区侧栏宽度'
+        type: variable-text
+        default: '280px'
+
+    -
+        id: hd-g-55
+        title: 'Pills'
+        title.zh: '多选胶囊'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: pill-color
+        title: '◉ 胶囊颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: pill-color-hover
+        title: '◉ 悬停胶囊颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: pill-color-remove
+        title: '◉ 胶囊移除色'
+        type: variable-text
+        default: 'var(--text-faint)'
+
+    -
+        id: pill-color-remove-hover
+        title: '◉ 悬停胶囊移除色'
+        type: variable-text
+        default: 'var(--text-accent)'
+
+    -
+        id: pill-decoration
+        title: '◉ 胶囊装饰'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: pill-decoration-hover
+        title: '◉ 悬停胶囊装饰'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: pill-background
+        title: '◉ 胶囊背景色'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: pill-background-hover
+        title: '◉ 悬停胶囊背景色'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: pill-border-color
+        title: '◉ 胶囊边框色'
+        type: variable-text
+        default: 'var(--background-modifier-border)'
+
+    -
+        id: pill-border-color-hover
+        title: '◉ 悬停胶囊边框色'
+        type: variable-text
+        default: 'var(--background-modifier-border-hover)'
+
+    -
+        id: pill-border-width
+        title: '◉ 胶囊边框宽度'
+        type: variable-text
+        default: 'var(--border-width)'
+
+    -
+        id: pill-padding-x
+        title: '◉ 胶囊水平内边距'
+        type: variable-text
+        default: '0.65em'
+
+    -
+        id: pill-padding-y
+        title: '◉ 胶囊垂直内边距'
+        type: variable-text
+        default: '0.25em'
+
+    -
+        id: pill-radius
+        title: '◉ 胶囊圆角'
+        type: variable-text
+        default: '2em'
+
+    -
+        id: pill-weight
+        title: '◉ 胶囊字重'
+        type: variable-text
+        default: 'inherit'
+
+    -
+        id: hd-g-56
+        title: 'Popovers'
+        title.zh: '弹出预览'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: popover-width
+        title: '◉ 弹出层宽度'
+        type: variable-text
+        default: '450px'
+
+    -
+        id: popover-height
+        title: '◉ 弹出层高度'
+        type: variable-text
+        default: '400px'
+
+    -
+        id: popover-max-height
+        title: '◉ 弹出层最大高度'
+        type: variable-text
+        default: '95vh'
+
+    -
+        id: popover-pdf-width
+        title: '◉ 弹出层 PDF 宽度'
+        type: variable-text
+        default: '450px'
+
+    -
+        id: popover-pdf-height
+        title: '◉ 弹出层 PDF 高度'
+        type: variable-text
+        default: '400px'
+
+    -
+        id: popover-font-size
+        title: '◉ 弹出层字号'
+        type: variable-text
+        default: 'var(--font-preferred-size)'
+
+    -
+        id: hd-g-57
+        title: 'Prompts'
+        title.zh: '命令面板'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: prompt-background
+        title: '◉ 命令面板背景色'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: prompt-backdrop-filter
+        title: '◉ 命令面板背景滤镜'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: prompt-input-height
+        title: '◉ 命令面板输入框高度'
+        type: variable-text
+        default: '40px'
+
+    -
+        id: prompt-width
+        title: '◉ 命令面板宽度'
+        type: variable-text
+        default: '700px'
+
+    -
+        id: prompt-max-width
+        title: '◉ 命令面板最大宽度'
+        type: variable-text
+        default: '80vw'
+
+    -
+        id: prompt-max-height
+        title: '◉ 命令面板最大高度'
+        type: variable-text
+        default: '70vh'
+
+    -
+        id: prompt-border-width
+        title: '◉ 命令面板边框宽度'
+        type: variable-text
+        default: 'var(--border-width)'
+
+    -
+        id: prompt-border-color
+        title: '◉ 命令面板边框色'
+        type: variable-text
+        default: 'var(--background-modifier-border-hover)'
+
+    -
+        id: hd-g-58
+        title: 'Ribbon'
+        title.zh: '功能区'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: ribbon-background
+        title: '◉ 功能区背景色'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: ribbon-background-collapsed
+        title: '◉ 折叠功能区背景色'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: ribbon-width
+        title: '◉ 功能区宽度'
+        type: variable-text
+        default: '38px'
+
+    -
+        id: ribbon-padding
+        title: '◉ 功能区内边距'
+        type: variable-text
+        default: '10px 0px 6px 0px'
+
+    -
+        id: hd-g-59
+        title: 'Search'
+        title.zh: '搜索'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: search-clear-button-color
+        title: '◉ 搜索清除按钮颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: search-clear-button-size
+        title: '◉ 搜索清除按钮大小'
+        type: variable-text
+        default: '13px'
+
+    -
+        id: search-icon-color
+        title: '◉ 搜索图标颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: search-icon-size
+        title: '◉ 搜索图标大小'
+        type: variable-text
+        default: '16px'
+
+    -
+        id: search-input-corner-shape
+        title: '◉ 搜索输入框角形'
+        type: variable-text
+        default: 'var(--input-corner-shape)'
+
+    -
+        id: search-input-radius
+        title: '◉ 搜索输入框圆角'
+        type: variable-text
+        default: 'var(--input-radius)'
+
+    -
+        id: search-result-background
+        title: '◉ 搜索结果背景色'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: hd-g-60
+        title: 'Settings'
+        title.zh: '设置面板'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: settings-background
+        title: '◉ 设置面板背景色'
+        type: variable-text
+        default: 'var(--modal-background)'
+
+    -
+        id: setting-group-heading-color
+        title: '◉ 设置分组标题颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: setting-group-heading-size
+        title: '◉ 设置分组标题大小'
+        type: variable-text
+        default: 'var(--font-ui-medium)'
+
+    -
+        id: setting-group-heading-weight
+        title: '◉ 设置分组标题字重'
+        type: variable-text
+        default: 'var(--font-semibold)'
+
+    -
+        id: setting-group-max-width
+        title: '◉ 设置分组最大宽度'
+        type: variable-text
+        default: '700px'
+
+    -
+        id: setting-items-background
+        title: '◉ 设置项背景色'
+        type: variable-text
+        default: 'var(--background-primary-alt)'
+
+    -
+        id: setting-items-padding-x
+        title: '◉ 设置项水平内边距'
+        type: variable-text
+        default: 'var(--size-4-5)'
+
+    -
+        id: setting-items-padding-y
+        title: '◉ 设置项垂直内边距'
+        type: variable-text
+        default: 'var(--size-4-5)'
+
+    -
+        id: setting-items-radius
+        title: '◉ 设置项圆角'
+        type: variable-text
+        default: 'var(--radius-l)'
+
+    -
+        id: setting-items-border-width
+        title: '◉ 设置项边框宽度'
+        type: variable-text
+        default: '0'
+
+    -
+        id: setting-items-border-color
+        title: '◉ 设置项边框色'
+        type: variable-text
+        default: 'var(--background-modifier-border)'
+
+    -
+        id: setting-items-divider-width
+        title: '◉ 设置项分隔线宽度'
+        type: variable-text
+        default: '1px'
+
+    -
+        id: setting-items-divider-color
+        title: '◉ 设置项分隔线颜色'
+        type: variable-text
+        default: 'var(--background-modifier-border)'
+
+    -
+        id: setting-item-name-color
+        title: '◉ 设置项名称颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: setting-item-name-size
+        title: '◉ 设置项名称字号'
+        type: variable-text
+        default: 'var(--font-ui-small)'
+
+    -
+        id: setting-item-name-weight
+        title: '◉ 设置项名称字重'
+        type: variable-text
+        default: 'var(--font-normal)'
+
+    -
+        id: hd-g-61
+        title: 'Tooltips'
+        title.zh: '工具提示'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: tooltip-corner-shape
+        title: '◉ 提示角形状'
+        type: variable-text
+        default: 'var(--corner-shape)'
+
+    -
+        id: tooltip-background
+        title: '◉ 提示背景'
+        type: variable-text
+        default: 'var(--background-modifier-message)'
+
+    -
+        id: tooltip-color
+        title: '◉ 提示颜色'
+        type: variable-text
+        default: '#FAFAFA'
+
+    -
+        id: tooltip-font-size
+        title: '◉ 提示字体大小'
+        type: variable-text
+        default: 'var(--font-ui-small)'
+
+    -
+        id: tooltip-font-weight
+        title: '◉ 提示字体字重'
+        type: variable-text
+        default: 'var(--font-normal)'
+
+    -
+        id: tooltip-line-height
+        title: '◉ 提示行高度'
+        type: variable-text
+        default: 'var(--line-height-tight)'
+
+    -
+        id: tooltip-padding
+        title: '◉ 提示内边距'
+        type: variable-text
+        default: 'var(--size-4-2) var(--size-4-3)'
+
+    -
+        id: tooltip-max-width
+        title: '◉ 提示最大宽度'
+        type: variable-text
+        default: '300px'
+
+    -
+        id: tooltip-radius
+        title: '◉ 提示圆角'
+        type: variable-text
+        default: 'var(--radius-l)'
+
+    -
+        id: tooltip-shadow
+        title: '◉ 提示阴影'
+        type: variable-text
+        default: 'var(--shadow-s)'
+
+    -
+        id: hd-g-62
+        title: 'Sidebar'
+        title.zh: '侧边栏'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: sidebar-markdown-font-size
+        title: '◉ 侧边栏 Markdown 字号'
+        type: variable-text
+        default: 'calc(var(--font-preferred-size) * 0.9)'
+
+    -
+        id: sidebar-tab-text-display
+        title: '◉ 侧边栏标签文本显示'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: sidebar-tab-container-background
+        title: '◉ 侧边栏标签页容器背景'
+        type: variable-text
+        default: 'var(--tab-container-background)'
+
+    -
+        id: sidebar-left-toggle-inner-width
+        title: '◉ 左侧栏开关内宽度'
+        type: variable-text
+        default: '8.33%'
+
+    -
+        id: sidebar-right-toggle-inner-width
+        title: '◉ 右侧栏开关内宽度'
+        type: variable-text
+        default: '8.33%'
+
+    -
+        id: sidebar-left-toggle-inner-width-open
+        title: '◉ 展开左侧栏开关内宽度'
+        type: variable-text
+        default: '24%'
+
+    -
+        id: sidebar-right-toggle-inner-width-open
+        title: '◉ 展开右侧栏开关内宽度'
+        type: variable-text
+        default: '24%'
+
+    -
+        id: hd-g-63
+        title: 'Sliders'
+        title.zh: '滑块'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: slider-thumb-border-width
+        title: '◉ 滑块边框宽度'
+        type: variable-text
+        default: '0.5px'
+
+    -
+        id: slider-thumb-border-color
+        title: '◉ 滑块边框颜色'
+        type: variable-text
+        default: 'var(--background-modifier-border-hover)'
+
+    -
+        id: slider-thumb-background
+        title: '◉ 滑块背景色'
         type: variable-text
         default: 'white'
 
     -
-        id: lightbox-titlebar-display
-        title: '◉ 灯箱标题栏显示'
+        id: slider-thumb-background-hover
+        title: '◉ 悬停滑块背景色'
         type: variable-text
-        default: 'flex'
+        default: 'white'
 
     -
-        id: hd-g-61
+        id: slider-thumb-height
+        title: '◉ 滑块高度'
+        type: variable-text
+        default: '18px'
+
+    -
+        id: slider-thumb-width
+        title: '◉ 滑块宽度'
+        type: variable-text
+        default: '18px'
+
+    -
+        id: slider-thumb-height-active
+        title: '◉ 激活滑块高度'
+        type: variable-text
+        default: 'var(--slider-thumb-height)'
+
+    -
+        id: slider-thumb-width-active
+        title: '◉ 激活滑块宽度'
+        type: variable-text
+        default: 'var(--slider-thumb-width)'
+
+    -
+        id: slider-thumb-y
+        title: '◉ 滑块纵向位置'
+        type: variable-text
+        default: '-6px'
+
+    -
+        id: slider-thumb-y-active
+        title: '◉ 激活滑块纵向位置'
+        type: variable-text
+        default: 'var(--slider-thumb-y)'
+
+    -
+        id: slider-thumb-radius
+        title: '◉ 滑块圆角'
+        type: variable-text
+        default: 'var(--slider-thumb-height)'
+
+    -
+        id: slider-thumb-shadow
+        title: '◉ 滑块阴影'
+        type: variable-text
+        default: '0 0px 2px 0px rgba(0, 0, 0, 0.1), 0 2px 6px 0px rgba(0, 0, 0, 0.1)'
+
+    -
+        id: slider-thumb-shadow-hover
+        title: '◉ 悬停滑块阴影'
+        type: variable-text
+        default: 'var(--slider-thumb-shadow)'
+
+    -
+        id: slider-thumb-shadow-active
+        title: '◉ 激活滑块阴影'
+        type: variable-text
+        default: 'var(--slider-thumb-shadow)'
+
+    -
+        id: slider-thumb-shadow-focus
+        title: '◉ 聚焦滑块阴影'
+        type: variable-text
+        default: 'var(--slider-thumb-shadow-active), 0 0px 0px 2px var(--background-modifier-border-focus)'
+
+    -
+        id: slider-s-thumb-size
+        title: '◉ 小滑块大小'
+        type: variable-text
+        default: '15px'
+
+    -
+        id: slider-s-thumb-position
+        title: '◉ 小滑块位置'
+        type: variable-text
+        default: '-5px'
+
+    -
+        id: slider-fill-background
+        title: '◉ 滑块填充背景色'
+        type: variable-text
+        default: 'var(--interactive-accent)'
+
+    -
+        id: slider-track-background
+        title: '◉ 滑块轨道背景色'
+        type: variable-text
+        default: 'var(--background-modifier-border-hover)'
+
+    -
+        id: slider-track-height
+        title: '◉ 滑块轨道高度'
+        type: variable-text
+        default: '4px'
+
+    -
+        id: slider-value-font-size
+        title: '◉ 滑块数值字号'
+        type: variable-text
+        default: 'var(--font-ui-small)'
+
+    -
+        id: slider-value-font-weight
+        title: '◉ 滑块数值字重'
+        type: variable-text
+        default: 'var(--input-font-weight)'
+
+    -
+        id: hd-g-64
+        title: 'Status bar'
+        title.zh: '状态栏'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: status-bar-background
+        title: '◉ 状态栏背景色'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: status-bar-border-color
+        title: '◉ 状态栏边框色'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: status-bar-border-width
+        title: '◉ 状态栏边框宽度'
+        type: variable-text
+        default: '0px'
+
+    -
+        id: status-bar-font-size
+        title: '◉ 状态栏字号'
+        type: variable-text
+        default: 'var(--font-ui-smaller)'
+
+    -
+        id: status-bar-text-color
+        title: '◉ 状态栏文字色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: status-bar-position
+        title: '◉ 状态栏位置'
+        type: variable-text
+        default: 'relative'
+
+    -
+        id: status-bar-radius
+        title: '◉ 状态栏圆角'
+        type: variable-text
+        default: '0'
+
+    -
+        id: hd-g-65
         title: 'Suggestions'
         title.zh: '自动补全'
         type: heading
@@ -6511,7 +6389,283 @@ settings:
         default: 'none'
 
     -
-        id: hd-g-65
+        id: hd-g-66
+        title: 'Swatch'
+        title.zh: '色板'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: swatch-radius
+        title: '◉ 色板圆角'
+        type: variable-text
+        default: '14px'
+
+    -
+        id: swatch-height
+        title: '◉ 色板高度'
+        type: variable-text
+        default: '22px'
+
+    -
+        id: swatch-width
+        title: '◉ 色板宽度'
+        type: variable-text
+        default: '22px'
+
+    -
+        id: swatch-shadow
+        title: '◉ 色板阴影'
+        type: variable-text
+        default: 'inset 0 0 0 1px color-mix(in oklch, var(--mono-100) 15%, transparent)'
+
+    -
+        id: hd-g-67
+        title: 'Tabs'
+        title.zh: '标签页'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: tab-background
+        title: '◉ 标签页背景'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: tab-background-hover
+        title: '◉ 标签页背景（悬停）'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: tab-background-active
+        title: '◉ 激活标签页背景色'
+        type: variable-text
+        default: 'var(--background-secondary)'
+
+    -
+        id: tab-inner-background
+        title: '◉ 标签页内背景'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: tab-inner-background-hover
+        title: '◉ 标签页内背景（悬停）'
+        type: variable-text
+        default: 'var(--background-modifier-hover)'
+
+    -
+        id: tab-inner-background-active
+        title: '◉ 标签页内背景（激活）'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: tab-inner-border-width
+        title: '◉ 标签页内边框宽度'
+        type: variable-text
+        default: '0px'
+
+    -
+        id: tab-inner-border-color
+        title: '◉ 标签页内边框颜色'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: tab-inner-border-color-hover
+        title: '◉ 标签页内边框颜色（悬停）'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: tab-inner-border-color-active
+        title: '◉ 标签页内边框颜色（激活）'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: tab-text-color
+        title: '◉ 标签页文本颜色'
+        type: variable-text
+        default: 'var(--text-faint)'
+
+    -
+        id: tab-text-color-active
+        title: '◉ 激活标签页文本颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: tab-text-color-focused
+        title: '◉ 聚焦标签页文本颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: tab-text-color-focused-active
+        title: '◉ 聚焦激活标签页文本颜色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: tab-text-color-focused-highlighted
+        title: '◉ 聚焦高亮标签页文本颜色'
+        type: variable-text
+        default: 'var(--text-accent)'
+
+    -
+        id: tab-text-color-focused-active-current
+        title: '◉ 当前聚焦激活标签页文本颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: tab-font-size
+        title: '◉ 标签页字号'
+        type: variable-text
+        default: 'var(--font-ui-small)'
+
+    -
+        id: tab-font-weight
+        title: '◉ 标签页字重'
+        type: variable-text
+        default: 'inherit'
+
+    -
+        id: tab-container-background
+        title: '◉ 标签页容器背景色'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: tab-container-padding-start
+        title: '◉ 标签页容器内边距起始'
+        type: variable-text
+        default: 'var(--size-4-2)'
+
+    -
+        id: tab-container-padding-end
+        title: '◉ 标签页容器内边距末端'
+        type: variable-text
+        default: 'var(--size-4-2)'
+
+    -
+        id: tab-divider-color
+        title: '◉ 标签页分隔线颜色'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: tab-outline-color
+        title: '◉ 标签页轮廓颜色'
+        type: variable-text
+        default: 'var(--divider-color)'
+
+    -
+        id: tab-outline-color-hover
+        title: '◉ 标签页轮廓颜色（悬停）'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: tab-outline-width
+        title: '◉ 标签页轮廓宽度'
+        type: variable-text
+        default: '-2px'
+
+    -
+        id: tab-corner-shape
+        title: '◉ 标签页角形状'
+        type: variable-text
+        default: 'var(--corner-shape)'
+
+    -
+        id: tab-curve
+        title: '◉ 标签页曲线'
+        type: variable-text
+        default: '10px'
+
+    -
+        id: tab-radius
+        title: '◉ 标签页圆角'
+        type: variable-text
+        default: 'var(--radius-s)'
+
+    -
+        id: tab-radius-active
+        title: '◉ 激活标签页圆角'
+        type: variable-text
+        default: '10px 10px 0 0'
+
+    -
+        id: tab-width
+        title: '◉ 标签页宽度'
+        type: variable-text
+        default: '200px'
+
+    -
+        id: tab-max-width
+        title: '◉ 标签页最大宽度'
+        type: variable-text
+        default: '320px'
+
+    -
+        id: hd-g-68
+        title: 'Tab switcher (mobile)'
+        title.zh: '移动端标签切换'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: tab-switcher-menubar-background
+        title: '◉ 标签页切换器菜单栏背景色'
+        type: variable-text
+        default: 'linear-gradient(to top, var(--background-secondary), transparent)'
+
+    -
+        id: tab-switcher-background
+        title: '◉ 标签页切换器背景色'
+        type: variable-text
+        default: 'var(--background-secondary)'
+
+    -
+        id: tab-switcher-preview-radius
+        title: '◉ 标签页切换器预览圆角'
+        type: variable-text
+        default: 'var(--radius-xl)'
+
+    -
+        id: tab-switcher-preview-corner-shape
+        title: '◉ 标签页切换器预览角形'
+        type: variable-text
+        default: 'var(--corner-shape)'
+
+    -
+        id: tab-switcher-preview-background-shadow
+        title: '◉ 标签页切换器预览背景阴影'
+        type: variable-text
+        default: '0 4px 30px 2px rgba(0, 0, 0, 0.2)'
+
+    -
+        id: tab-switcher-preview-shadow
+        title: '◉ 标签页切换器预览阴影'
+        type: variable-text
+        default: '0 0 0 1px color-mix(in oklch, var(--mono-100) 5%, transparent)'
+
+    -
+        id: tab-switcher-preview-shadow-active
+        title: '◉ 激活标签页切换器预览阴影'
+        type: variable-text
+        default: '0 0 0 2px var(--color-accent)'
+
+    -
+        id: hd-g-69
         title: 'Stacked tabs'
         title.zh: '堆叠标签'
         type: heading
@@ -6567,148 +6721,536 @@ settings:
         default: '-8px 0 8px 0 rgba(0, 0, 0, 0.05)'
 
     -
-        id: hd-g-43
-        title: '__Other__'
-        title.zh: '其他'
+        id: hd-g-70
+        title: 'Tables'
+        title.zh: '表格'
         type: heading
         level: 2
         collapsed: true
 
     -
-        id: embed-block-shadow-hover
-        title: '◉ 悬停嵌入块阴影'
+        id: table-background
+        title: '◉ 表格背景色'
         type: variable-text
-        default: '0 0 0 1px var(--background-modifier-border), inset 0 0 0 1px var(--background-modifier-border)'
+        default: 'transparent'
 
     -
-        id: hd-g-36
-        title: 'Buttons'
-        title.zh: '按钮'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: button-radius
-        title: '◉ 按钮圆角'
+        id: table-border-width
+        title: '◉ 表格边框宽度'
         type: variable-text
-        default: 'var(--input-radius)'
+        default: '1px'
 
     -
-        id: button-corner-shape
-        title: '◉ 按钮角形'
+        id: table-border-color
+        title: '◉ 表格边框色'
         type: variable-text
-        default: 'var(--corner-shape)'
+        default: 'var(--background-modifier-border)'
 
     -
-        id: hd-g-42
-        title: 'Embeds'
-        title.zh: '嵌入'
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: embed-max-height
-        title: '◉ 嵌入最大高度'
+        id: table-white-space
+        title: '◉ 表格空白处理'
         type: variable-text
-        default: '4000px'
+        default: 'break-spaces'
 
     -
-        id: embed-canvas-max-height
-        title: '◉ 嵌入画布最大高度'
+        id: table-header-background
+        title: '◉ 表格页眉背景色'
         type: variable-text
-        default: '400px'
+        default: 'var(--table-background)'
 
     -
-        id: embed-background
-        title: '◉ 嵌入背景色'
+        id: table-header-background-hover
+        title: '◉ 悬停表格页眉背景色'
         type: variable-text
         default: 'inherit'
 
     -
-        id: embed-border-start
-        title: '◉ 嵌入起始边框'
+        id: table-header-border-width
+        title: '◉ 表格页眉边框宽度'
         type: variable-text
-        default: '2px solid var(--interactive-accent)'
+        default: 'var(--table-border-width)'
 
     -
-        id: embed-border-end
-        title: '◉ 嵌入末端边框'
+        id: table-header-border-color
+        title: '◉ 表格页眉边框色'
         type: variable-text
-        default: 'none'
+        default: 'var(--table-border-color)'
 
     -
-        id: embed-border-top
-        title: '◉ 嵌入上边框'
-        type: variable-text
-        default: 'none'
-
-    -
-        id: embed-border-bottom
-        title: '◉ 嵌入下边框'
-        type: variable-text
-        default: 'none'
-
-    -
-        id: embed-padding
-        title: '◉ 嵌入内边距'
-        type: variable-text
-        default: '0 0 0 var(--size-4-6)'
-
-    -
-        id: embed-font-style
-        title: '◉ 嵌入字体样式'
+        id: table-header-font
+        title: '◉ 表格页眉字体'
         type: variable-text
         default: 'inherit'
 
     -
-        id: embed-actions-background
-        title: '◉ 嵌入操作区背景色'
+        id: table-header-size
+        title: '◉ 表格页眉大小'
         type: variable-text
-        default: 'color-mix(in srgb, var(--background-primary) 80%, transparent)'
+        default: 'var(--table-text-size)'
 
     -
-        id: embed-actions-blur
-        title: '◉ 嵌入操作区模糊'
+        id: table-header-weight
+        title: '◉ 表格页眉字重'
         type: variable-text
-        default: 'var(--blur-s)'
+        default: 'calc(var(--font-weight) + var(--bold-modifier))'
 
     -
-        id: embed-actions-corner-shape
-        title: '◉ 嵌入操作区角形'
-        type: variable-text
-        default: 'var(--corner-shape)'
-
-    -
-        id: embed-actions-padding
-        title: '◉ 嵌入操作区内边距'
-        type: variable-text
-        default: 'var(--size-2-1)'
-
-    -
-        id: embed-actions-radius
-        title: '◉ 嵌入操作区圆角'
-        type: variable-text
-        default: 'calc(var(--embed-action-radius) + var(--embed-actions-padding))'
-
-    -
-        id: embed-actions-shadow
-        title: '◉ 嵌入操作区阴影'
-        type: variable-text
-        default: '0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 0 6px 0 rgba(0, 0, 0, 0.05)'
-
-    -
-        id: embed-action-color
-        title: '◉ 嵌入操作色'
+        id: table-header-color
+        title: '◉ 表格页眉颜色'
         type: variable-text
         default: 'var(--text-normal)'
 
     -
-        id: embed-action-radius
-        title: '◉ 嵌入操作圆角'
+        id: table-line-height
+        title: '◉ 表格行高'
         type: variable-text
-        default: 'var(--clickable-icon-radius)'
+        default: 'var(--line-height-tight)'
+
+    -
+        id: table-text-size
+        title: '◉ 表格文本大小'
+        type: variable-text
+        default: 'var(--font-preferred-size)'
+
+    -
+        id: table-text-color
+        title: '◉ 表格文本颜色'
+        type: variable-text
+        default: 'inherit'
+
+    -
+        id: table-column-min-width
+        title: '◉ 表格列最小宽度'
+        type: variable-text
+        default: '6ch'
+
+    -
+        id: table-column-max-width
+        title: '◉ 表格列最大宽度'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: table-column-alt-background
+        title: '◉ 表格奇偶列背景色'
+        type: variable-text
+        default: 'var(--table-background)'
+
+    -
+        id: table-column-first-border-width
+        title: '◉ 表格首列边框宽度'
+        type: variable-text
+        default: 'var(--table-border-width)'
+
+    -
+        id: table-column-last-border-width
+        title: '◉ 表格末列边框宽度'
+        type: variable-text
+        default: 'var(--table-border-width)'
+
+    -
+        id: table-row-background-hover
+        title: '◉ 悬停表格行背景色'
+        type: variable-text
+        default: 'var(--table-background)'
+
+    -
+        id: table-row-alt-background
+        title: '◉ 表格奇偶行背景色'
+        type: variable-text
+        default: 'var(--table-background)'
+
+    -
+        id: table-row-alt-background-hover
+        title: '◉ 悬停表格奇偶行背景色'
+        type: variable-text
+        default: 'var(--table-background)'
+
+    -
+        id: table-row-last-border-width
+        title: '◉ 表格末行边框宽度'
+        type: variable-text
+        default: 'var(--table-border-width)'
+
+    -
+        id: table-selection
+        title: '◉ 表格选区颜色'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--color-accent) 10%, transparent)'
+
+    -
+        id: table-selection-blend-mode
+        title: '◉ 表格选区混合模式'
+        type: variable-text
+        default: 'var(--highlight-mix-blend-mode)'
+
+    -
+        id: table-selection-border-color
+        title: '◉ 表格选区边框色'
+        type: variable-text
+        default: 'var(--interactive-accent)'
+
+    -
+        id: table-selection-border-width
+        title: '◉ 表格选区边框宽度'
+        type: variable-text
+        default: '2px'
+
+    -
+        id: table-selection-border-radius
+        title: '◉ 表格选区边框圆角'
+        type: variable-text
+        default: '4px'
+
+    -
+        id: table-cell-vertical-alignment
+        title: '◉ 表格单元格垂直对齐'
+        type: variable-text
+        default: 'top'
+
+    -
+        id: table-drag-handle-background
+        title: '◉ 表格拖拽手柄背景色'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: table-drag-handle-background-active
+        title: '◉ 激活表格拖拽手柄背景色'
+        type: variable-text
+        default: 'var(--table-selection-border-color)'
+
+    -
+        id: table-drag-handle-color
+        title: '◉ 表格拖拽手柄颜色'
+        type: variable-text
+        default: 'var(--text-faint)'
+
+    -
+        id: table-drag-handle-color-active
+        title: '◉ 激活表格拖拽手柄颜色'
+        type: variable-text
+        default: 'var(--text-on-accent)'
+
+    -
+        id: table-drop-indicator-half-width
+        title: '◉ 表格放置指示器半宽'
+        type: variable-text
+        default: '2px'
+
+    -
+        id: table-add-button-background
+        title: '◉ 表格添加按钮背景色'
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: table-add-button-border-width
+        title: '◉ 表格添加按钮边框宽度'
+        type: variable-text
+        default: 'var(--table-border-width)'
+
+    -
+        id: table-add-button-border-color
+        title: '◉ 表格添加按钮边框色'
+        type: variable-text
+        default: 'var(--background-modifier-border)'
+
+    -
+        id: hd-g-71
+        title: 'Tags'
+        title.zh: '标签'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: tag-size
+        title: '◉ 标签大小'
+        type: variable-text
+        default: 'var(--font-smaller)'
+
+    -
+        id: tag-color
+        title: '◉ 标签颜色'
+        type: variable-text
+        default: 'var(--text-accent)'
+
+    -
+        id: tag-color-hover
+        title: '◉ 悬停标签颜色'
+        type: variable-text
+        default: 'var(--text-accent)'
+
+    -
+        id: tag-decoration
+        title: '◉ 标签装饰'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: tag-decoration-hover
+        title: '◉ 悬停标签装饰'
+        type: variable-text
+        default: 'none'
+
+    -
+        id: tag-background
+        title: '◉ 标签背景色'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--interactive-accent) 10%, transparent)'
+
+    -
+        id: tag-background-hover
+        title: '◉ 悬停标签背景色'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--interactive-accent) 20%, transparent)'
+
+    -
+        id: tag-border-color
+        title: '◉ 标签边框色'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--interactive-accent) 15%, transparent)'
+
+    -
+        id: tag-border-color-hover
+        title: '◉ 悬停标签边框色'
+        type: variable-text
+        default: 'color-mix(in oklch, var(--interactive-accent) 15%, transparent)'
+
+    -
+        id: tag-border-width
+        title: '◉ 标签边框宽度'
+        type: variable-text
+        default: '0px'
+
+    -
+        id: tag-padding-x
+        title: '◉ 标签水平内边距'
+        type: variable-text
+        default: '0.65em'
+
+    -
+        id: tag-padding-y
+        title: '◉ 标签垂直内边距'
+        type: variable-text
+        default: '0.25em'
+
+    -
+        id: tag-radius
+        title: '◉ 标签圆角'
+        type: variable-text
+        default: '2em'
+
+    -
+        id: tag-corner-shape
+        title: '◉ 标签角形'
+        type: variable-text
+        default: 'round'
+
+    -
+        id: tag-weight
+        title: '◉ 标签字重'
+        type: variable-text
+        default: 'inherit'
+
+    -
+        id: hd-g-72
+        title: 'Window frame'
+        title.zh: '窗口框架'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: traffic-lights-offset-x
+        title: '◉ 交通灯横向偏移'
+        type: variable-text
+        default: 'var(--header-height)'
+
+    -
+        id: traffic-lights-offset-y
+        title: '◉ 交通灯纵向偏移'
+        type: variable-text
+        default: 'var(--header-height)'
+
+    -
+        id: titlebar-background
+        title: '◉ 标题栏背景色'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: titlebar-background-focused
+        title: '◉ 聚焦标题栏背景色'
+        type: variable-text
+        default: 'var(--background-primary)'
+
+    -
+        id: titlebar-border-width
+        title: '◉ 标题栏边框宽度'
+        type: variable-text
+        default: '0px'
+
+    -
+        id: titlebar-border-color
+        title: '◉ 标题栏边框色'
+        type: variable-text
+        default: 'var(--background-modifier-border)'
+
+    -
+        id: titlebar-text-color
+        title: '◉ 标题栏文本色'
+        type: variable-text
+        default: 'var(--text-muted)'
+
+    -
+        id: titlebar-text-color-focused
+        title: '◉ 聚焦标题栏文本色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: titlebar-text-weight
+        title: '◉ 标题栏文本字重'
+        type: variable-text
+        default: 'var(--font-bold)'
+
+    -
+        id: hd-g-73
+        title: 'Toggles'
+        title.zh: '开关'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: toggle-border-width
+        title: '◉ 开关边框宽度'
+        type: variable-text
+        default: '2px'
+
+    -
+        id: toggle-width
+        title: '◉ 开关宽度'
+        type: variable-text
+        default: '40px'
+
+    -
+        id: toggle-radius
+        title: '◉ 开关圆角'
+        type: variable-text
+        default: '18px'
+
+    -
+        id: toggle-thumb-color
+        title: '◉ 开关滑块颜色'
+        type: variable-text
+        default: 'white'
+
+    -
+        id: toggle-thumb-radius
+        title: '◉ 开关滑块圆角'
+        type: variable-text
+        default: '18px'
+
+    -
+        id: toggle-thumb-height
+        title: '◉ 开关滑块高度'
+        type: variable-text
+        default: '18px'
+
+    -
+        id: toggle-thumb-width
+        title: '◉ 开关滑块宽度'
+        type: variable-text
+        default: '18px'
+
+    -
+        id: toggle-thumb-opacity-active
+        title: '◉ 激活开关滑块不透明度'
+        type: variable-text
+        default: '1'
+
+    -
+        id: toggle-s-border-width
+        title: '◉ 小开关边框宽度'
+        type: variable-text
+        default: '2px'
+
+    -
+        id: toggle-s-width
+        title: '◉ 小开关宽度'
+        type: variable-text
+        default: '34px'
+
+    -
+        id: toggle-s-thumb-height
+        title: '◉ 小开关滑块高度'
+        type: variable-text
+        default: '15px'
+
+    -
+        id: toggle-s-thumb-width
+        title: '◉ 小开关滑块宽度'
+        type: variable-text
+        default: '15px'
+
+    -
+        id: hd-g-74
+        title: 'Vault profile'
+        title.zh: '库档案'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: vault-profile-display
+        title: '◉ 仓库档案显示'
+        type: variable-text
+        default: 'flex'
+
+    -
+        id: vault-profile-order
+        title: '◉ 仓库档案顺序'
+        type: variable-text
+        default: '2'
+
+    -
+        id: vault-profile-actions-display
+        title: '◉ 仓库档案操作显示'
+        type: variable-text
+        default: 'flex'
+
+    -
+        id: vault-profile-font-size
+        title: '◉ 仓库档案字号'
+        type: variable-text
+        default: 'var(--font-ui-small)'
+
+    -
+        id: vault-profile-font-weight
+        title: '◉ 仓库档案字重'
+        type: variable-text
+        default: 'var(--font-medium)'
+
+    -
+        id: vault-profile-color
+        title: '◉ 仓库档案颜色'
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: vault-profile-color-hover
+        title: '◉ 悬停仓库档案颜色'
+        type: variable-text
+        default: 'var(--vault-profile-color)'
+
+    -
+        id: vault-profile-radius
+        title: '◉ 仓库档案圆角'
+        type: variable-text
+        default: 'var(--radius-s)'
 
     -
         id: hd-views
@@ -6719,7 +7261,7 @@ settings:
         collapsed: true
 
     -
-        id: hd-g-71
+        id: hd-g-75
         title: 'Canvas'
         title.zh: '画布'
         type: heading
@@ -6799,7 +7341,7 @@ settings:
         default: 'var(--color-base-30)'
 
     -
-        id: hd-g-72
+        id: hd-g-76
         title: 'Graphs'
         title.zh: '关系图谱'
         type: heading
@@ -6855,7 +7397,7 @@ settings:
         default: 'var(--color-yellow)'
 
     -
-        id: hd-g-73
+        id: hd-g-77
         title: 'PDF view'
         title.zh: 'PDF 视图'
         type: heading
@@ -6887,7 +7429,7 @@ settings:
         default: 'var(--background-primary)'
 
     -
-        id: hd-g-74
+        id: hd-g-78
         title: 'Sync'
         title.zh: '同步'
         type: heading
@@ -6957,7 +7499,7 @@ settings:
         collapsed: true
 
     -
-        id: hd-g-75
+        id: hd-g-79
         title: 'Animations'
         title.zh: '动画'
         type: heading
@@ -7019,7 +7561,7 @@ settings:
         default: 'cubic-bezier(0, 0.55, 0.45, 1)'
 
     -
-        id: hd-g-76
+        id: hd-g-80
         title: 'Shadows (dual)'
         title.zh: '明暗差异阴影与遮罩'
         type: heading
@@ -7185,7 +7727,7 @@ settings:
         description: '暗色默认 255, 255, 255；亮色默认 0, 0, 0；注：原生与另一模式不同；暗色模式下本值独立生效，亮色由底部兜底规则保持原生'
 
     -
-        id: hd-g-77
+        id: hd-g-81
         title: 'Blurs'
         title.zh: '模糊'
         type: heading
@@ -7253,7 +7795,7 @@ settings:
         default: 'blur(var(--blur-radius-l)) saturate(var(--blur-saturation)) brightness(var(--blur-brightness))'
 
     -
-        id: hd-g-78
+        id: hd-g-82
         title: 'Cursor'
         title.zh: '鼠标指针'
         type: heading
@@ -7273,7 +7815,7 @@ settings:
         default: 'pointer'
 
     -
-        id: hd-g-79
+        id: hd-g-83
         title: 'Dragging'
         title.zh: '拖拽'
         type: heading
@@ -7305,7 +7847,7 @@ settings:
         default: '0 2px 8px var(--background-modifier-box-shadow)'
 
     -
-        id: hd-g-80
+        id: hd-g-84
         title: 'Z-index'
         title.zh: '层叠层级'
         type: heading
@@ -7373,7 +7915,7 @@ settings:
         default: '80'
 
     -
-        id: hd-g-81
+        id: hd-g-85
         title: 'Raised'
         title.zh: '浮起遮罩'
         type: heading
@@ -7423,7 +7965,7 @@ settings:
         default: 'exclude, add'
 
     -
-        id: hd-g-82
+        id: hd-g-86
         title: 'Workspace'
         title.zh: '工作区'
         type: heading
@@ -7445,6 +7987,14 @@ settings:
         collapsed: true
 
     -
+        id: hd-g-87
+        title: 'Deprecated'
+        title.zh: '兼容保留'
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
         id: interactive-accent-hsl
         title: '◉ 交互强调色 HSL'
         type: variable-text
@@ -7463,13 +8013,6 @@ settings:
         title: '◉ 成功背景修饰色 RGB'
         type: variable-text
         default: 'var(--color-green-rgb)'
-        description: '⚠️ 官方已标记为兼容保留（Deprecated）'
-
-    -
-        id: text-highlight-bg-rgb
-        title: '◉ 文本高亮背景色 RGB'
-        type: variable-text
-        default: '255, 208, 0'
         description: '⚠️ 官方已标记为兼容保留（Deprecated）'
 
     -
@@ -7537,88 +8080,70 @@ settings:
 
 */
 
-/* #endregion */
-
 /* ---- 主题本体（零覆盖）：不改动任何原生规则，外观完全由原生变量 + 上方设置决定 ---- */
 
-/* ==========
- * 兜底块：明暗差异化变量的「亮色锁定」
- * ------------------------------------------------------------
- * 机制：Style Settings 的 variable-text 设置会把 default（=官方暗色值）
- * 无条件注入 body.css-settings-manager（明暗同值），会污染原生的亮色默认值
+/*
+ * 以下兜底：Style Settings 的 variable-text 设置会把 default（=官方暗色值）无条件注入
+ * body.css-settings-manager（明暗同值），会污染原生的亮色默认值
  * （官方亮色值可能定义在 .theme-light，也可能仅定义在 :root）。
  * 这些变量在官方中仅对暗色差异化（亮色保持原生），这里用更高特异性选择器
  * 在亮色模式下按官方亮色值显式锁定；暗色模式不受影响（注入值正常生效）。
  * 如需自定义这些变量的亮色值，请直接编辑下方对应行。
- * ========== */
-
-/* 强调色派生：亮/暗偏移不同（亮 -1/-3，暗 -3/-5） */
-body.theme-light.css-settings-manager.theme-light {
-    --color-accent-1: hsl(calc(var(--accent-h) - 1), calc(var(--accent-s) * 1.01), calc(var(--accent-l) * 1.075));
-    --color-accent-2: hsl(calc(var(--accent-h) - 3), calc(var(--accent-s) * 1.02), calc(var(--accent-l) * 1.15));
-    /* 交互与文本（亮色基线在 :root） */
-    --highlight-mix-blend-mode: darken;
-    --text-selection: color-mix(in oklch, var(--interactive-accent) 20%, transparent);
-    --text-accent: var(--color-accent);
-    --interactive-normal: var(--color-base-00);
-    --interactive-hover: var(--color-base-10);
-    --interactive-accent: var(--color-accent-1);
-    --interactive-accent-hover: var(--color-accent-2);
-    /* 背景与遮罩（亮色基线在 :root） */
-    --background-modifier-form-field: var(--color-base-00);
-    --background-secondary-alt: var(--color-base-05);
-    --blur-background: color-mix(in srgb, var(--background-primary) var(--blur-opacity-s), transparent) linear-gradient(var(--background-primary), color-mix(in srgb, var(--background-primary) var(--blur-opacity-s), transparent));
-    --raised-mask-background: linear-gradient(to bottom left, white, transparent, white) border-box no-repeat;
-    /* 输入框与阴影（暗色重、亮色轻） */
-    --input-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.065), 0 0 0 0 transparent;
-    --input-shadow-hover: inset 0 0 0 1px rgba(0, 0, 0, 0.17), 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 0 0 0 transparent;
-    --shadow-edges: 0 0 transparent;
-    --shadow-xs: 0 1px 6px rgba(0, 0, 0, 0.015), 0 4px 24px rgba(0, 0, 0, 0.065), var(--shadow-edges);
-    --shadow-s: 0px 1px 2px rgba(0, 0, 0, 0.028), 0px 3.4px 6.7px rgba(0, 0, 0, 0.042), 0px 15px 30px rgba(0, 0, 0, 0.07);
-    --shadow-l: 0px 1.8px 7.3px rgba(0, 0, 0, 0.071), 0px 6.3px 24.7px rgba(0, 0, 0, 0.112), 0px 15px 30px rgba(0, 0, 0, 0.1);
-    --pdf-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.1);
-    --pdf-thumbnail-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2);
-    /* 单色与 RGB 调色板 */
-    --mono-rgb-0: 255, 255, 255;
-    --mono-rgb-100: 0, 0, 0;
-    --color-red-rgb: 233, 49, 71;
-    --color-orange-rgb: 236, 117, 0;
-    --color-yellow-rgb: 224, 172, 0;
-    --color-green-rgb: 8, 185, 78;
-    --color-cyan-rgb: 0, 191, 188;
-    --color-blue-rgb: 8, 109, 221;
-    --color-purple-rgb: 120, 82, 238;
-    --color-pink-rgb: 213, 57, 132;
-}
-
-/* ==========
- * 强调色明暗分离（Blue Topaz 式双主题色）
- * ------------------------------------------------------------
- * 官方 --accent-h/--accent-s/--accent-l 仅定义于 :root（不分明暗），
- * 主题色因而明暗相同。面板「强调色 HSL（亮暗分离）」提供亮/暗两组设置
- * （--accent-h-light/-dark 等），这里按当前模式映射回官方变量；
- * 未设置或未启用 Style Settings 时 var() 默认值 = 官方默认。
- * ========== */
+ */
 
 body.theme-light.css-settings-manager.theme-light {
-    --accent-h: var(--accent-h-light, 258);
-    --accent-s: var(--accent-s-light, 88%);
-    --accent-l: var(--accent-l-light, 66%);
+        --color-accent-1: hsl(calc(var(--accent-h) - 1), calc(var(--accent-s) * 1.01), calc(var(--accent-l) * 1.075));
+        --color-accent-2: hsl(calc(var(--accent-h) - 3), calc(var(--accent-s) * 1.02), calc(var(--accent-l) * 1.15));
+        --blur-background: color-mix(in srgb, var(--background-primary) var(--blur-opacity-s), transparent) linear-gradient(var(--background-primary), color-mix(in srgb, var(--background-primary) var(--blur-opacity-s), transparent));
+        --pdf-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.1);
+        --pdf-thumbnail-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2);
+        --raised-mask-background: linear-gradient(to bottom left, white, transparent, white) border-box no-repeat;
+        --background-modifier-form-field: var(--color-base-00);
+        --text-selection: color-mix(in oklch, var(--interactive-accent) 20%, transparent);
+        --text-accent: var(--color-accent);
+        --interactive-normal: var(--color-base-00);
+        --interactive-hover: var(--color-base-10);
+        --interactive-accent: var(--color-accent-1);
+        --interactive-accent-hover: var(--color-accent-2);
+        --highlight-mix-blend-mode: darken;
+        --background-secondary-alt: var(--color-base-05);
+        --input-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.065), 0 0 0 0 transparent;
+        --input-shadow-hover: inset 0 0 0 1px rgba(0, 0, 0, 0.17), 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 0 0 0 transparent;
+        --shadow-edges: 0 0 transparent;
+        --shadow-xs: 0 1px 6px rgba(0, 0, 0, 0.015), 0 4px 24px rgba(0, 0, 0, 0.065), var(--shadow-edges);
+        --shadow-s: 0px 1px 2px rgba(0, 0, 0, 0.028), 0px 3.4px 6.7px rgba(0, 0, 0, 0.042), 0px 15px 30px rgba(0, 0, 0, 0.07);
+        --shadow-l: 0px 1.8px 7.3px rgba(0, 0, 0, 0.071), 0px 6.3px 24.7px rgba(0, 0, 0, 0.112), 0px 15px 30px rgba(0, 0, 0, 0.1);
+        --mono-rgb-0: 255, 255, 255;
+        --mono-rgb-100: 0, 0, 0;
+        --color-red-rgb: 233, 49, 71;
+        --color-orange-rgb: 236, 117, 0;
+        --color-yellow-rgb: 224, 172, 0;
+        --color-green-rgb: 8, 185, 78;
+        --color-cyan-rgb: 0, 191, 188;
+        --color-blue-rgb: 8, 109, 221;
+        --color-purple-rgb: 120, 82, 238;
+        --color-pink-rgb: 213, 57, 132;
 }
 
+body.theme-light.css-settings-manager.theme-light {
+        --accent-h: var(--accent-h-light, 258);
+        --accent-s: var(--accent-s-light, 88%);
+        --accent-l: var(--accent-l-light, 66%);
+}
 body.theme-dark.css-settings-manager.theme-dark {
-    --accent-h: var(--accent-h-dark, 258);
-    --accent-s: var(--accent-s-dark, 88%);
-    --accent-l: var(--accent-l-dark, 66%);
+        --accent-h: var(--accent-h-dark, 258);
+        --accent-s: var(--accent-s-dark, 88%);
+        --accent-l: var(--accent-l-dark, 66%);
 }
+
 
 /* #region 主题默认值（官方变量层） */
-/* ==========
+/* ============================================================
  * 主题默认值（官方变量层）：以下官方 CSS 变量在本主题中的默认值
  * 与 Obsidian 官方默认不同，在此统一覆盖（优先级低于 Style Settings
  * 注入的 body.css-settings-manager，用户自定义值始终优先）。
  * 数据源：scripts/defaults.json；重跑 gen:settings 时据此重新生成。
- * ========== */
+ * ============================================================ */
 :root {
   --indent-size: 2;
   --indent-unit: 0.25em;
@@ -7661,6 +8186,7 @@ body.theme-dark.css-settings-manager.theme-dark {
   --list-indent-editing: 0.5em;
   --code-border-width: 1px;
   --code-radius: 6px;
+  --text-highlight-bg: rgba(255, 208, 0, 0.4);
   --callout-padding: 0px;
   --callout-radius: 6px;
   --callout-title-color: var(--text-normal);
@@ -7668,9 +8194,8 @@ body.theme-dark.css-settings-manager.theme-dark {
   --callout-title-weight: 600;
   --callout-content-padding: 0px 12px;
 }
-
-/* 官方 app.css 中大部分此类变量定义在 body 级；:root 覆盖会被“就近继承”
-   遮蔽（消费元素先命中 body 上的官方值），故同一组默认值在 body 级再声明一遍。 */
+/* 官方 app.css 中大部分此类变量定义在 body 级，:root 覆盖会被就近继承遮蔽；
+   此处同一组默认值在 body 级再声明一遍，确保对全部 UI 元素生效 */
 body {
   --indent-size: 2;
   --indent-unit: 0.25em;
@@ -7713,6 +8238,7 @@ body {
   --list-indent-editing: 0.5em;
   --code-border-width: 1px;
   --code-radius: 6px;
+  --text-highlight-bg: rgba(255, 208, 0, 0.4);
   --callout-padding: 0px;
   --callout-radius: 6px;
   --callout-title-color: var(--text-normal);
@@ -7928,11 +8454,20 @@ body.header-titile-shadow .workspace-split.mod-vertical.mod-root .view-content {
 }
 
 /* 高亮加强（由 Style Settings 开关 highlight-strengthen 门控，默认开启；
-   关闭后恢复官方原生高亮背景） */
+   关闭后恢复官方原生高亮背景）。
+   渐变色取元素自身的 --highlight-background，而不是写死 --text-highlight-bg：
+   · 默认（无色）高亮：--highlight-background = var(--text-highlight-bg, …)
+     = 主题金黄（见「主题默认值（官方变量层）」的 --text-highlight-bg）；
+   · 带颜色表情（🔴🟠🟡🟢🔵🟣，1.14.4 新特性）的高亮：官方在元素上把
+     --highlight-background 重定义成对应色（阅读视图 mark[data-highlight=…]，
+     编辑视图 span.cm-highlight-*），渐变自动跟色。彩色 span 同时携带 .cm-highlight
+     基类（官方靠它画底色），本规则无需加选择器即可覆盖到。
+   历史：这里曾写死 var(--text-highlight-bg, yellow) —— 1.14.4 删除该官方声明后
+   回退值变成纯 yellow，且同色渐变盖在彩色高亮的背景色上，六个表情色全部失效。 */
 body.highlight-strengthen :is(.markdown-preview-view, .markdown-rendered) mark,
 body.highlight-strengthen .cm-s-obsidian span.cm-highlight {
   background-color: transparent !important;
-  background-image: linear-gradient(var(--text-highlight-bg, yellow), var(--text-highlight-bg, yellow)) !important;
+  background-image: linear-gradient(var(--highlight-background), var(--highlight-background)) !important;
   background-size: 100% 85% !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
@@ -8177,9 +8712,24 @@ body.inline-code-hover-darken .cm-s-obsidian span.cm-inline-code:not(.cm-formatt
    圆角已决定不做：原生 ::selection 不支持 border-radius（Chromium 实测 computed 值恒为 0px，
    规范白名单里也没有），只有编辑视图的 CodeMirror 选区图层能加，收益与复杂度不成正比。 */
 
-/* 两端对齐 */
-:is(.markdown-preview-view, .markdown-rendered, .markdown-source-view.mod-cm6) div.cm-line:not(.HyperMD-header) {
-  text-align: justify;
+/* 正文对齐（设置入口：「Ethereal 定制 → 正文排版 → 段落 → 文本对齐方式」）。
+   原片段把两端对齐写死，且其选择器的前两个分支从未真正命中 —— .cm-line 只存在于
+   编辑视图（源码 / 实时预览），阅读视图没有这个元素，所以「两端对齐」自吞并以来
+   其实只作用于编辑视图。现补完为变量驱动的全视图规则：
+   · 编辑视图逐行生效：沿用原片段对标题行的排除，再排除代码块行与表格行 —— 后两者
+     每行独占一个行盒，两端对齐本无效果（justify 不拉伸末行），而居中 / 右对齐会真的
+     移动它们；阅读视图的代码与表格不在 p / li 之列，排除后四种对齐在两视图的
+     作用范围完全一致；
+   · 阅读视图（含悬停浮层、嵌入块等 .markdown-rendered 场景）命中段落 p 与列表项 li；
+   · 标题继续左对齐（阅读视图的标题不是 p / li，天然不命中）。
+   默认值 = 吞并片段原行为（两端对齐）：body 声明与 var 回退值同值，未装 Style
+   Settings（它从不注入默认值）时同样成立。 */
+body {
+  --paragraph-text-align: justify;
+}
+:is(.markdown-preview-view, .markdown-rendered, .markdown-source-view.mod-cm6) div.cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row),
+:is(.markdown-preview-view, .markdown-rendered) :is(p, li) {
+  text-align: var(--paragraph-text-align, justify);
   hyphens: auto;
 }
 

@@ -5,6 +5,95 @@ All notable changes to this theme are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.6.0] - 2026-10-07
+
+**Overview.** Three changes land together. Body text alignment becomes a
+setting — and the merged snippet's hard-coded justify finally reaches the
+reading view too. The official-variable panel is re-synced with Obsidian
+**1.14.4**: 77 new variables join it, including the new multi-colour highlight
+system, native notices, tooltips, hotkeys, the Bases kanban and a reworked tab
+geometry. And two highlight regressions from that sync are fixed: the theme's
+gold highlight is back, and the six colour-emoji highlights (==🔴== … ==🟣==)
+render in their official colours. The custom panel rises by one entry to
+**220 entries / 179 settings**, the official panel to **978 / 886**.
+
+**功能构建.**
+
+- **文本对齐方式（新增下拉，四选一）.** 入口：「Ethereal 定制 → 正文排版 →
+  段落 → 文本对齐方式」（id `paragraph-text-align`，`variable-select`）。选项：
+  **两端对齐**（默认，即吞并的 Custom 片段原行为，`hyphens: auto` 随行保留）、
+  **左对齐**、**居中**、**右对齐**。默认值三处同步：面板条目的 `default:`
+  （只管「重置」按钮回填）、body 层的 `--paragraph-text-align: justify` 声明、
+  消费规则的回退值 `var(--paragraph-text-align, justify)` —— Style Settings
+  从不注入默认值，真正生效的是后两处。
+- **补全阅读视图覆盖.** 原规则 `:is(.markdown-preview-view, .markdown-rendered,
+  .markdown-source-view.mod-cm6) div.cm-line:not(.HyperMD-header)` 的前两个分支
+  从未命中：`.cm-line` 只存在于编辑视图（源码 / 实时预览），阅读视图没有这个
+  元素，因此「两端对齐」自 1.4.0 吞并以来其实只作用于编辑视图。现补第二条分支
+  命中阅读视图的段落 `p` 与列表项 `li`（悬停浮层、嵌入块等 `.markdown-rendered`
+  场景一并覆盖），编辑与阅读两视图观感一致。
+- **排除代码块行与表格行.** 编辑视图在原有的 `:not(.HyperMD-header)` 之上追加
+  `:not(.HyperMD-codeblock):not(.HyperMD-table-row)`：两端对齐对「每行独占一个
+  行盒」的代码 / 表格行本无效果（justify 不拉伸末行），但切到居中 / 右对齐时会
+  真的移动它们，而阅读视图的代码与表格并不在 `p` / `li` 之列 —— 排除后四种
+  对齐在两视图的作用范围完全一致，不会出现「编辑器里代码居中、阅读视图里代码
+  靠左」的错位。
+- **官方变量面板对账至 1.14.4（896 项 / 809 设置 → 978 项 / 886 设置）.** 重新从
+  官方 1.14.4 `app.css` 生成。新增 77 个变量条目，主要家族：**多色高亮**
+  `highlight-*`（1.14 新特性：底色 + 六个色相 + 不透明度，共 8 项）、**通知**
+  `notice-*`（11 项）、**工具提示** `tooltip-*`（11 项）、**快捷键** `hotkey-*`
+  （5 项）、**Bases 看板** `bases-kanban-*`（15 项）、**标签页新几何**
+  `tab-inner-*` / `tab-corner-shape` / `tab-container-padding-*` 等（13 项）、
+  **设置面板条目名** `setting-item-name-*` 与分隔线颜色（4 项），另有次级色阶
+  `color-secondary-2…6`、按钮 / 下拉框 / 输入框的 `*-transition`、
+  `font-preferred-size`、`sidebar-tab-container-background` 等。
+- **新分组入编.** 1.14.4 新出现的分组注释（高亮 Highlights、快捷键 Hotkeys、
+  通知 Notices、工具提示 Tooltips、块 Blocks）已映射为正式中文分组；原先因无
+  分组而落在「其他」里的 `embed-block-shadow-hover` 归位「块」。
+- **上游默认值变化自动跟随.** 官方改了默认值的条目同步更新：`file-header-justify`
+  居中 → 左对齐（1.14.4 把文件页眉默认对齐改回 start）、`icon-m` 18px → 16px、
+  `tab-curve` / `tab-radius-active` 6px → 10px、`nav-item-radius` 改用
+  `--radius-m`，以及模态框 / 命令面板边框色简化、四处字号改走新的
+  `--font-preferred-size` 链。已保存过自定义值的不受影响。
+- **生成器工程修正（对齐质量）.** ①扫描边界按 1.14.4 重新对位（变量区
+  1998–3205 行）；②屏蔽 `@media print` 块 —— 打印态对 `.theme-dark` 的
+  `--highlight-mix-blend-mode: darken` 覆盖不再污染该变量的默认值（1.13.7 时
+  它恰好在旧边界外，本次扩界后必须显式跳过）；③已移至定制面板的明暗差异化
+  变量（`text-selection`）的「亮色锁定」兜底改由生成器自动产出，不再依赖手补；
+  ④面板说明条目沿用脚本现行 id（`ethereal-info`），并新增「方案管理」推广条目
+  （`ethereal-presets-info`）。
+
+**设置项变更.**
+
+| 操作 | 设置项 | 说明 |
+| --- | --- | --- |
+| 新增 | `paragraph-text-align` | 「文本对齐方式」（`variable-select`，四选一，默认两端对齐） |
+| 说明更新 | `text-highlight-bg` | 补中英说明：作用域为无表情的普通高亮；表情色走官方面板「排版 → 高亮」 |
+
+定制面板计数由 219 项 / 178 设置变为 **220 项 / 179 设置**；官方面板由 896 项 /
+809 设置变为 **978 项 / 886 设置**。
+
+**错误修复.**
+
+- **默认高亮色从纯 yellow 回到主题金黄.** 机制：1.14.4 删除了官方
+  `--text-highlight-bg` 声明（普通高亮改由
+  `--highlight-background: var(--text-highlight-bg, var(--highlight-background-yellow))`
+  链式取色），而「Style Settings 从不注入默认值」、主题又从未在 CSS 里声明过它 ——
+  高亮加强渐变的 `var(--text-highlight-bg, yellow)` 因此落到纯 `yellow` 兜底。
+  修复按官方变量层默认值的三处同步惯例：`scripts/defaults.json`（数据源，新增
+  `text-highlight-bg`）、theme.css「主题默认值（官方变量层）」`:root` + `body`
+  （真正生效）、定制面板「文本高亮背景色」`default:`（只管重置回填，原本就是该值）。
+- **颜色表情高亮恢复官方配色.** 「高亮加强」（默认开启）用
+  `background-image: linear-gradient(同色) !important` 给每个高亮垫一条下衬式
+  色带 —— 背景图永远画在背景色**之上**，官方彩色高亮（阅读视图
+  `mark[data-highlight=…]`、编辑视图 `span.cm-highlight-*`）的背景色因此全被
+  盖住，表情只换了个寂寞。现在渐变改取元素自身的 `--highlight-background`：
+  官方正是在彩色高亮元素上把该变量重定义成对应色，渐变自动跟色；六色的深浅由
+  官方 `--highlight-opacity`（默认 30%）与逐色 `highlight-background-*` 控制，
+  可在「Ethereal 官方变量 → 排版 → 高亮」调整。
+- **1.5.8–1.5.10 期间无其他线上问题**，三个版本号从未单独发布，本次收敛为
+  1.6.0 一个条目。
+
 ## [1.5.7] - 2026-10-06
 
 **Overview.** A small release that folds four values the author had been
