@@ -5,6 +5,51 @@ All notable changes to this theme are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.6.1] - 2026-10-09
+
+**错误修复.**
+
+- **修复「打开文档后首次滚轮滚到标题处，滚动轴回跳」.** 复现条件：实时预览、打开文档后的
+  **第一次**滚轮滚动（后续滚动正常，关掉文档重开才会再次触发）。真机实测首次滚轮时
+  scrollTop 被一次性改写（3200 → 444，**−2756px**），调用栈落在 CM6 自己身上：
+  `onScroll → onScrollChanged → measure` 里改写 `scrollTop` —— 即 CM6 认定视口以上的内容
+  矮了 2756px（≈106 行 × (36px − 10px)）。
+  真因是吞并片段 `Blank-line-hide.css` 里那条「实时预览中紧邻引用块 / 标注 / 标题的行」规则：
+  它与下面那条「实时预览模式空行」规则**同时**给同一批空行声明 `line-height`，而它的选择器
+  又依赖兄弟关系（`:has(+ …)`），CM6 虚拟化插入行时的样式失效与测量不同步，行高表被写错。
+  A/B（真机 · 真实笔记 · 首次滚轮最大回退）：现状 −2756px；整条删除 **0px**；只删掉它的
+  `line-height` **0px**；只删掉它的 `:has(+ …)` 半边仍 −2756px；把下面那条的 `!important`
+  去掉仍 −2737px —— 触发条件是「同一条行被两个 `line-height` 声明同时命中」，与
+  `!important` 无关。
+  该规则对**空行**的压缩与下面那条完全重复（逐行 `class / line-height / offsetHeight /
+  min-height` 实测零差异），对**非空行**的压缩本身是错的（0.5em 行高会让正文溢出自身行盒、
+  与相邻行重叠），故整条移除。空行压缩仍由「实时预览模式空行」规则负责，外观不变
+  （空行实测仍为 8px）。注：这一版之前把该症状归因于标题换行，实为误诊 —— 把文档末尾三条
+  长标题改短后回跳照旧（−2865px），「标题超过一行」只是更容易被看见。
+
+- **修复编辑态 H1–H6 指示标签丢失 / 错位.** 编辑态标题左侧的指示标签（`::before`，
+  `position:absolute`）此前只给阅读态标题设了 `position:relative`，编辑态标题行没有。
+  而 CM6 baseTheme 给 `.cm-scroller` 声明了 `position:relative`（同时 `height:100%`、
+  `z-index:0`），于是该绝对元素的包含块回落到**滚动容器**，`bottom: 60%` 按**视口高**解析
+  （实测 used `bottom`=418.7px、`top`=269.5px，视口 698px），标签被画到内容坐标 y≈269px
+  —— 首屏以外的标题**完全看不到标签**。修复：给编辑态标题行
+  `.cm-line.HyperMD-header-1…6` 补 `position:relative`，把 `::before` 收拢到标题自身
+  （used `top`=42.2px），与阅读态一致。仅改视觉位置，不动 CM6 行高表。
+  注：绝对定位元素**不会**贡献滚动溢出，改不了滚动轴（最小实验三组
+  `scrollHeight`/`scrollWidth` 全等），所以本条与上一条是两回事，不要混为一谈。
+
+**文档.**
+
+- **新增 `DEBUGLOG.md`.** 本轮排查的完整记录：症状与复现条件、试过并被证伪的假设、
+  定位手段（劫持 `Element.prototype.scrollTop` 的 setter 抓调用栈）、真因、A/B 数据表、
+  回归验证与复现工具清单。与 CHANGELOG 的分工是 —— CHANGELOG 记「改了什么」，
+  DEBUGLOG 记「怎么找到的、试错路径是什么」。
+- **README 双语功能介绍补全.** 补上此前只在 CHANGELOG 里出现过、README 功能列表却漏掉的
+  **H1–H6 指示标签**（含它为什么必须给标题行定位：CM6 baseTheme 把 `.cm-scroller` 声明成
+  `position: relative`，绝对定位的标签否则会挂到滚动容器上）；并按上面的修复结果修正
+  「空白行」条目（不再声称紧邻引用块 / 标注 / 标题的**非空行**也会被压缩），
+  `blank-line-height` 设置项的中英说明同步收窄。
+
 ## [1.6.0] - 2026-10-07
 
 **Overview.** Three changes land together. Body text alignment becomes a

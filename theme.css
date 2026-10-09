@@ -212,8 +212,8 @@ settings:
     id: blank-line-height
     title: 'Blank line height'
     title.zh: '空白行行高'
-    description: Height of blank lines in the live-preview edit view. A line holding only a line break shrinks to this height, and so does any line sitting directly before or after a blockquote, callout or heading — even a non-blank one (from the merged Blank-line-hide snippet; natively a blank line is a full line tall). 0 hides them completely; a value near your line height (e.g. 1.8em) is close to the native look.
-    description.zh: 实时预览编辑视图中空白行的高度 —— 只有一个换行符的空行会被压缩到此高度；紧邻引用块 / 标注 / 标题的行（即使不是空行）也同样压缩（源自吞并的 Blank-line-hide 片段；原生空行占满一整行）。0 为完全隐藏；接近行间距的值（如 1.8em）≈ 原生观感。
+    description: Height of blank lines in the live-preview edit view. A line holding only a line break shrinks to this height (from the merged Blank-line-hide snippet; natively a blank line is a full line tall). 0 hides them completely; a value near your line height (e.g. 1.8em) is close to the native look.
+    description.zh: 实时预览编辑视图中空白行的高度 —— 只有一个换行符的空行会被压缩到此高度（源自吞并的 Blank-line-hide 片段；原生空行占满一整行）。0 为完全隐藏；接近行间距的值（如 1.8em）≈ 原生观感。
     type: variable-number-slider
     default: 0.5
     min: 0
@@ -8788,6 +8788,15 @@ body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-3:not(.cm
 body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-4:not(.cm-header-4 ~ .cm-header-4)::before { content: 'H4'; }
 body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-5:not(.cm-header-5 ~ .cm-header-5)::before { content: 'H5'; }
 body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line .cm-header-6:not(.cm-header-6 ~ .cm-header-6)::before { content: 'H6'; }
+
+/* 编辑态标题行补 position:relative（阅读态标题已有，见本 region 顶部）。
+   编辑态指示标签 ::before 是 position:absolute，而编辑态标题行自身不定位时，该绝对元素的
+   包含块会回落到随 CM6 虚拟化不断变化的大祖先上；标题一旦超宽换行（行盒变高），绝对元素
+   被反复重算布局，滚动轴会突然跳顶。给标题行定位后 ::before 收拢到标题自身，两态一致、
+   滚动稳定。仅改视觉位置，不动 CM6 行高表。 */
+body:not(.remove-heading-indicator) .cm-s-obsidian .cm-line:is(.HyperMD-header-1,.HyperMD-header-2,.HyperMD-header-3,.HyperMD-header-4,.HyperMD-header-5,.HyperMD-header-6) {
+  position: relative;
+}
 /* #endregion */
 /* #endregion */
 
@@ -9498,13 +9507,25 @@ body {
   --blank-line-height: 0.5em;
 }
 
-/* 实时预览中紧邻引用块 / 标注 / 标题的行（无论是否为空行，选择器原文照搬） */
-body:not(.blank-line-native) .is-live-preview :is([class=cm-line]:has(+
-:is(.HyperMD-quote, .cm-callout, .HyperMD-header)),
-:is(.HyperMD-quote, .cm-callout, .HyperMD-header) + [class=cm-line]) {
-  line-height: var(--blank-line-height);
-  border-radius: var(--radius-s);
-}
+/* 原「实时预览中紧邻引用块 / 标注 / 标题的行」规则已于 2026-10-09 删除。
+   原规则（源自吞并片段 Blank-line-hide.css）对紧邻引用块 / 标注 / 标题的行设
+   `line-height: var(--blank-line-height)`。两个问题：
+     ① 它对**空行**的压缩与下面「实时预览模式空行」那条规则完全重复 —— 空行已被
+        后者用 `!important` 压到同一值，实测逐行几何零差异（含 class / line-height /
+        offsetHeight / min-height 全等）；
+     ② 它对**非空行**的压缩是错的：0.5em 行高会让正文溢出自身行盒、与相邻行重叠。
+   更要紧的是它会造成「打开文档后首次滚轮滚到标题处 → 滚动轴回跳」：
+     现状                  → 回退 1 次 / −2756px
+     整条删除              → 0 次
+     只删掉它的 line-height → 0 次
+     只删掉它的 `:has(+ …)` 半边（保留 A + B 形式）→ 仍 −2756px
+   即触发条件是**同一条行被两个 line-height 声明同时命中**（与 `!important` 无关：
+   去掉下面那条的 `!important` 仍然回跳）。回跳由 CM6 自己完成 —— 调用栈是
+   `onScroll → onScrollChanged → measure` 里改写 scrollTop，等于 CM6 认定视口以上
+   的内容矮了 2756px（≈106 行 × (36px − 10px)）。
+   剩余声明只剩 border-radius，在透明底空行上无可见效果；而那条依赖兄弟关系的
+   `:has(+ …)` 会在 CM6 每次插入行时强制样式失效，纯负担 —— 故整条移除。
+   空行压缩本身由下方「实时预览模式空行」规则继续负责，外观不变。 */
 
 /* 实时预览模式空行（.cm-line 直接包含 <br>） */
 body:not(.blank-line-native) .markdown-source-view.mod-cm6 .cm-line:has(> br:only-child) {
