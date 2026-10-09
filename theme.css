@@ -9447,6 +9447,33 @@ body {
   width: fit-content;
   /* 最小宽度地板：短 callout 撑到 200px，且不超过可用行宽 */
   min-width: var(--callout-min-width, min(200px, 100%));
+  /* 宽度上限 + 折行 —— 这两条必须成对，缺一条就会「超出可读行宽」或「内容不换行」。
+
+     官方 app.css 对 .cm-callout 显式写了 overflow-wrap: normal /
+     word-break: normal（同组还有 .cm-html-embed、.cm-table-widget），即编辑态
+     callout 里的长 URL / 长单词**不折行**；而 width: fit-content 的收缩下限是
+     min-content（= 那一整串字符的宽度），于是 widget 被撑破可用行宽。内层
+     .callout 的 max-width: 100% 是相对这个**已被撑大**的 widget 解析的，救不回来。
+     真机实测（2026-10-09，视口 1500×950，--file-line-width 720px）：
+       长 URL 的 callout widget = 1044.3px（超 324.3px）
+       长单词的 callout widget =  762.4px（超  42.4px）
+     阅读视图同内容 = 720px —— 那边 .markdown-preview-view 带
+     overflow-wrap: break-word，能断行，所以只有编辑态出问题。
+
+     max-width: 100%：.cm-content 已被官方
+     `.markdown-source-view.mod-cm6.is-readable-line-width .cm-content
+     { max-width: var(--file-line-width) }` 夹住，故 100% 天然等于
+     「min(--file-line-width, 窗格可用宽)」，关掉缩减栏宽时也不会误夹。
+     ⚠️ 这一条**不能省**：overflow-wrap: break-word 的软换行机会**不参与**
+     min-content 计算（那是 overflow-wrap: anywhere 才有的行为），fit-content
+     仍会算出 min-content = 整串宽度，必须靠 max-width 兜住。
+
+     overflow-wrap: break-word：覆盖官方那条 normal，把编辑态对齐阅读视图。
+     只改 .cm-callout —— 代码块（white-space: pre）本就不折行，不受影响；
+     callout 内嵌的 .cm-table-widget / .cm-html-embed 由官方规则**直接命中**
+     （不是继承），仍是 normal。 */
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 /* 撑满整行（class-toggle「callout-full-width」）：回到官方满宽几何，
    仅覆盖宽度行为，display 保持块级（勿改回 inline-block，理由见上） */

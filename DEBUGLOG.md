@@ -7,6 +7,120 @@
 
 ---
 
+## 2026-10-09 · 标注（callout）在实时预览下超出可读行宽 + 内部长内容不换行
+
+**结论**：官方 app.css 对 `.cm-callout` 写了 `overflow-wrap: normal`，不可断行的内容顶住了
+`width: fit-content` 的 min-content 下限。修复要**两条一起上**：`.cm-callout` 补
+`max-width: 100%`（夹宽度）+ `overflow-wrap: break-word`（让它折行）。
+
+> 这一条是**同一个缺陷的两半**，分两轮才做完：用户先报「宽度超出」，修完宽度后接着报
+> 「里面的内容没有正常换行」—— 因为第一轮只加了 `max-width`，长 URL 被夹在 720px 里
+> 走**横向滚动**而不是换行。两半的记录都留在下面。
+
+### 症状
+
+- 第一轮：「callout 的最大宽度超出了定制的行宽 `--file-line-width`」；
+- 第二轮：「callout 里面的内容没有正常换行」。
+
+两轮都只有一句话，没说哪个视图、什么内容。**先量再改**。
+
+### 复现条件
+
+- **只在实时预览**（阅读视图同一份笔记全部正常）；
+- 内容里得有**不可断行**的东西：长 URL、长单词、连续西文串；
+- 普通长段落、短内容、表格、代码块都**复现不出来**（这几类实测都正好 = 可用行宽）。
+
+### 定位过程
+
+先写 `verify/callout-width-probe.cjs`（隔离迷你库 + CDP，跑前把根 `theme.css` 同步进
+迷你库，免得测到陈旧副本），用一份含 7 种内容的笔记 dump 每级容器的 used 宽度，
+并造一个 `width: var(--file-line-width)` 的探针盒拿到行宽像素值。
+
+第一轮没把窗口撑宽（窗格 592px < 行宽 720px），量出的 `delta` 是相对**行宽**算的，
+读起来像「所有 callout 都偏窄」，不好判读。第二轮用
+`Emulation.setDeviceMetricsOverride` 把视口改成 1500×950，让行宽成为真正的约束，
+改判据为 `over = w − min(--file-line-width, 父元素可用宽)`，一眼就能看出谁溢出。
+
+真机数据（视口 1500×950，行宽 720px）：
+
+| 内容 | 编辑态 `.cm-callout` | 阅读态 `.callout` |
+| --- | --- | --- |
+| 长段落 | 720 | 720 |
+| 短 | 200 | 200 |
+| 表格 | 285 | 285 |
+| **长单词** | **762.4**（超 42.4） | 720 |
+| 超宽表格 | 720 | 720 |
+| 长代码行 | 720 | 720 |
+| **长 URL** | **1044.3**（超 324.3） | 720 |
+
+### 真因
+
+两条规则相乘：
+
+1. 主题的 `.markdown-source-view.mod-cm6 .cm-callout { width: fit-content }`（宽度自适应）；
+   `fit-content` = `min(max-content, max(min-content, stretch))` —— **收缩下限是 min-content**；
+2. 官方 app.css 3742–3748 行对 `.cm-callout`（同组还有 `.cm-html-embed`、`.cm-table-widget`）
+   显式写了 `white-space: normal; overflow-wrap: normal; word-break: normal` ——
+   长 URL / 长单词**不会折行**，于是 min-content 就等于整串的宽度。
+
+min-content > 可用行宽时，`fit-content` 只能取 min-content，widget 被撑破。
+内层 `.callout { max-width: 100% }` 是相对**已经被撑大的 widget** 解析的（100% × 1044 = 1044），
+所以它救不回来 —— 这解释了为什么「明明有 max-width 还是溢出」。
+
+阅读视图为什么没事：那边容器是 `.markdown-preview-view`，app.css 给它设了
+`overflow-wrap: break-word`，长串能断行 → min-content 很小 → inline-block 的
+shrink-to-fit 自然收敛到可用宽。
+
+### 被证伪 / 排除的假设
+
+- **「阅读视图也会溢出」** —— 不会。同一份笔记阅读态全部 = 720px（见上表）。
+- **「`.callout` 的 `max-width: 100%` 没生效」** —— 生效了，只是基准错了（见真因）。
+- **「加 `max-width: var(--file-line-width)` 更准」** —— 不要。关闭「缩减栏宽」时正文占满
+  窗格，用 `--file-line-width` 反而会把 callout 无端夹窄；`100%` 的基准 `.cm-content`
+  本身就被官方 `.is-readable-line-width .cm-content { max-width: var(--file-line-width) }`
+  夹住，天然等于「min(--file-line-width, 窗格可用宽)」，两种模式都对。
+- **「只加 `overflow-wrap: break-word` 就够」（第二轮实测证伪）** —— 宽度照样溢出。
+  造变体主题 `EtherealNoMaxWidth`（去掉 `max-width: 100%`、只留 `overflow-wrap: break-word`）
+  实测：长单词 **762.4px**（超 42.4）、长 URL **1044.3px**（超 324.3），与修之前一模一样，
+  且 `.cm-content` 的 `scrollWidth` 被撑到 1044（溢出直接逃到了滚动容器上）。
+  原因是 `break-word` 的软换行机会**不参与 min-content 计算**（那是 `overflow-wrap: anywhere`
+  才有的行为），`fit-content` 仍按「整串宽度」当下限。**所以 `max-width` 不能省。**
+- **「只加 `max-width: 100%` 就够」** —— 也不够：宽度是夹住了，但长串只能**横向滚动**
+  （长单词 `scrollWidth` 750 / `clientWidth` 720，长 URL 1032 / 720），用户下一轮就报
+  「内容没有正常换行」。**两条必须成对。**
+
+### 修复与回归
+
+两条一起加在 `.markdown-source-view.mod-cm6 .cm-callout` 上：
+
+```css
+max-width: 100%;          /* 夹住宽度上限 */
+overflow-wrap: break-word; /* 覆盖官方那条 normal，长串改折行 */
+```
+
+修复后逐项复测：
+
+| 判据 | 修复前 | 只加 max-width | 只加 overflow-wrap | **两条都加** |
+| --- | --- | --- | --- | --- |
+| 长单词 callout 宽 | 762.4（超 42.4） | 720 | 762.4（超 42.4） | **720** |
+| 长 URL callout 宽 | 1044.3（超 324.3） | 720 | 1044.3（超 324.3） | **720** |
+| 长单词 `.callout-content` scroll/client | 762/762 | 750/720（横向滚动） | 762/762 | **720/720（折行）** |
+| 长 URL `.callout-content` scroll/client | 1044/1044 | 1032/720（横向滚动） | 1044/1044 | **720/720（折行）** |
+| 常规内容宽度（长段落/短/表格/超宽表格/代码块） | 720/200/285/720/720 | 同左，不变 | 同左，不变 | **同左，不变** |
+| 阅读视图 | 全 ≤ 720 | 不变 | 不变 | **不变** |
+
+代码块（`white-space: pre`）不受 `overflow-wrap` 影响，仍不折行；callout 内嵌的
+`.cm-table-widget` / `.cm-html-embed` 由官方规则**直接命中**（不是继承），仍是 `normal`。
+截图 `verify/out/callout-lp.png`（首屏）与 `verify/out/callout-lp-bottom.png`（滚到底）
+确认右边缘与正文栏对齐、长 URL 跨两行显示、无横向滚动条。
+
+**复现工具**：`verify/callout-width-probe.cjs`（真机 + 隔离迷你库，笔记
+`scratch/od-vault/_probe-callout.md`）。判据：`over` 列全 0 **且** 各 `.callout-content`
+的 `scroll == client` 为通过。传主题名可做 A/B：`node callout-width-probe.cjs EtherealNoMaxWidth`
+（变体主题由迷你库 `themes/EtherealNoMaxWidth/` 提供，跑变体时脚本不会覆盖它的 `theme.css`）。
+
+---
+
 ## 2026-10-09 · 打开文档后首次滚轮滚到标题处，滚动轴回跳
 
 **版本**：1.6.1 ｜ **结论**：空白行压缩的两条规则同时给同一行声明 `line-height`，删掉冗余的那条。

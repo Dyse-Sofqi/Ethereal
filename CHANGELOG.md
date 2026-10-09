@@ -5,6 +5,36 @@ All notable changes to this theme are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project follows [Semantic Versioning](https://semver.org/).
 
+## [1.6.2] - 2026-10-09
+
+**错误修复.**
+
+- **修复「标注（callout）在实时预览下超出可读行宽、内部长内容不换行」.** 编辑态 `.cm-callout`
+  用 `width: fit-content` 做宽度自适应，而 `fit-content` 的**收缩下限是 min-content**；
+  官方 app.css 又对 `.cm-callout` 显式写了 `overflow-wrap: normal` / `word-break: normal`
+  （同组还有 `.cm-html-embed`、`.cm-table-widget`），所以长 URL / 长单词这类**不可断行**的
+  内容会顶住这个下限。此时 min-content > 可用行宽，widget 只能取 min-content 而溢出，
+  内层 `.callout` 的 `max-width: 100%` 是相对这个**已被撑大**的 widget 解析的，救不回来。
+  真机实测（视口 1500×950，`--file-line-width` = 720px）：长 URL 的 callout 宽 **1044.3px**
+  （超 324.3px），长单词 **762.4px**（超 42.4px）；阅读视图同内容为 720px —— 那边
+  `.markdown-preview-view` 的 `overflow-wrap: break-word` 能断行，所以只有编辑态出问题。
+  修复分两条，**缺一条都不行**（A/B 实测：只加 `overflow-wrap` 时长 URL 仍 1044.3px／长单词
+  仍 762.4px；只加 `max-width` 时宽度被夹住但内容走横向滚动、不换行）：
+  1. `max-width: 100%` —— 兜住宽度上限。`.cm-content` 已被官方
+     `.markdown-source-view.mod-cm6.is-readable-line-width .cm-content
+     { max-width: var(--file-line-width) }` 夹住，故 100% 天然等于
+     「min(--file-line-width, 窗格可用宽)」，关掉缩减栏宽时不会误夹。
+     单靠 `overflow-wrap` 不够：`break-word` 的软换行机会**不参与** min-content 计算
+     （那是 `overflow-wrap: anywhere` 才有的行为），fit-content 仍会算出
+     min-content = 整串宽度。
+  2. `overflow-wrap: break-word` —— 覆盖官方那条 `normal`，把编辑态的长 URL / 长单词对齐
+     阅读视图的折行行为。只改 `.cm-callout`：代码块（`white-space: pre`）本就不折行、
+     不受影响；callout 内嵌的 `.cm-table-widget` / `.cm-html-embed` 由官方规则**直接命中**
+     （不是继承），仍是 `normal`。
+  修复后逐项复测：7 个 callout 的溢出量全为 0，常规内容（长段落 / 短 / 表格 / 超宽表格 /
+  代码块）宽度**逐项不变**，长 URL 与长单词**正常折行**、`.callout-content` 的
+  `scrollWidth == clientWidth`（不再出现横向滚动条）。
+
 ## [1.6.1] - 2026-10-09
 
 **错误修复.**
